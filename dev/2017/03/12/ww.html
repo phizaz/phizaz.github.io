@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Swap Alt and Ctrl Ubuntu 16.04 | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Swap Alt and Ctrl Ubuntu 16.04" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Using dconf-editor, if you have already tried the xmodmap way, tried this one … it’s superior because the xmodmap will fail (and need to be rerun) after you change the keyboard layout, furthermore, it has no currently reliable way to start it on login or after boot. So, let’s get started, if you don’t have one: sudo apt install dconf-editor Open it up, and see the org.gnome.desktop.input-sources.xkb-options, you might see [] for now, but update it to [&#39;ctrl:swap_lalt_lctl&#39;,&#39;ctrl:swap_ralt_rctl&#39;]. categories: dev You should see the effect immediately. Furthermore, you might have problem with alt+tab (now currently is ctrl+tab), if you want to change to ctrl+tab, just to keep it matched with the physical alt, read on. Change Alt + Tab to Ctrl + Tab It turns out even you have the unity-tweak-tool it’s not at all straightforward to change this, because the tool won’t allow you to bind ctrl+tab actually it won’t allow even alt+tab, I think it’s a bug or the app has no privilege to intercept the alt+tab itself. So, another way is through the compizconfig-settings-manager, if you don’t have it just install. In it, you should find the Ubuntu Unity Plugin section, go to Switcher. Now update it to be as follows, see the Key to start the switcher is now set to &lt;Control&gt;Tab: categories: dev If you want to also change the shortcut for switching windows in the same app (which default is alt + grave accent), you may change it now with the Key to flip through windows in the Switcher set it to control + grave accent instead." />
+<meta property="og:description" content="Using dconf-editor, if you have already tried the xmodmap way, tried this one … it’s superior because the xmodmap will fail (and need to be rerun) after you change the keyboard layout, furthermore, it has no currently reliable way to start it on login or after boot. So, let’s get started, if you don’t have one: sudo apt install dconf-editor Open it up, and see the org.gnome.desktop.input-sources.xkb-options, you might see [] for now, but update it to [&#39;ctrl:swap_lalt_lctl&#39;,&#39;ctrl:swap_ralt_rctl&#39;]. categories: dev You should see the effect immediately. Furthermore, you might have problem with alt+tab (now currently is ctrl+tab), if you want to change to ctrl+tab, just to keep it matched with the physical alt, read on. Change Alt + Tab to Ctrl + Tab It turns out even you have the unity-tweak-tool it’s not at all straightforward to change this, because the tool won’t allow you to bind ctrl+tab actually it won’t allow even alt+tab, I think it’s a bug or the app has no privilege to intercept the alt+tab itself. So, another way is through the compizconfig-settings-manager, if you don’t have it just install. In it, you should find the Ubuntu Unity Plugin section, go to Switcher. Now update it to be as follows, see the Key to start the switcher is now set to &lt;Control&gt;Tab: categories: dev If you want to also change the shortcut for switching windows in the same app (which default is alt + grave accent), you may change it now with the Key to flip through windows in the Switcher set it to control + grave accent instead." />
+<link rel="canonical" href="/dev/2017/03/12/ww.html" />
+<meta property="og:url" content="/dev/2017/03/12/ww.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-03-12T07:16:41+07:00" />
+<script type="application/ld+json">
+{"description":"Using dconf-editor, if you have already tried the xmodmap way, tried this one … it’s superior because the xmodmap will fail (and need to be rerun) after you change the keyboard layout, furthermore, it has no currently reliable way to start it on login or after boot. So, let’s get started, if you don’t have one: sudo apt install dconf-editor Open it up, and see the org.gnome.desktop.input-sources.xkb-options, you might see [] for now, but update it to [&#39;ctrl:swap_lalt_lctl&#39;,&#39;ctrl:swap_ralt_rctl&#39;]. categories: dev You should see the effect immediately. Furthermore, you might have problem with alt+tab (now currently is ctrl+tab), if you want to change to ctrl+tab, just to keep it matched with the physical alt, read on. Change Alt + Tab to Ctrl + Tab It turns out even you have the unity-tweak-tool it’s not at all straightforward to change this, because the tool won’t allow you to bind ctrl+tab actually it won’t allow even alt+tab, I think it’s a bug or the app has no privilege to intercept the alt+tab itself. So, another way is through the compizconfig-settings-manager, if you don’t have it just install. In it, you should find the Ubuntu Unity Plugin section, go to Switcher. Now update it to be as follows, see the Key to start the switcher is now set to &lt;Control&gt;Tab: categories: dev If you want to also change the shortcut for switching windows in the same app (which default is alt + grave accent), you may change it now with the Key to flip through windows in the Switcher set it to control + grave accent instead.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2017/03/12/ww.html","headline":"Swap Alt and Ctrl Ubuntu 16.04","dateModified":"2017-03-12T07:16:41+07:00","datePublished":"2017-03-12T07:16:41+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2017/03/12/ww.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Swap Alt and Ctrl Ubuntu 16.04</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-03-12T07:16:41+07:00" itemprop="datePublished">Mar 12, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Using <code class="highlighter-rouge">dconf-editor</code>, if you have already tried the <code class="highlighter-rouge">xmodmap</code> way, tried this one … it’s superior because the <strong>xmodmap</strong> will fail (and need to be rerun) after you change the keyboard layout, furthermore, it has no currently reliable way to start it on login or after boot.</p>
+
+<p>So, let’s get started, if you don’t have one:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt install dconf-editor
+</code></pre></div></div>
+
+<p>Open it up, and see the <code class="highlighter-rouge">org.gnome.desktop.input-sources.xkb-options</code>, you might see <code class="highlighter-rouge">[]</code> for now, but update it to <code class="highlighter-rouge">['ctrl:swap_lalt_lctl','ctrl:swap_ralt_rctl']</code>.
+categories: dev</p>
+
+<p>You should see the effect immediately.</p>
+
+<p>Furthermore, you might have problem with <code class="highlighter-rouge">alt+tab</code> (now currently is <code class="highlighter-rouge">ctrl+tab</code>), if you want to change to <code class="highlighter-rouge">ctrl+tab</code>, just to keep it matched with the physical <code class="highlighter-rouge">alt</code>, read on.</p>
+
+<h3 id="change-alt--tab-to-ctrl--tab">Change Alt + Tab to Ctrl + Tab</h3>
+
+<p>It turns out even you have the <code class="highlighter-rouge">unity-tweak-tool</code> it’s not at all straightforward to change this, because the tool won’t allow you to bind <code class="highlighter-rouge">ctrl+tab</code> actually it won’t allow even <code class="highlighter-rouge">alt+tab</code>, I think it’s a bug or the app has no privilege to intercept the <code class="highlighter-rouge">alt+tab</code> itself.</p>
+
+<p>So, another way is through the <code class="highlighter-rouge">compizconfig-settings-manager</code>, if you don’t have it just install.</p>
+
+<p>In it, you should find the <strong>Ubuntu Unity Plugin</strong> section, go to <strong>Switcher</strong>.</p>
+
+<p>Now update it to be as follows, see the <strong>Key to start the switcher</strong> is now set to <code class="highlighter-rouge">&lt;Control&gt;Tab</code>:
+categories: dev</p>
+
+<p><img src="/content/images/2017/03/Screenshot-from-2017-03-11-23-52-36.png" alt="" /></p>
+
+<p>If you want to also change the shortcut for switching windows in the same app (which default is <strong>alt + grave accent</strong>), you may change it now with the <strong>Key to flip through windows in the Switcher</strong> set it to <strong>control + grave accent</strong> instead.</p>
+
+
+    <small>
+      
+      <a href="/tags/ubuntu/">ubuntu</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2017/03/12/ww.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

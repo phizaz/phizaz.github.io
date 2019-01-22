@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Python 3 (64 bit) + scipy on Windows | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Python 3 (64 bit) + scipy on Windows" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I tried original one, but didn’t support scipy (x64) I just can’t install scipy as a matter of fact, scipy doesn’t provide pre-compiled solution for Windows in the first place, and installing python in way, I think, I have no hope for it. So next, I go for another option which I can properly setup my complier, namely cygwin. I have read somewhere, it will work if I install python (32 bit) instead. But why should I, this is 2017!? I tried cygwin … it failed to build scipy I first installed these packages from the cygwin’s installer. python3 python3-devel (you need this if you want to install packgaes like numpy) python3-pip After installation, Python 3 will take the name of python3 to make it work as a default python I did some ln -s and some export PATH to make it present in the default PATH. I tried to install numpy which I did install successfully. (arduously long install due to the compilation time) Then, install scipy now it failed with the following error: numpy.distutils.system_info.NotFoundError: no lapack/blas resources found I didn’t seem to find any solutions or workaround online … so I paused there ! So, I give conda a try … It seems to work You don’t have to install the full-big anaconda to use conda, you can just install the smaller miniconda it will do the job. I think conda has its own way to install packages, I think it still leverage the use of pip in some point but also with some modifications. So in short, conda is a front-end to multi-platform mulit-language package installation. When I install numpy scipy it seemed to me that conda also install mkl (I don’t know much about this, it’s like a math optimization library for Intel CPUs or something). But at the end, it did install scipy and numpy successfully ! yay … Python’s multiprocessing is slow under Windows After happily using it for a while … I spot that using multiprocessing.Pool is quite slow, it’s slower than single core processing! I’m quite sure that I’m not new to this. I know how to make it work properly, at least under unix-like environment. So, I dug deeper into this problem … which turned out to be problem with the Windows itself. It’s not to blame conda for it, it’s the problem between Windows and Python As you know, multiproccesing.Pool using multiple processes to leverage a speed boost, which threading cannot in Python (because of the existance of Global Interpreter Lock). This problem doesn’t seem to have much problem in the user-end point of view, the usage of multiprocessing is itself easy enough, as long as you keep your program functional. However, it is said that spawnwing a process under Windows environment is much much slower than in Linux. As been asked in here: http://stackoverflow.com/questions/8775475/python-using-multiprocess-is-slower-than-not-using-it. To me, the argument is quite valid. I have long heard that Windows favors multi-threading and Linux favors multi-processing, so it is sure that on which OS which one will be optimized. Unfortunately, multi-threading for speed boost under computational intensive is not supported in Python, and multi-processing is not very well supported by Windows. I have left with almost zero option, it seems quite a deal breaker. chunksize might help As a matter of fact, Windows’ process is quite slow to start, this greatly reduces the viability of python’s multiprocessing.Pool. If spawning a new process is slow, then should we spawn less processes and distribute a larger bit of work for each process instead ? This is exactly what chunksize parameter in pool.imap does. from multiprocessing import Pool with Pool() as pool: for result in pool.imap(fn, jobs, chunksize=16): .... So, in short, you should set chunksize somewhat larger than 1 and see if the problem mitigates. I will try to use it for the moment … hope I can live with it :D" />
+<meta property="og:description" content="I tried original one, but didn’t support scipy (x64) I just can’t install scipy as a matter of fact, scipy doesn’t provide pre-compiled solution for Windows in the first place, and installing python in way, I think, I have no hope for it. So next, I go for another option which I can properly setup my complier, namely cygwin. I have read somewhere, it will work if I install python (32 bit) instead. But why should I, this is 2017!? I tried cygwin … it failed to build scipy I first installed these packages from the cygwin’s installer. python3 python3-devel (you need this if you want to install packgaes like numpy) python3-pip After installation, Python 3 will take the name of python3 to make it work as a default python I did some ln -s and some export PATH to make it present in the default PATH. I tried to install numpy which I did install successfully. (arduously long install due to the compilation time) Then, install scipy now it failed with the following error: numpy.distutils.system_info.NotFoundError: no lapack/blas resources found I didn’t seem to find any solutions or workaround online … so I paused there ! So, I give conda a try … It seems to work You don’t have to install the full-big anaconda to use conda, you can just install the smaller miniconda it will do the job. I think conda has its own way to install packages, I think it still leverage the use of pip in some point but also with some modifications. So in short, conda is a front-end to multi-platform mulit-language package installation. When I install numpy scipy it seemed to me that conda also install mkl (I don’t know much about this, it’s like a math optimization library for Intel CPUs or something). But at the end, it did install scipy and numpy successfully ! yay … Python’s multiprocessing is slow under Windows After happily using it for a while … I spot that using multiprocessing.Pool is quite slow, it’s slower than single core processing! I’m quite sure that I’m not new to this. I know how to make it work properly, at least under unix-like environment. So, I dug deeper into this problem … which turned out to be problem with the Windows itself. It’s not to blame conda for it, it’s the problem between Windows and Python As you know, multiproccesing.Pool using multiple processes to leverage a speed boost, which threading cannot in Python (because of the existance of Global Interpreter Lock). This problem doesn’t seem to have much problem in the user-end point of view, the usage of multiprocessing is itself easy enough, as long as you keep your program functional. However, it is said that spawnwing a process under Windows environment is much much slower than in Linux. As been asked in here: http://stackoverflow.com/questions/8775475/python-using-multiprocess-is-slower-than-not-using-it. To me, the argument is quite valid. I have long heard that Windows favors multi-threading and Linux favors multi-processing, so it is sure that on which OS which one will be optimized. Unfortunately, multi-threading for speed boost under computational intensive is not supported in Python, and multi-processing is not very well supported by Windows. I have left with almost zero option, it seems quite a deal breaker. chunksize might help As a matter of fact, Windows’ process is quite slow to start, this greatly reduces the viability of python’s multiprocessing.Pool. If spawning a new process is slow, then should we spawn less processes and distribute a larger bit of work for each process instead ? This is exactly what chunksize parameter in pool.imap does. from multiprocessing import Pool with Pool() as pool: for result in pool.imap(fn, jobs, chunksize=16): .... So, in short, you should set chunksize somewhat larger than 1 and see if the problem mitigates. I will try to use it for the moment … hope I can live with it :D" />
+<link rel="canonical" href="/dev/2017/05/05/python-3-on-windows-2.html" />
+<meta property="og:url" content="/dev/2017/05/05/python-3-on-windows-2.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-05-05T04:28:37+07:00" />
+<script type="application/ld+json">
+{"description":"I tried original one, but didn’t support scipy (x64) I just can’t install scipy as a matter of fact, scipy doesn’t provide pre-compiled solution for Windows in the first place, and installing python in way, I think, I have no hope for it. So next, I go for another option which I can properly setup my complier, namely cygwin. I have read somewhere, it will work if I install python (32 bit) instead. But why should I, this is 2017!? I tried cygwin … it failed to build scipy I first installed these packages from the cygwin’s installer. python3 python3-devel (you need this if you want to install packgaes like numpy) python3-pip After installation, Python 3 will take the name of python3 to make it work as a default python I did some ln -s and some export PATH to make it present in the default PATH. I tried to install numpy which I did install successfully. (arduously long install due to the compilation time) Then, install scipy now it failed with the following error: numpy.distutils.system_info.NotFoundError: no lapack/blas resources found I didn’t seem to find any solutions or workaround online … so I paused there ! So, I give conda a try … It seems to work You don’t have to install the full-big anaconda to use conda, you can just install the smaller miniconda it will do the job. I think conda has its own way to install packages, I think it still leverage the use of pip in some point but also with some modifications. So in short, conda is a front-end to multi-platform mulit-language package installation. When I install numpy scipy it seemed to me that conda also install mkl (I don’t know much about this, it’s like a math optimization library for Intel CPUs or something). But at the end, it did install scipy and numpy successfully ! yay … Python’s multiprocessing is slow under Windows After happily using it for a while … I spot that using multiprocessing.Pool is quite slow, it’s slower than single core processing! I’m quite sure that I’m not new to this. I know how to make it work properly, at least under unix-like environment. So, I dug deeper into this problem … which turned out to be problem with the Windows itself. It’s not to blame conda for it, it’s the problem between Windows and Python As you know, multiproccesing.Pool using multiple processes to leverage a speed boost, which threading cannot in Python (because of the existance of Global Interpreter Lock). This problem doesn’t seem to have much problem in the user-end point of view, the usage of multiprocessing is itself easy enough, as long as you keep your program functional. However, it is said that spawnwing a process under Windows environment is much much slower than in Linux. As been asked in here: http://stackoverflow.com/questions/8775475/python-using-multiprocess-is-slower-than-not-using-it. To me, the argument is quite valid. I have long heard that Windows favors multi-threading and Linux favors multi-processing, so it is sure that on which OS which one will be optimized. Unfortunately, multi-threading for speed boost under computational intensive is not supported in Python, and multi-processing is not very well supported by Windows. I have left with almost zero option, it seems quite a deal breaker. chunksize might help As a matter of fact, Windows’ process is quite slow to start, this greatly reduces the viability of python’s multiprocessing.Pool. If spawning a new process is slow, then should we spawn less processes and distribute a larger bit of work for each process instead ? This is exactly what chunksize parameter in pool.imap does. from multiprocessing import Pool with Pool() as pool: for result in pool.imap(fn, jobs, chunksize=16): .... So, in short, you should set chunksize somewhat larger than 1 and see if the problem mitigates. I will try to use it for the moment … hope I can live with it :D","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2017/05/05/python-3-on-windows-2.html","headline":"Python 3 (64 bit) + scipy on Windows","dateModified":"2017-05-05T04:28:37+07:00","datePublished":"2017-05-05T04:28:37+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2017/05/05/python-3-on-windows-2.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Python 3 (64 bit) + scipy on Windows</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-05-05T04:28:37+07:00" itemprop="datePublished">May 5, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="i-tried-original-one-but-didnt-support-scipy">I tried original one, but didn’t support <code class="highlighter-rouge">scipy</code></h2>
+
+<p>(x64) I just can’t install <code class="highlighter-rouge">scipy</code> as a matter of fact, <code class="highlighter-rouge">scipy</code> doesn’t provide pre-compiled solution for Windows in the first place, and installing python in way, I think, I have no hope for it.</p>
+
+<p>So next, I go for another option which I can properly setup my complier, namely <strong>cygwin</strong>.</p>
+
+<p>I have read somewhere, it will work if I install python (32 bit) instead. But why should I, this is 2017!?</p>
+
+<h2 id="i-tried-cygwin--it-failed-to-build-scipy">I tried cygwin … it failed to build <code class="highlighter-rouge">scipy</code></h2>
+
+<p>I first installed these packages from the cygwin’s installer.</p>
+
+<ol>
+  <li><code class="highlighter-rouge">python3</code></li>
+  <li><code class="highlighter-rouge">python3-devel</code> (you need this if you want to install packgaes like <code class="highlighter-rouge">numpy</code>)</li>
+  <li><code class="highlighter-rouge">python3-pip</code></li>
+</ol>
+
+<p>After installation, Python 3 will take the name of <code class="highlighter-rouge">python3</code> to make it work as a default <code class="highlighter-rouge">python</code> I did some <code class="highlighter-rouge">ln -s</code> and some <code class="highlighter-rouge">export PATH</code> to make it present in the default <code class="highlighter-rouge">PATH</code>.</p>
+
+<p>I tried to install <code class="highlighter-rouge">numpy</code> which I did install successfully. (arduously long install due to the compilation time)</p>
+
+<p>Then, install <code class="highlighter-rouge">scipy</code> now it failed with the following error:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numpy.distutils.system_info.NotFoundError: no lapack/blas resources found
+</code></pre></div></div>
+
+<p>I didn’t seem to find any solutions or workaround online … so I paused there !</p>
+
+<h2 id="so-i-give-conda-a-try--it-seems-to-work">So, I give <code class="highlighter-rouge">conda</code> a try … It seems to work</h2>
+
+<p>You don’t have to install the full-big <strong>anaconda</strong> to use <code class="highlighter-rouge">conda</code>, you can just install the smaller <strong>miniconda</strong> it will do the job.</p>
+
+<p>I think <code class="highlighter-rouge">conda</code> has its own way to install packages, I think it still leverage the use of <code class="highlighter-rouge">pip</code> in some point but also with some modifications. <em>So in short</em>, <code class="highlighter-rouge">conda</code> is a front-end to multi-platform mulit-language package installation.</p>
+
+<p>When I install <code class="highlighter-rouge">numpy</code> <code class="highlighter-rouge">scipy</code> it seemed to me that <code class="highlighter-rouge">conda</code> also install <code class="highlighter-rouge">mkl</code> (I don’t know much about this, it’s like a math optimization library for Intel CPUs or something).</p>
+
+<p>But at the end, it did install <code class="highlighter-rouge">scipy</code> and <code class="highlighter-rouge">numpy</code> successfully ! yay …</p>
+
+<h2 id="pythons-multiprocessing-is-slow-under-windows">Python’s <code class="highlighter-rouge">multiprocessing</code> is slow under Windows</h2>
+
+<p>After happily using it for a while … I spot that using <code class="highlighter-rouge">multiprocessing.Pool</code> is quite slow, it’s slower than single core processing! I’m quite sure that I’m not new to this. I know how to make it work properly, at least under unix-like environment.</p>
+
+<p>So, I dug deeper into this problem … which turned out to be problem with the Windows itself.</p>
+
+<h3 id="its-not-to-blame-conda-for-it-its-the-problem-between-windows-and-python">It’s not to blame <code class="highlighter-rouge">conda</code> for it, it’s the problem between Windows and Python</h3>
+
+<p>As you know, <code class="highlighter-rouge">multiproccesing.Pool</code> using multiple processes to leverage a speed boost, which threading cannot in Python (because of the existance of Global Interpreter Lock).</p>
+
+<p>This problem doesn’t seem to have much problem in the user-end point of view, the usage of <code class="highlighter-rouge">multiprocessing</code> is itself easy enough, as long as you keep your program functional.</p>
+
+<p>However, it is said that spawnwing a process under Windows environment is much much slower than in Linux. As been asked in here: http://stackoverflow.com/questions/8775475/python-using-multiprocess-is-slower-than-not-using-it. To me, the argument is quite valid. I have long heard that Windows favors multi-threading and Linux favors multi-processing, so it is sure that on which OS which one will be optimized.</p>
+
+<p>Unfortunately, multi-threading for speed boost under computational intensive is not supported in Python, and multi-processing is not very well supported by Windows. I have left with almost zero option, it seems quite a deal breaker.</p>
+
+<h3 id="chunksize-might-help"><code class="highlighter-rouge">chunksize</code> might help</h3>
+
+<p>As a matter of fact, Windows’ process is quite slow to start, this greatly reduces the viability of python’s <code class="highlighter-rouge">multiprocessing.Pool</code>. If spawning a new process is slow, then should we spawn less processes and distribute a larger bit of work for each process instead ? This is exactly what <code class="highlighter-rouge">chunksize</code> parameter in <code class="highlighter-rouge">pool.imap</code> does.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from multiprocessing import Pool
+
+with Pool() as pool:
+    for result in pool.imap(fn, jobs, chunksize=16):
+       ....
+</code></pre></div></div>
+
+<p>So, in short, you should set <code class="highlighter-rouge">chunksize</code> somewhat larger than 1 and see if the problem mitigates.</p>
+
+<p>I will try to use it for the moment … hope I can live with it :D</p>
+
+
+    <small>
+      
+      <a href="/tags/python/">python</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2017/05/05/python-3-on-windows-2.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

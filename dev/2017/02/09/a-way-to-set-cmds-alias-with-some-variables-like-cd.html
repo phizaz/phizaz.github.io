@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>A way to set cmd’s alias with variables like %cd% and %home% | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="A way to set cmd’s alias with variables like %cd% and %home%" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="To set alias for a very long command in cmd, just type alias name=command And you’re done. However, one thing that would be nice to have is that if we have a command that is not so static meaning we want the ability to use, I don’t know the proper name, variables like %cd% to substitute for the current directory location of the caller. It’s important to insert %cd% in a plain string into the alias, and not to be resolved to get the current directory location for that time, which renders the command static again. Say, if I want to add this command, echo %cd% to the alias. I would rather get echo \my\current\location\at\the\time\i\invoke\alias\instead It’s not so good right ? Now, I try to find a way to escape the % (percent-sign) from the command line, which some say to be ^. With ^ you can echo ^%cd^% and you get echo %cd% in your standard output, which should be about right …. Try using this trick with alias .. I found that it doesn’t work. To me, it’s like alias has gone another step ahead of me. No matter how I try to escape the % sign, alias always know how to de-escape it and evaluate the expression I always wanted to hide. Solution: Write a proxy program (runner) I reasoned with myself if I still want to use alias to do the job. I have to use the strings it doesn’t recognize … may be ${cd} insead of %cd% and ${home} instead of %home%. Start with a string replacing progrem … I’ll try to use only batch script. Since, I can access to the arguments via %* in batch script and replacing with the syntax !str:pattern=replacement!. I can now replace all the arguments with the correct one setlocal ENABLEDELAYEDEXPANSION set str=%* set str=!str:${cd}=%CD%! set str=!str:${home}=%HOME%! Note: With no particular knowledge about ENABLEDELAYEDEXPANSION, I was suggested to put it there. Now, I can suspect the variable str to be the replaced arguments ready to be supplied to the program. The only missing part is only the execution part, which is as easy as %str% Here is the full code: @echo off REM run command by parsing ${cd} to %cd% and ${home} to %home% setlocal ENABLEDELAYEDEXPANSION set str=%* set str=!str:${cd}=%CD%! set str=!str:${home}=%HOME%! REM run the parsed command %str% Let’s name it run.cmd and save it into some directory within the PATH environment variable. If I were to execute a command I would rather use the run.cmd as a proxy instead: run.cmd echo ${cd} It equals to : echo %cd% But, the whole thing is for this moment when we can do this to alias: alias whereami=run echo ${cd} And you can practically use: whereami And gets your current directory location everytime not the one at the time when you added it." />
+<meta property="og:description" content="To set alias for a very long command in cmd, just type alias name=command And you’re done. However, one thing that would be nice to have is that if we have a command that is not so static meaning we want the ability to use, I don’t know the proper name, variables like %cd% to substitute for the current directory location of the caller. It’s important to insert %cd% in a plain string into the alias, and not to be resolved to get the current directory location for that time, which renders the command static again. Say, if I want to add this command, echo %cd% to the alias. I would rather get echo \my\current\location\at\the\time\i\invoke\alias\instead It’s not so good right ? Now, I try to find a way to escape the % (percent-sign) from the command line, which some say to be ^. With ^ you can echo ^%cd^% and you get echo %cd% in your standard output, which should be about right …. Try using this trick with alias .. I found that it doesn’t work. To me, it’s like alias has gone another step ahead of me. No matter how I try to escape the % sign, alias always know how to de-escape it and evaluate the expression I always wanted to hide. Solution: Write a proxy program (runner) I reasoned with myself if I still want to use alias to do the job. I have to use the strings it doesn’t recognize … may be ${cd} insead of %cd% and ${home} instead of %home%. Start with a string replacing progrem … I’ll try to use only batch script. Since, I can access to the arguments via %* in batch script and replacing with the syntax !str:pattern=replacement!. I can now replace all the arguments with the correct one setlocal ENABLEDELAYEDEXPANSION set str=%* set str=!str:${cd}=%CD%! set str=!str:${home}=%HOME%! Note: With no particular knowledge about ENABLEDELAYEDEXPANSION, I was suggested to put it there. Now, I can suspect the variable str to be the replaced arguments ready to be supplied to the program. The only missing part is only the execution part, which is as easy as %str% Here is the full code: @echo off REM run command by parsing ${cd} to %cd% and ${home} to %home% setlocal ENABLEDELAYEDEXPANSION set str=%* set str=!str:${cd}=%CD%! set str=!str:${home}=%HOME%! REM run the parsed command %str% Let’s name it run.cmd and save it into some directory within the PATH environment variable. If I were to execute a command I would rather use the run.cmd as a proxy instead: run.cmd echo ${cd} It equals to : echo %cd% But, the whole thing is for this moment when we can do this to alias: alias whereami=run echo ${cd} And you can practically use: whereami And gets your current directory location everytime not the one at the time when you added it." />
+<link rel="canonical" href="/dev/2017/02/09/a-way-to-set-cmds-alias-with-some-variables-like-cd.html" />
+<meta property="og:url" content="/dev/2017/02/09/a-way-to-set-cmds-alias-with-some-variables-like-cd.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-02-09T16:50:16+07:00" />
+<script type="application/ld+json">
+{"description":"To set alias for a very long command in cmd, just type alias name=command And you’re done. However, one thing that would be nice to have is that if we have a command that is not so static meaning we want the ability to use, I don’t know the proper name, variables like %cd% to substitute for the current directory location of the caller. It’s important to insert %cd% in a plain string into the alias, and not to be resolved to get the current directory location for that time, which renders the command static again. Say, if I want to add this command, echo %cd% to the alias. I would rather get echo \\my\\current\\location\\at\\the\\time\\i\\invoke\\alias\\instead It’s not so good right ? Now, I try to find a way to escape the % (percent-sign) from the command line, which some say to be ^. With ^ you can echo ^%cd^% and you get echo %cd% in your standard output, which should be about right …. Try using this trick with alias .. I found that it doesn’t work. To me, it’s like alias has gone another step ahead of me. No matter how I try to escape the % sign, alias always know how to de-escape it and evaluate the expression I always wanted to hide. Solution: Write a proxy program (runner) I reasoned with myself if I still want to use alias to do the job. I have to use the strings it doesn’t recognize … may be ${cd} insead of %cd% and ${home} instead of %home%. Start with a string replacing progrem … I’ll try to use only batch script. Since, I can access to the arguments via %* in batch script and replacing with the syntax !str:pattern=replacement!. I can now replace all the arguments with the correct one setlocal ENABLEDELAYEDEXPANSION set str=%* set str=!str:${cd}=%CD%! set str=!str:${home}=%HOME%! Note: With no particular knowledge about ENABLEDELAYEDEXPANSION, I was suggested to put it there. Now, I can suspect the variable str to be the replaced arguments ready to be supplied to the program. The only missing part is only the execution part, which is as easy as %str% Here is the full code: @echo off REM run command by parsing ${cd} to %cd% and ${home} to %home% setlocal ENABLEDELAYEDEXPANSION set str=%* set str=!str:${cd}=%CD%! set str=!str:${home}=%HOME%! REM run the parsed command %str% Let’s name it run.cmd and save it into some directory within the PATH environment variable. If I were to execute a command I would rather use the run.cmd as a proxy instead: run.cmd echo ${cd} It equals to : echo %cd% But, the whole thing is for this moment when we can do this to alias: alias whereami=run echo ${cd} And you can practically use: whereami And gets your current directory location everytime not the one at the time when you added it.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2017/02/09/a-way-to-set-cmds-alias-with-some-variables-like-cd.html","headline":"A way to set cmd’s alias with variables like %cd% and %home%","dateModified":"2017-02-09T16:50:16+07:00","datePublished":"2017-02-09T16:50:16+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2017/02/09/a-way-to-set-cmds-alias-with-some-variables-like-cd.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">A way to set cmd&#39;s alias with variables like %cd% and %home%</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-02-09T16:50:16+07:00" itemprop="datePublished">Feb 9, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>To set alias for a very long command in cmd, just type</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alias name=command
+</code></pre></div></div>
+
+<p>And you’re done.</p>
+
+<p>However, one thing that would be nice to have is that if we have a command that is not so <strong>static</strong> meaning we want the ability to use, I don’t know the proper name, <strong>variables</strong> like %cd% to substitute for the current directory location of the caller.</p>
+
+<p>It’s important to insert %cd% in a plain string into the alias, and not to be resolved to get the current directory location for that time, which renders the command static again.</p>
+
+<p>Say, if I want to add this command, <code class="highlighter-rouge">echo %cd%</code> to the alias. I would rather get <code class="highlighter-rouge">echo \my\current\location\at\the\time\i\invoke\alias\instead</code> It’s not so good right ?</p>
+
+<p>Now, I try to find a way to escape the % (percent-sign) from the command line, which some say to be <code class="highlighter-rouge">^</code>. With <code class="highlighter-rouge">^</code> you can <code class="highlighter-rouge">echo ^%cd^%</code> and you get <code class="highlighter-rouge">echo %cd%</code> in your standard output, which should be about right ….</p>
+
+<p>Try using this trick with alias .. I found that it doesn’t work. To me, it’s like alias has gone another step ahead of me. No matter how I try to escape the % sign, alias always know how to de-escape it and evaluate the expression I always wanted to hide.</p>
+
+<h4 id="solution-write-a-proxy-program-runner">Solution: Write a proxy program (runner)</h4>
+
+<p>I reasoned with myself if I still want to use <code class="highlighter-rouge">alias</code> to do the job. I have to use the strings it doesn’t recognize … may be <code class="highlighter-rouge">${cd}</code> insead of <code class="highlighter-rouge">%cd%</code> and <code class="highlighter-rouge">${home}</code> instead of <code class="highlighter-rouge">%home%</code>.</p>
+
+<p>Start with a string replacing progrem … I’ll try to use only <strong>batch script</strong>. Since, I can access to the arguments via <code class="highlighter-rouge">%*</code> in batch script and replacing with the syntax <code class="highlighter-rouge">!str:pattern=replacement!</code>. I can now replace all the arguments with the correct one</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>setlocal ENABLEDELAYEDEXPANSION
+set str=%*
+set str=!str:${cd}=%CD%!
+set str=!str:${home}=%HOME%!
+</code></pre></div></div>
+
+<p>Note: With no particular knowledge about <code class="highlighter-rouge">ENABLEDELAYEDEXPANSION</code>, I was suggested to put it there.</p>
+
+<p>Now, I can suspect the variable <code class="highlighter-rouge">str</code> to be the replaced arguments ready to be supplied to the program. The only missing part is only the execution part, which is as easy as <code class="highlighter-rouge">%str%</code></p>
+
+<p>Here is the full code:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@echo off
+
+REM run command by parsing ${cd} to %cd% and ${home} to %home%
+setlocal ENABLEDELAYEDEXPANSION
+set str=%*
+set str=!str:${cd}=%CD%!
+set str=!str:${home}=%HOME%!
+
+REM run the parsed command
+%str%
+</code></pre></div></div>
+
+<p>Let’s name it <code class="highlighter-rouge">run.cmd</code> and save it into some directory within the <code class="highlighter-rouge">PATH</code> environment variable.</p>
+
+<p>If I were to execute a command I would rather use the <code class="highlighter-rouge">run.cmd</code> as a proxy instead:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>run.cmd echo ${cd}
+</code></pre></div></div>
+
+<p>It equals to :</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo %cd%
+</code></pre></div></div>
+
+<p>But, the whole thing is for this moment when we can do this to <code class="highlighter-rouge">alias</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alias whereami=run echo ${cd}
+</code></pre></div></div>
+
+<p>And you can practically use:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>whereami
+</code></pre></div></div>
+
+<p>And gets your current directory location everytime not the one at the time when you added it.</p>
+
+
+    <small>
+      
+      <a href="/tags/windows/">windows</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2017/02/09/a-way-to-set-cmds-alias-with-some-variables-like-cd.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

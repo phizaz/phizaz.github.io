@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>JS: Web Server Testing with “chai-http” | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="JS: Web Server Testing with “chai-http”" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="We’re going to test a web api using GET, POST using chai-http by actual http request. chai is not a test runner, it’s just a javascript testing framework (aka. asserter). If you are looking for a test runner go see mocha Note: You should install mocha globally (npm install -g mocha) and install chai locally. To get started, install chai and chai-http: npm install --save-dev chai chai-http You should have your destination web server in place because I will show only the test part, here it is: const chai = require(&#39;chai&#39;) const chaiHttp = require(&#39;chai-http&#39;) chai.use(chaiHttp) describe(&#39;web server test&#39;, () =&gt; { it(&#39;test post request with file upload&#39;, (done) =&gt; { chai.request(&#39;http://....:...&#39;) .post(&#39;/api/post/test&#39;) .attach(&#39;image_field&#39;, img, &#39;upload.png&#39;) .end((err, res) =&gt; { if (err) { console.error(err) } else { const body = res.text chai.expect(body).to.be.equal(....) done() } }) }) }) To not underestimate my reader’s ability, I feel like there is no need to explain it in details. There is so much more to discover, yet beginning from reading body response from the request, I think, is a good start !" />
+<meta property="og:description" content="We’re going to test a web api using GET, POST using chai-http by actual http request. chai is not a test runner, it’s just a javascript testing framework (aka. asserter). If you are looking for a test runner go see mocha Note: You should install mocha globally (npm install -g mocha) and install chai locally. To get started, install chai and chai-http: npm install --save-dev chai chai-http You should have your destination web server in place because I will show only the test part, here it is: const chai = require(&#39;chai&#39;) const chaiHttp = require(&#39;chai-http&#39;) chai.use(chaiHttp) describe(&#39;web server test&#39;, () =&gt; { it(&#39;test post request with file upload&#39;, (done) =&gt; { chai.request(&#39;http://....:...&#39;) .post(&#39;/api/post/test&#39;) .attach(&#39;image_field&#39;, img, &#39;upload.png&#39;) .end((err, res) =&gt; { if (err) { console.error(err) } else { const body = res.text chai.expect(body).to.be.equal(....) done() } }) }) }) To not underestimate my reader’s ability, I feel like there is no need to explain it in details. There is so much more to discover, yet beginning from reading body response from the request, I think, is a good start !" />
+<link rel="canonical" href="/dev/2017/01/01/js-web-api-testing-with-chai-http.html" />
+<meta property="og:url" content="/dev/2017/01/01/js-web-api-testing-with-chai-http.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-01-01T06:13:11+07:00" />
+<script type="application/ld+json">
+{"description":"We’re going to test a web api using GET, POST using chai-http by actual http request. chai is not a test runner, it’s just a javascript testing framework (aka. asserter). If you are looking for a test runner go see mocha Note: You should install mocha globally (npm install -g mocha) and install chai locally. To get started, install chai and chai-http: npm install --save-dev chai chai-http You should have your destination web server in place because I will show only the test part, here it is: const chai = require(&#39;chai&#39;) const chaiHttp = require(&#39;chai-http&#39;) chai.use(chaiHttp) describe(&#39;web server test&#39;, () =&gt; { it(&#39;test post request with file upload&#39;, (done) =&gt; { chai.request(&#39;http://....:...&#39;) .post(&#39;/api/post/test&#39;) .attach(&#39;image_field&#39;, img, &#39;upload.png&#39;) .end((err, res) =&gt; { if (err) { console.error(err) } else { const body = res.text chai.expect(body).to.be.equal(....) done() } }) }) }) To not underestimate my reader’s ability, I feel like there is no need to explain it in details. There is so much more to discover, yet beginning from reading body response from the request, I think, is a good start !","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2017/01/01/js-web-api-testing-with-chai-http.html","headline":"JS: Web Server Testing with “chai-http”","dateModified":"2017-01-01T06:13:11+07:00","datePublished":"2017-01-01T06:13:11+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2017/01/01/js-web-api-testing-with-chai-http.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">JS: Web Server Testing with &quot;chai-http&quot;</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-01-01T06:13:11+07:00" itemprop="datePublished">Jan 1, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>We’re going to test a web api using <code class="highlighter-rouge">GET</code>, <code class="highlighter-rouge">POST</code> using <code class="highlighter-rouge">chai-http</code> by actual http request.</p>
+
+<p><code class="highlighter-rouge">chai</code> is not a test runner, it’s just a javascript testing framework (aka. asserter). If you are looking for a test runner go see <code class="highlighter-rouge">mocha</code></p>
+
+<p>Note: You should install <code class="highlighter-rouge">mocha</code> globally (npm install -g mocha) and install <code class="highlighter-rouge">chai</code> locally.</p>
+
+<p>To get started, install <code class="highlighter-rouge">chai</code> and <code class="highlighter-rouge">chai-http</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm install --save-dev chai chai-http
+</code></pre></div></div>
+
+<p>You should have your destination web server in place because I will show only the test part, here it is:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const chai = require('chai')
+const chaiHttp = require('chai-http')
+chai.use(chaiHttp)
+
+describe('web server test', () =&gt; {
+    it('test post request with file upload', (done) =&gt; {
+        chai.request('http://....:...')
+            .post('/api/post/test')
+            .attach('image_field', img, 'upload.png')
+            .end((err, res) =&gt; {
+                if (err) {
+                    console.error(err)
+                } else {
+                    const body = res.text
+                    chai.expect(body).to.be.equal(....)
+                    done()
+                }
+            })
+    })
+})
+</code></pre></div></div>
+
+<p>To not underestimate my reader’s ability, I feel like there is no need to explain it in details. There is so much more to discover, yet beginning from reading <code class="highlighter-rouge">body</code> response from the request, I think, is a good start !</p>
+
+
+    <small>
+      
+      <a href="/tags/js/">js</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2017/01/01/js-web-api-testing-with-chai-http.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

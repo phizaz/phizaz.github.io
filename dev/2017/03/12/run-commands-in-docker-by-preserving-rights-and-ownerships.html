@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Run Commands in Docker by Preserving Rights and Ownerships | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Run Commands in Docker by Preserving Rights and Ownerships" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="docker run --user ${UID} ... To run commands in a container by using the same user as whoami. It’s not perfect though, it has the very limitation that the container won’t know the actual user name of the user ${UID} which, in many cases, is not acceptable. If you want to make it more realistic, make the container really aware of this user and its username, I’m afraid that you might have to mount the /etc/passwd to the container which is in most ways not favorable. docker run --user ${UID} -v /etc/passwd:/etc/passwd:ro ... But, it managed to work quite well. Another way that might serve you well is to run the container with root just like always, but run specific commands with hand-curated specific users like: In Dockerfile: # run with user id RUN sudo -u &quot;#&lt;userid&gt;&quot; &lt;command&gt; # run with username RUN sudo -u &quot;&lt;username&gt;&quot; &lt;command&gt; Note: you have to apt-get install sudo to do this. You still need to mount the /etc/passwd." />
+<meta property="og:description" content="docker run --user ${UID} ... To run commands in a container by using the same user as whoami. It’s not perfect though, it has the very limitation that the container won’t know the actual user name of the user ${UID} which, in many cases, is not acceptable. If you want to make it more realistic, make the container really aware of this user and its username, I’m afraid that you might have to mount the /etc/passwd to the container which is in most ways not favorable. docker run --user ${UID} -v /etc/passwd:/etc/passwd:ro ... But, it managed to work quite well. Another way that might serve you well is to run the container with root just like always, but run specific commands with hand-curated specific users like: In Dockerfile: # run with user id RUN sudo -u &quot;#&lt;userid&gt;&quot; &lt;command&gt; # run with username RUN sudo -u &quot;&lt;username&gt;&quot; &lt;command&gt; Note: you have to apt-get install sudo to do this. You still need to mount the /etc/passwd." />
+<link rel="canonical" href="/dev/2017/03/12/run-commands-in-docker-by-preserving-rights-and-ownerships.html" />
+<meta property="og:url" content="/dev/2017/03/12/run-commands-in-docker-by-preserving-rights-and-ownerships.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-03-12T07:30:02+07:00" />
+<script type="application/ld+json">
+{"description":"docker run --user ${UID} ... To run commands in a container by using the same user as whoami. It’s not perfect though, it has the very limitation that the container won’t know the actual user name of the user ${UID} which, in many cases, is not acceptable. If you want to make it more realistic, make the container really aware of this user and its username, I’m afraid that you might have to mount the /etc/passwd to the container which is in most ways not favorable. docker run --user ${UID} -v /etc/passwd:/etc/passwd:ro ... But, it managed to work quite well. Another way that might serve you well is to run the container with root just like always, but run specific commands with hand-curated specific users like: In Dockerfile: # run with user id RUN sudo -u &quot;#&lt;userid&gt;&quot; &lt;command&gt; # run with username RUN sudo -u &quot;&lt;username&gt;&quot; &lt;command&gt; Note: you have to apt-get install sudo to do this. You still need to mount the /etc/passwd.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2017/03/12/run-commands-in-docker-by-preserving-rights-and-ownerships.html","headline":"Run Commands in Docker by Preserving Rights and Ownerships","dateModified":"2017-03-12T07:30:02+07:00","datePublished":"2017-03-12T07:30:02+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2017/03/12/run-commands-in-docker-by-preserving-rights-and-ownerships.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Run Commands in Docker by Preserving Rights and Ownerships</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-03-12T07:30:02+07:00" itemprop="datePublished">Mar 12, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --user ${UID} ...
+</code></pre></div></div>
+
+<p>To run commands in a container by using the same user as <code class="highlighter-rouge">whoami</code>.</p>
+
+<p>It’s not perfect though, it has the very limitation that the container won’t know the actual user name of the user <code class="highlighter-rouge">${UID}</code> which, in many cases, is not acceptable.</p>
+
+<p>If you want to make it more realistic, make the container really aware of this user and its username, I’m afraid that you might have to mount the <code class="highlighter-rouge">/etc/passwd</code> to the container which is in most ways not favorable.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --user ${UID} -v /etc/passwd:/etc/passwd:ro ...
+</code></pre></div></div>
+
+<p>But, it managed to work quite well.</p>
+
+<p>Another way that might serve you well is to run the container with <code class="highlighter-rouge">root</code> just like always, but run specific commands with hand-curated specific users like:</p>
+
+<p>In <code class="highlighter-rouge">Dockerfile</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># run with user id
+RUN sudo -u "#&lt;userid&gt;" &lt;command&gt;
+# run with username
+RUN sudo -u "&lt;username&gt;" &lt;command&gt;
+</code></pre></div></div>
+
+<p>Note: you have to <code class="highlighter-rouge">apt-get install sudo</code> to do this. You still need to mount the <code class="highlighter-rouge">/etc/passwd</code>.</p>
+
+
+    <small>
+      
+      <a href="/tags/docker/">docker</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2017/03/12/run-commands-in-docker-by-preserving-rights-and-ownerships.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

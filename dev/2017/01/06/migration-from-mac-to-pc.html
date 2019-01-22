@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Migration from Mac to PC | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Migration from Mac to PC" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="After a month of migration … I’ve made quite a difference so I’ll write a new article for it. Deprecated ! Many of this is based on the post https://github.com/felixrieseberg/windows-development-environment Shells You know before hand that you would miss the shell when you become to use Windows. This is the first thought I had when thinking of migrating. When I really made the switch, it turned out not to be that bad … since someone are just so awesome to create cmder to replace the inferior cmd.exe, and also Windows team is currently working hard, I guess, to bring full support for Ubuntu bash to Windows, of that, I would love to see soon. Now, I use cmder as a shell with choco (Chocolatey) as a package manager (like apt-get or brew), also I try Ubuntu bash on Windows and still looking for a way to combine these things together with the right balance. Git Since I chose to choco, this is a piece of cake ! (cmder with administrator privilege) cinst git.install cinst poshgit # Restart PowerShell / CMDer before moving on - or run $env:Path = [System.Environment]::GetEnvironmentVariable(&quot;Path&quot;,&quot;Machine&quot;) + &quot;;&quot; + [System.Environment]::GetEnvironmentVariable(&quot;Path&quot;,&quot;User&quot;) cinst Git-Credential-Manager-for-Windows Note: Copied from the post mentioned above. ssh-copy-id It is not a big deal though, but I really love this tiny program. There is no easy way to make it available in Windows. I just can find some Python scripts to do it … so just put it in some easy access folder and python it every time I want to use it, which is not so bad … Keyboard Shortcuts Language Switching I use both Dvorak and Thai (Kedmanee) thus I have to switch between them. Using default Windows settings I would have to use alt + shift. While trying to change this to some other alternatives closer to the old of macOS, I didn’t know that win + space is the DEFAULT key sequence for changing input language. Knowing this gave me joy because it is really familiar for me consider that in Macs we use super + space to change input languages. Visual Studio Code I made a key mapping from ctrl based shortcuts to alt based shortcuts basically because it is closer to the macOS, and also, if you use Vim, ctrl based shortcuts are quite annoying because there are some Vim command using ctrl and causing interference. If you like, this is the script I use. Tap Switching I love the way that I can switch to the next and previous tab using super + shift + ] and super + shift + [ in my old mac, I want to keeping doing it now while I’m using Windows. This is done by AutoHotKey. It is an awesome piece of software. You can write script, and thus it is fully customizable. I did some trial-error and found this code worked just fine: +![:: Send, ^+{TAB} return +!]:: Send, ^{TAB} return The most frustrating part was the return part. I didn’t know that the script works like switch() { case ... } syntax, it will just fall through if not encountered a break or return. Update: I updated many more key-mapping if you find it interesting you can get it here categories: dev Also, don’t forget to set it run automatically after boot. And If you’re like me you don’t know where to find the startup folder anymore (in Windows 10). Just type this in run.exe : shell:startup Now, put the compiled script in to it. You are good to go! Update: I’ve found starting up program in this way is quite slow (may be with low priority), using Task Scheduler is way faster ! categories: dev Touch Pad Problems I must admit that in terms of touch pad others manufacturers are way behind Apple. Apple doesn’t need disabling the touch pad while typing yet keep the pointer idle perfectly. Also, while clicking you can feel that mac sure does a way better job. I note the steps I did to make me more familiar with the new machine of Windows. Pointer Acceleration Problem At the first touch, I could feel the awkward difference of the pointer acceleration between macs and PCs (using Windows). It is that while using mac my pointer moves quite constant proportionally to the distance I move my finger, and that makes navigating quite accurate. Windows has the “Enhanced Precision” which is a good thing while using a mouse but not the case for touch pad. I have had this disabled. Touch Pad Disability While Typing Moving the mouse pointer while typing ? It’s here to solve the problem for you… but it comes with a cost … for me an unbearable cost! I frequently use my touch pad while typing or at least holding a key in the keyboard. The program prevents me this and it’s not acceptable. In my case, Lenovo 710s, Just go to the Synaptics software and disable the “Palm Tracking” to allow touch pad to be working during your typing. Keyboard F1, F2, F3 I love to keep F{n}, where 1 &lt;= n &lt;= 12, the way it used to be. A way to do this may vary by your machine. In my Lenovo 710s, I set it in an app called Lenovo Companion in the Settings section." />
+<meta property="og:description" content="After a month of migration … I’ve made quite a difference so I’ll write a new article for it. Deprecated ! Many of this is based on the post https://github.com/felixrieseberg/windows-development-environment Shells You know before hand that you would miss the shell when you become to use Windows. This is the first thought I had when thinking of migrating. When I really made the switch, it turned out not to be that bad … since someone are just so awesome to create cmder to replace the inferior cmd.exe, and also Windows team is currently working hard, I guess, to bring full support for Ubuntu bash to Windows, of that, I would love to see soon. Now, I use cmder as a shell with choco (Chocolatey) as a package manager (like apt-get or brew), also I try Ubuntu bash on Windows and still looking for a way to combine these things together with the right balance. Git Since I chose to choco, this is a piece of cake ! (cmder with administrator privilege) cinst git.install cinst poshgit # Restart PowerShell / CMDer before moving on - or run $env:Path = [System.Environment]::GetEnvironmentVariable(&quot;Path&quot;,&quot;Machine&quot;) + &quot;;&quot; + [System.Environment]::GetEnvironmentVariable(&quot;Path&quot;,&quot;User&quot;) cinst Git-Credential-Manager-for-Windows Note: Copied from the post mentioned above. ssh-copy-id It is not a big deal though, but I really love this tiny program. There is no easy way to make it available in Windows. I just can find some Python scripts to do it … so just put it in some easy access folder and python it every time I want to use it, which is not so bad … Keyboard Shortcuts Language Switching I use both Dvorak and Thai (Kedmanee) thus I have to switch between them. Using default Windows settings I would have to use alt + shift. While trying to change this to some other alternatives closer to the old of macOS, I didn’t know that win + space is the DEFAULT key sequence for changing input language. Knowing this gave me joy because it is really familiar for me consider that in Macs we use super + space to change input languages. Visual Studio Code I made a key mapping from ctrl based shortcuts to alt based shortcuts basically because it is closer to the macOS, and also, if you use Vim, ctrl based shortcuts are quite annoying because there are some Vim command using ctrl and causing interference. If you like, this is the script I use. Tap Switching I love the way that I can switch to the next and previous tab using super + shift + ] and super + shift + [ in my old mac, I want to keeping doing it now while I’m using Windows. This is done by AutoHotKey. It is an awesome piece of software. You can write script, and thus it is fully customizable. I did some trial-error and found this code worked just fine: +![:: Send, ^+{TAB} return +!]:: Send, ^{TAB} return The most frustrating part was the return part. I didn’t know that the script works like switch() { case ... } syntax, it will just fall through if not encountered a break or return. Update: I updated many more key-mapping if you find it interesting you can get it here categories: dev Also, don’t forget to set it run automatically after boot. And If you’re like me you don’t know where to find the startup folder anymore (in Windows 10). Just type this in run.exe : shell:startup Now, put the compiled script in to it. You are good to go! Update: I’ve found starting up program in this way is quite slow (may be with low priority), using Task Scheduler is way faster ! categories: dev Touch Pad Problems I must admit that in terms of touch pad others manufacturers are way behind Apple. Apple doesn’t need disabling the touch pad while typing yet keep the pointer idle perfectly. Also, while clicking you can feel that mac sure does a way better job. I note the steps I did to make me more familiar with the new machine of Windows. Pointer Acceleration Problem At the first touch, I could feel the awkward difference of the pointer acceleration between macs and PCs (using Windows). It is that while using mac my pointer moves quite constant proportionally to the distance I move my finger, and that makes navigating quite accurate. Windows has the “Enhanced Precision” which is a good thing while using a mouse but not the case for touch pad. I have had this disabled. Touch Pad Disability While Typing Moving the mouse pointer while typing ? It’s here to solve the problem for you… but it comes with a cost … for me an unbearable cost! I frequently use my touch pad while typing or at least holding a key in the keyboard. The program prevents me this and it’s not acceptable. In my case, Lenovo 710s, Just go to the Synaptics software and disable the “Palm Tracking” to allow touch pad to be working during your typing. Keyboard F1, F2, F3 I love to keep F{n}, where 1 &lt;= n &lt;= 12, the way it used to be. A way to do this may vary by your machine. In my Lenovo 710s, I set it in an app called Lenovo Companion in the Settings section." />
+<link rel="canonical" href="/dev/2017/01/06/migration-from-mac-to-pc.html" />
+<meta property="og:url" content="/dev/2017/01/06/migration-from-mac-to-pc.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-01-06T16:26:24+07:00" />
+<script type="application/ld+json">
+{"description":"After a month of migration … I’ve made quite a difference so I’ll write a new article for it. Deprecated ! Many of this is based on the post https://github.com/felixrieseberg/windows-development-environment Shells You know before hand that you would miss the shell when you become to use Windows. This is the first thought I had when thinking of migrating. When I really made the switch, it turned out not to be that bad … since someone are just so awesome to create cmder to replace the inferior cmd.exe, and also Windows team is currently working hard, I guess, to bring full support for Ubuntu bash to Windows, of that, I would love to see soon. Now, I use cmder as a shell with choco (Chocolatey) as a package manager (like apt-get or brew), also I try Ubuntu bash on Windows and still looking for a way to combine these things together with the right balance. Git Since I chose to choco, this is a piece of cake ! (cmder with administrator privilege) cinst git.install cinst poshgit # Restart PowerShell / CMDer before moving on - or run $env:Path = [System.Environment]::GetEnvironmentVariable(&quot;Path&quot;,&quot;Machine&quot;) + &quot;;&quot; + [System.Environment]::GetEnvironmentVariable(&quot;Path&quot;,&quot;User&quot;) cinst Git-Credential-Manager-for-Windows Note: Copied from the post mentioned above. ssh-copy-id It is not a big deal though, but I really love this tiny program. There is no easy way to make it available in Windows. I just can find some Python scripts to do it … so just put it in some easy access folder and python it every time I want to use it, which is not so bad … Keyboard Shortcuts Language Switching I use both Dvorak and Thai (Kedmanee) thus I have to switch between them. Using default Windows settings I would have to use alt + shift. While trying to change this to some other alternatives closer to the old of macOS, I didn’t know that win + space is the DEFAULT key sequence for changing input language. Knowing this gave me joy because it is really familiar for me consider that in Macs we use super + space to change input languages. Visual Studio Code I made a key mapping from ctrl based shortcuts to alt based shortcuts basically because it is closer to the macOS, and also, if you use Vim, ctrl based shortcuts are quite annoying because there are some Vim command using ctrl and causing interference. If you like, this is the script I use. Tap Switching I love the way that I can switch to the next and previous tab using super + shift + ] and super + shift + [ in my old mac, I want to keeping doing it now while I’m using Windows. This is done by AutoHotKey. It is an awesome piece of software. You can write script, and thus it is fully customizable. I did some trial-error and found this code worked just fine: +![:: Send, ^+{TAB} return +!]:: Send, ^{TAB} return The most frustrating part was the return part. I didn’t know that the script works like switch() { case ... } syntax, it will just fall through if not encountered a break or return. Update: I updated many more key-mapping if you find it interesting you can get it here categories: dev Also, don’t forget to set it run automatically after boot. And If you’re like me you don’t know where to find the startup folder anymore (in Windows 10). Just type this in run.exe : shell:startup Now, put the compiled script in to it. You are good to go! Update: I’ve found starting up program in this way is quite slow (may be with low priority), using Task Scheduler is way faster ! categories: dev Touch Pad Problems I must admit that in terms of touch pad others manufacturers are way behind Apple. Apple doesn’t need disabling the touch pad while typing yet keep the pointer idle perfectly. Also, while clicking you can feel that mac sure does a way better job. I note the steps I did to make me more familiar with the new machine of Windows. Pointer Acceleration Problem At the first touch, I could feel the awkward difference of the pointer acceleration between macs and PCs (using Windows). It is that while using mac my pointer moves quite constant proportionally to the distance I move my finger, and that makes navigating quite accurate. Windows has the “Enhanced Precision” which is a good thing while using a mouse but not the case for touch pad. I have had this disabled. Touch Pad Disability While Typing Moving the mouse pointer while typing ? It’s here to solve the problem for you… but it comes with a cost … for me an unbearable cost! I frequently use my touch pad while typing or at least holding a key in the keyboard. The program prevents me this and it’s not acceptable. In my case, Lenovo 710s, Just go to the Synaptics software and disable the “Palm Tracking” to allow touch pad to be working during your typing. Keyboard F1, F2, F3 I love to keep F{n}, where 1 &lt;= n &lt;= 12, the way it used to be. A way to do this may vary by your machine. In my Lenovo 710s, I set it in an app called Lenovo Companion in the Settings section.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2017/01/06/migration-from-mac-to-pc.html","headline":"Migration from Mac to PC","dateModified":"2017-01-06T16:26:24+07:00","datePublished":"2017-01-06T16:26:24+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2017/01/06/migration-from-mac-to-pc.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Migration from Mac to PC</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-01-06T16:26:24+07:00" itemprop="datePublished">Jan 6, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><strong>After a month of migration … I’ve made quite a difference so I’ll write a new article for it.</strong></p>
+
+<h1 id="deprecated-">Deprecated !</h1>
+
+<p>Many of this is based on the post https://github.com/felixrieseberg/windows-development-environment</p>
+
+<h3 id="shells">Shells</h3>
+
+<p>You know before hand that you would miss the shell when you become to use Windows. This is the first thought I had when thinking of migrating. When I really made the switch, it turned out not to be that bad … since someone are just so awesome to create <code class="highlighter-rouge">cmder</code> to replace the inferior <code class="highlighter-rouge">cmd.exe</code>, and also Windows team is currently working hard, I guess, to bring full support for Ubuntu bash to Windows, of that, I would love to see soon.</p>
+
+<p>Now, I use <code class="highlighter-rouge">cmder</code> as a shell with <code class="highlighter-rouge">choco</code> (Chocolatey) as a package manager (like apt-get or brew), also I try Ubuntu bash on Windows and still looking for a way to combine these things together with the right balance.</p>
+
+<h4 id="git">Git</h4>
+<p>Since I chose to <code class="highlighter-rouge">choco</code>, this is a piece of cake !</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(cmder with administrator privilege)
+cinst git.install
+cinst poshgit
+
+# Restart PowerShell / CMDer before moving on - or run
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+
+cinst Git-Credential-Manager-for-Windows
+</code></pre></div></div>
+
+<p>Note: Copied from the post mentioned above.</p>
+
+<h4 id="ssh-copy-id">ssh-copy-id</h4>
+
+<p>It is not a big deal though, but I really love this tiny program. There is no easy way to make it available in Windows. I just can find some Python scripts to do it … so just put it in some easy access folder and python it every time I want to use it, which is not so bad …</p>
+
+<h3 id="keyboard-shortcuts">Keyboard Shortcuts</h3>
+
+<h4 id="language-switching">Language Switching</h4>
+
+<p>I use both Dvorak and Thai (Kedmanee) thus I have to switch between them. Using default Windows settings I would have to use <code class="highlighter-rouge">alt + shift</code>. While trying to change this to some other alternatives closer to the old of macOS, I didn’t know that <code class="highlighter-rouge">win + space</code> is the DEFAULT key sequence for changing input language. Knowing this gave me joy because it is really familiar for me consider that in Macs we use <code class="highlighter-rouge">super + space</code> to change input languages.</p>
+
+<h4 id="visual-studio-code">Visual Studio Code</h4>
+
+<p>I made a key mapping from <code class="highlighter-rouge">ctrl</code> based shortcuts to <code class="highlighter-rouge">alt</code> based shortcuts basically because it is closer to the macOS, and also, if you use Vim, <code class="highlighter-rouge">ctrl</code> based shortcuts are quite annoying because there are some Vim command using <code class="highlighter-rouge">ctrl</code> and causing interference. If you like, this is <a href="https://gist.github.com/phizaz/9b47fc936931ee69a817c6dd504d12d0">the script</a> I use.</p>
+
+<h4 id="tap-switching">Tap Switching</h4>
+
+<p>I love the way that I can switch to the next and previous tab using <code class="highlighter-rouge">super + shift + ]</code> and <code class="highlighter-rouge">super + shift + [</code> in my old mac, I want to keeping doing it now while I’m using Windows.</p>
+
+<p>This is done by <strong>AutoHotKey</strong>. It is an awesome piece of software. You can write script, and thus it is fully customizable. I did some trial-error and found this code worked just fine:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+![::
+    Send, ^+{TAB}
+    return
++!]::
+    Send, ^{TAB}
+    return
+</code></pre></div></div>
+
+<p>The most frustrating part was the <code class="highlighter-rouge">return</code> part. I didn’t know that the script works like <code class="highlighter-rouge">switch() { case ... }</code> syntax, it will just fall through if not encountered a <code class="highlighter-rouge">break</code> or <code class="highlighter-rouge">return</code>.</p>
+
+<p>Update: I updated many more key-mapping if you find it interesting you can get it <a href="https://gist.github.com/phizaz/031e6620568b3aa0fc8ae801711cc0b6">here</a>
+categories: dev</p>
+
+<p>Also, don’t forget to set it run automatically after boot. And If you’re like me you don’t know where to find the <code class="highlighter-rouge">startup</code> folder anymore (in Windows 10). Just type this in <code class="highlighter-rouge">run.exe</code> :</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>shell:startup
+</code></pre></div></div>
+
+<p>Now, put the <strong>compiled script</strong> in to it. You are good to go!</p>
+
+<p>Update: I’ve found starting up program in this way is quite slow (may be with low priority), using <strong>Task Scheduler</strong> is way faster !
+categories: dev</p>
+
+<h3 id="touch-pad-problems">Touch Pad Problems</h3>
+
+<p>I must admit that in terms of touch pad others manufacturers are way behind Apple. Apple doesn’t need disabling the touch pad while typing yet keep the pointer idle perfectly.</p>
+
+<p>Also, while clicking you can feel that mac sure does a way better job.</p>
+
+<p>I note the steps I did to make me more familiar with the new machine of Windows.</p>
+
+<h4 id="pointer-acceleration-problem">Pointer Acceleration Problem</h4>
+
+<p>At the first touch, I could feel the awkward difference of the pointer acceleration between macs and PCs (using Windows). It is that while using mac my pointer moves quite constant proportionally to the distance I move my finger, and that makes navigating quite accurate. Windows has the “Enhanced Precision” which is a good thing while using a mouse but not the case for touch pad. I have had this disabled.</p>
+
+<h4 id="touch-pad-disability-while-typing">Touch Pad Disability While Typing</h4>
+
+<p>Moving the mouse pointer while typing ? It’s here to solve the problem for you… but it comes with a cost … for me an unbearable cost! I frequently use my touch pad while typing or at least holding a key in the keyboard. The program prevents me this and it’s not acceptable.</p>
+
+<p>In my case, Lenovo 710s, Just go to the Synaptics software and disable the “Palm Tracking” to allow touch pad to be working during your typing.</p>
+
+<h3 id="keyboard">Keyboard</h3>
+
+<h4 id="f1-f2-f3">F1, F2, F3</h4>
+
+<p>I love to keep F{n}, where 1 &lt;= n &lt;= 12, the way it used to be. A way to do this may vary by your machine. In my Lenovo 710s, I set it in an app called <strong>Lenovo Companion</strong> in the <strong>Settings</strong> section.</p>
+
+
+    <small>
+      
+      <a href="/tags/windows/">windows</a>
+      
+      <a href="/tags/mac/">mac</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2017/01/06/migration-from-mac-to-pc.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

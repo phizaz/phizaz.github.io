@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Run Node as a Background Service and Starts on Startup (Windows) | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Run Node as a Background Service and Starts on Startup (Windows)" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Ever wonder how to make your node application works as a background process and has a nice easy to use management interface ? Wouldn’t be great if you can register your node app as a one of the Services in Windows ? There is a package just for you ! node-windows, just install it right now ! I prefer the local installation way, which is npm install --save node-windows, note that in the official instalation they will guite you to install with -g flag. Now, as a forerunner in this, I will kinda guide you through this … which is quite easy though… Let’s assume that your service can be run in this fashion node index.js arg1 arg2, it’s reasonable to assume that your program have some arguments. As far as I know, I found not a way to include arguments in the usage of node-windows, may be I just didn’t look thorough enough, in the source code. However, in this example I will assume that we have a file (or files) run.ts that will run node index.js args1 args2 for us. You can imagine run.ts to look like. import child_process = require(&#39;child_process&#39;) child_process.execSync(&#39;node index.js arg1 arg2&#39;) So far so good right ? It’s kinda work but not exactly favorable … one thing you have to make sure is that whenever the run.ts got killed, esp. by SIGINT (ctrl + c) which is the way Windows Services manager will use to stop your service, the run.ts will always relay this signal to its child. I think execSync is not preferable anymore considering this matter. I rather use spawn instead. import child_process = require(&#39;child_process&#39;) function signal(proc, signal, cb: (code, signal) =&gt; void) { proc.on(&#39;close&#39;, (code, signal) =&gt; { cb(code, signal) }) proc.kill(signal) } export function wrap(cmd: string, args: string[]) { const proc = child_process.spawn(&#39;node&#39;, args) // listen on normal error proc.on(&#39;exit&#39;, () =&gt; { process.exit() }) process.on(&#39;SIGINT&#39;, () =&gt; { console.log(&#39;SIGINT signal&#39;) signal(proc, &#39;SIGINT&#39;, (code, signal) =&gt; { console.log(&#39;gracefully closed!&#39;) process.exit() }) }) return { ...proc, } } wrap(&#39;node&#39;, [&#39;index.js&#39;, &#39;arg1&#39;, &#39;arg2&#39;]) // wrap and run the code It’s bloating I understand, but if you have more creative ideas I will be willing to listen :D Now, I’ll create a file say to be the service control center, which we should be able to do the following actions: install, start, stop, uninstall service. Let’s give it a name windows.ts (.js if you work in plain javascript), and if we run it like node windows.js install it should register the service in the Windows’ Service registry. Let’s start small only with install capability. import nodeWin = require(&#39;node-windows&#39;) const {Service} = nodeWin import minimist = require(&#39;minimist&#39;) function parseArgs() { const args = minimist(process.argv.slice(2)) const [mode] = args[&#39;_&#39;] return { mode } } async function install({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;boolean&gt;((res, rej) =&gt; { console.log(&#39;installing service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;install&#39;, () =&gt; { console.log(&#39;service is installed ...&#39;) res(false) }); svc.on(&#39;alreadyinstall&#39;, () =&gt; { console.log(&#39;service is already installed ...&#39;) res(true) }) svc.on(&#39;invalidinstallation&#39;, (err) =&gt; { console.error(&#39;invalid installation&#39;) rej(err) }) svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.install() }) } async function main() { const {mode} = parseArgs() if (mode === &#39;install&#39;) { await install({ name: &quot;my service&quot;, description: &quot;it&#39;s awesome!!&quot;, script: &quot;run.js&quot; }) } } Now, try … node windows.js install. There will be some pop-up requesting for your admin privilege to install services, to suppress all these annoying you should run the script an elevated cmd. Let’s see a little further how to start, stop, and uninstall the service : async function uninstall({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;void&gt;((res, rej) =&gt; { console.log(&#39;uninistalling service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;uninstall&#39;, () =&gt; { res() }); svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.uninstall() }) } async function start({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;void&gt;((res, rej) =&gt; { console.log(&#39;starting service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;start&#39;, () =&gt; { res() }); svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.start() }) } async function stop({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;void&gt;((res, rej) =&gt; { console.log(&#39;stopping service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;stop&#39;, () =&gt; { res() }) svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.stop() }) } Putting things togther is quite straightforward … at least now you have a clue how to do it. By the way, the installed service will be run automatically after the computer starts, quite neat indeed." />
+<meta property="og:description" content="Ever wonder how to make your node application works as a background process and has a nice easy to use management interface ? Wouldn’t be great if you can register your node app as a one of the Services in Windows ? There is a package just for you ! node-windows, just install it right now ! I prefer the local installation way, which is npm install --save node-windows, note that in the official instalation they will guite you to install with -g flag. Now, as a forerunner in this, I will kinda guide you through this … which is quite easy though… Let’s assume that your service can be run in this fashion node index.js arg1 arg2, it’s reasonable to assume that your program have some arguments. As far as I know, I found not a way to include arguments in the usage of node-windows, may be I just didn’t look thorough enough, in the source code. However, in this example I will assume that we have a file (or files) run.ts that will run node index.js args1 args2 for us. You can imagine run.ts to look like. import child_process = require(&#39;child_process&#39;) child_process.execSync(&#39;node index.js arg1 arg2&#39;) So far so good right ? It’s kinda work but not exactly favorable … one thing you have to make sure is that whenever the run.ts got killed, esp. by SIGINT (ctrl + c) which is the way Windows Services manager will use to stop your service, the run.ts will always relay this signal to its child. I think execSync is not preferable anymore considering this matter. I rather use spawn instead. import child_process = require(&#39;child_process&#39;) function signal(proc, signal, cb: (code, signal) =&gt; void) { proc.on(&#39;close&#39;, (code, signal) =&gt; { cb(code, signal) }) proc.kill(signal) } export function wrap(cmd: string, args: string[]) { const proc = child_process.spawn(&#39;node&#39;, args) // listen on normal error proc.on(&#39;exit&#39;, () =&gt; { process.exit() }) process.on(&#39;SIGINT&#39;, () =&gt; { console.log(&#39;SIGINT signal&#39;) signal(proc, &#39;SIGINT&#39;, (code, signal) =&gt; { console.log(&#39;gracefully closed!&#39;) process.exit() }) }) return { ...proc, } } wrap(&#39;node&#39;, [&#39;index.js&#39;, &#39;arg1&#39;, &#39;arg2&#39;]) // wrap and run the code It’s bloating I understand, but if you have more creative ideas I will be willing to listen :D Now, I’ll create a file say to be the service control center, which we should be able to do the following actions: install, start, stop, uninstall service. Let’s give it a name windows.ts (.js if you work in plain javascript), and if we run it like node windows.js install it should register the service in the Windows’ Service registry. Let’s start small only with install capability. import nodeWin = require(&#39;node-windows&#39;) const {Service} = nodeWin import minimist = require(&#39;minimist&#39;) function parseArgs() { const args = minimist(process.argv.slice(2)) const [mode] = args[&#39;_&#39;] return { mode } } async function install({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;boolean&gt;((res, rej) =&gt; { console.log(&#39;installing service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;install&#39;, () =&gt; { console.log(&#39;service is installed ...&#39;) res(false) }); svc.on(&#39;alreadyinstall&#39;, () =&gt; { console.log(&#39;service is already installed ...&#39;) res(true) }) svc.on(&#39;invalidinstallation&#39;, (err) =&gt; { console.error(&#39;invalid installation&#39;) rej(err) }) svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.install() }) } async function main() { const {mode} = parseArgs() if (mode === &#39;install&#39;) { await install({ name: &quot;my service&quot;, description: &quot;it&#39;s awesome!!&quot;, script: &quot;run.js&quot; }) } } Now, try … node windows.js install. There will be some pop-up requesting for your admin privilege to install services, to suppress all these annoying you should run the script an elevated cmd. Let’s see a little further how to start, stop, and uninstall the service : async function uninstall({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;void&gt;((res, rej) =&gt; { console.log(&#39;uninistalling service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;uninstall&#39;, () =&gt; { res() }); svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.uninstall() }) } async function start({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;void&gt;((res, rej) =&gt; { console.log(&#39;starting service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;start&#39;, () =&gt; { res() }); svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.start() }) } async function stop({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;void&gt;((res, rej) =&gt; { console.log(&#39;stopping service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;stop&#39;, () =&gt; { res() }) svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.stop() }) } Putting things togther is quite straightforward … at least now you have a clue how to do it. By the way, the installed service will be run automatically after the computer starts, quite neat indeed." />
+<link rel="canonical" href="/dev/2017/02/07/run-node-as-a-background-service-windows.html" />
+<meta property="og:url" content="/dev/2017/02/07/run-node-as-a-background-service-windows.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-02-07T16:02:36+07:00" />
+<script type="application/ld+json">
+{"description":"Ever wonder how to make your node application works as a background process and has a nice easy to use management interface ? Wouldn’t be great if you can register your node app as a one of the Services in Windows ? There is a package just for you ! node-windows, just install it right now ! I prefer the local installation way, which is npm install --save node-windows, note that in the official instalation they will guite you to install with -g flag. Now, as a forerunner in this, I will kinda guide you through this … which is quite easy though… Let’s assume that your service can be run in this fashion node index.js arg1 arg2, it’s reasonable to assume that your program have some arguments. As far as I know, I found not a way to include arguments in the usage of node-windows, may be I just didn’t look thorough enough, in the source code. However, in this example I will assume that we have a file (or files) run.ts that will run node index.js args1 args2 for us. You can imagine run.ts to look like. import child_process = require(&#39;child_process&#39;) child_process.execSync(&#39;node index.js arg1 arg2&#39;) So far so good right ? It’s kinda work but not exactly favorable … one thing you have to make sure is that whenever the run.ts got killed, esp. by SIGINT (ctrl + c) which is the way Windows Services manager will use to stop your service, the run.ts will always relay this signal to its child. I think execSync is not preferable anymore considering this matter. I rather use spawn instead. import child_process = require(&#39;child_process&#39;) function signal(proc, signal, cb: (code, signal) =&gt; void) { proc.on(&#39;close&#39;, (code, signal) =&gt; { cb(code, signal) }) proc.kill(signal) } export function wrap(cmd: string, args: string[]) { const proc = child_process.spawn(&#39;node&#39;, args) // listen on normal error proc.on(&#39;exit&#39;, () =&gt; { process.exit() }) process.on(&#39;SIGINT&#39;, () =&gt; { console.log(&#39;SIGINT signal&#39;) signal(proc, &#39;SIGINT&#39;, (code, signal) =&gt; { console.log(&#39;gracefully closed!&#39;) process.exit() }) }) return { ...proc, } } wrap(&#39;node&#39;, [&#39;index.js&#39;, &#39;arg1&#39;, &#39;arg2&#39;]) // wrap and run the code It’s bloating I understand, but if you have more creative ideas I will be willing to listen :D Now, I’ll create a file say to be the service control center, which we should be able to do the following actions: install, start, stop, uninstall service. Let’s give it a name windows.ts (.js if you work in plain javascript), and if we run it like node windows.js install it should register the service in the Windows’ Service registry. Let’s start small only with install capability. import nodeWin = require(&#39;node-windows&#39;) const {Service} = nodeWin import minimist = require(&#39;minimist&#39;) function parseArgs() { const args = minimist(process.argv.slice(2)) const [mode] = args[&#39;_&#39;] return { mode } } async function install({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;boolean&gt;((res, rej) =&gt; { console.log(&#39;installing service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;install&#39;, () =&gt; { console.log(&#39;service is installed ...&#39;) res(false) }); svc.on(&#39;alreadyinstall&#39;, () =&gt; { console.log(&#39;service is already installed ...&#39;) res(true) }) svc.on(&#39;invalidinstallation&#39;, (err) =&gt; { console.error(&#39;invalid installation&#39;) rej(err) }) svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.install() }) } async function main() { const {mode} = parseArgs() if (mode === &#39;install&#39;) { await install({ name: &quot;my service&quot;, description: &quot;it&#39;s awesome!!&quot;, script: &quot;run.js&quot; }) } } Now, try … node windows.js install. There will be some pop-up requesting for your admin privilege to install services, to suppress all these annoying you should run the script an elevated cmd. Let’s see a little further how to start, stop, and uninstall the service : async function uninstall({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;void&gt;((res, rej) =&gt; { console.log(&#39;uninistalling service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;uninstall&#39;, () =&gt; { res() }); svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.uninstall() }) } async function start({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;void&gt;((res, rej) =&gt; { console.log(&#39;starting service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;start&#39;, () =&gt; { res() }); svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.start() }) } async function stop({name, description, script}: { name: string, description: string, script: string }) { return new Promise&lt;void&gt;((res, rej) =&gt; { console.log(&#39;stopping service&#39;, name) const svc = new Service({ name, description, script }) svc.on(&#39;stop&#39;, () =&gt; { res() }) svc.on(&#39;error&#39;, (err) =&gt; { rej(err) }) svc.stop() }) } Putting things togther is quite straightforward … at least now you have a clue how to do it. By the way, the installed service will be run automatically after the computer starts, quite neat indeed.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2017/02/07/run-node-as-a-background-service-windows.html","headline":"Run Node as a Background Service and Starts on Startup (Windows)","dateModified":"2017-02-07T16:02:36+07:00","datePublished":"2017-02-07T16:02:36+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2017/02/07/run-node-as-a-background-service-windows.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Run Node as a Background Service and Starts on Startup (Windows)</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-02-07T16:02:36+07:00" itemprop="datePublished">Feb 7, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Ever wonder how to make your node application works as a background process and has a nice easy to use management interface ?</p>
+
+<p>Wouldn’t be great if you can register your node app as a one of the <strong>Services</strong> in Windows ?</p>
+
+<p>There is a package just for you ! <code class="highlighter-rouge">node-windows</code>, just install it right now !</p>
+
+<p>I prefer the local installation way, which is <code class="highlighter-rouge">npm install --save node-windows</code>, note that in the official instalation they will guite you to install with <code class="highlighter-rouge">-g</code> flag.</p>
+
+<p>Now, as a forerunner in this, I will kinda guide you through this … which is quite easy though…</p>
+
+<p>Let’s assume that your service can be run in this fashion <code class="highlighter-rouge">node index.js arg1 arg2</code>, it’s reasonable to assume that your program have some arguments.</p>
+
+<p>As far as I know, I found not a way to include arguments in the usage of <code class="highlighter-rouge">node-windows</code>, may be I just didn’t look thorough enough, in the source code. However, in this example I will assume that we have a file (or files) <code class="highlighter-rouge">run.ts</code> that will run <code class="highlighter-rouge">node index.js args1 args2</code> for us.</p>
+
+<p>You can imagine <code class="highlighter-rouge">run.ts</code> to look like.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import child_process = require('child_process')
+child_process.execSync('node index.js arg1 arg2')
+</code></pre></div></div>
+
+<p>So far so good right ? It’s kinda work but not exactly favorable … one thing you have to make sure is that whenever the <code class="highlighter-rouge">run.ts</code> got <strong>killed</strong>, esp. by <code class="highlighter-rouge">SIGINT</code> (ctrl + c) which is the way Windows Services manager will use to <strong>stop</strong> your service, the <code class="highlighter-rouge">run.ts</code> will always relay this signal to its child.</p>
+
+<p>I think <code class="highlighter-rouge">execSync</code> is not preferable anymore considering this matter. I rather use <code class="highlighter-rouge">spawn</code> instead.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import child_process = require('child_process')
+function signal(proc, signal, cb: (code, signal) =&gt; void) {
+    proc.on('close', (code, signal) =&gt; {
+        cb(code, signal)
+    })
+    proc.kill(signal)
+}
+export function wrap(cmd: string, args: string[]) {
+    const proc = child_process.spawn('node', args)
+
+    // listen on normal error
+    proc.on('exit', () =&gt; {
+        process.exit()
+    })
+
+    process.on('SIGINT', () =&gt; {
+        console.log('SIGINT signal')
+        signal(proc, 'SIGINT', (code, signal) =&gt; {
+            console.log('gracefully closed!')
+            process.exit()
+        })
+    })
+
+    return {
+        ...proc,
+    }
+}
+
+wrap('node', ['index.js', 'arg1', 'arg2']) // wrap and run the code
+</code></pre></div></div>
+
+<p>It’s bloating I understand, but if you have more creative ideas I will be willing to listen :D</p>
+
+<p>Now, I’ll create a file say to be the <strong>service control center</strong>, which we should be able to do the following actions: install, start, stop, uninstall service.</p>
+
+<p>Let’s give it a name <code class="highlighter-rouge">windows.ts</code> (.js if you work in plain javascript), and if we run it like <code class="highlighter-rouge">node windows.js install</code> it should register the service in the Windows’ Service registry.</p>
+
+<p>Let’s start small only with <strong>install</strong> capability.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">import</span> <span class="nx">nodeWin</span> <span class="o">=</span> <span class="k">require</span><span class="p">(</span><span class="s1">'node-windows'</span><span class="p">)</span>
+<span class="nx">const</span> <span class="p">{</span><span class="nx">Service</span><span class="p">}</span> <span class="o">=</span> <span class="nx">nodeWin</span>
+<span class="nx">import</span> <span class="nx">minimist</span> <span class="o">=</span> <span class="k">require</span><span class="p">(</span><span class="s1">'minimist'</span><span class="p">)</span>
+
+<span class="k">function</span> <span class="nf">parseArgs</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="no">args</span> <span class="o">=</span> <span class="nx">minimist</span><span class="p">(</span><span class="nx">process</span><span class="o">.</span><span class="nx">argv</span><span class="o">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    <span class="nx">const</span> <span class="p">[</span><span class="nx">mode</span><span class="p">]</span> <span class="o">=</span> <span class="nx">args</span><span class="p">[</span><span class="s1">'_'</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="nx">mode</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="k">function</span> <span class="nf">install</span><span class="p">({</span><span class="nx">name</span><span class="p">,</span> <span class="nx">description</span><span class="p">,</span> <span class="nx">script</span><span class="p">}</span><span class="o">:</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="k">string</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="k">string</span><span class="p">,</span> <span class="nx">script</span><span class="o">:</span> <span class="k">string</span> <span class="p">})</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="nx">boolean</span><span class="o">&gt;</span><span class="p">((</span><span class="nx">res</span><span class="p">,</span> <span class="nx">rej</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="s1">'installing service'</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+        <span class="k">const</span> <span class="no">svc</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">({</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">description</span><span class="p">,</span> <span class="nx">script</span> <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'install'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="s1">'service is installed ...'</span><span class="p">)</span>
+            <span class="nx">res</span><span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+        <span class="p">});</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'alreadyinstall'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="s1">'service is already installed ...'</span><span class="p">)</span>
+            <span class="nx">res</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+        <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'invalidinstallation'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="o">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'invalid installation'</span><span class="p">)</span>
+            <span class="nx">rej</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+        <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">rej</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+        <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">install</span><span class="p">()</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="k">function</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">const</span> <span class="p">{</span><span class="nx">mode</span><span class="p">}</span> <span class="o">=</span> <span class="nx">parseArgs</span><span class="p">()</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">mode</span> <span class="o">===</span> <span class="s1">'install'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">await</span> <span class="nx">install</span><span class="p">({</span>
+            <span class="nx">name</span><span class="o">:</span> <span class="s2">"my service"</span><span class="p">,</span>
+            <span class="nx">description</span><span class="o">:</span> <span class="s2">"it's awesome!!"</span><span class="p">,</span>
+            <span class="nx">script</span><span class="o">:</span> <span class="s2">"run.js"</span>
+        <span class="p">})</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now, try … <code class="highlighter-rouge">node windows.js install</code>. There will be some pop-up requesting for your admin  privilege to install services, to suppress all these annoying you should run the script an elevated cmd.</p>
+
+<p>Let’s see a little further how to start, stop, and uninstall the service :</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">async</span> <span class="k">function</span> <span class="nf">uninstall</span><span class="p">({</span><span class="nx">name</span><span class="p">,</span> <span class="nx">description</span><span class="p">,</span> <span class="nx">script</span><span class="p">}</span><span class="o">:</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="k">string</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="k">string</span><span class="p">,</span> <span class="nx">script</span><span class="o">:</span> <span class="k">string</span> <span class="p">})</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span><span class="p">((</span><span class="nx">res</span><span class="p">,</span> <span class="nx">rej</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="s1">'uninistalling service'</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+        <span class="k">const</span> <span class="no">svc</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">({</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">description</span><span class="p">,</span> <span class="nx">script</span> <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'uninstall'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">res</span><span class="p">()</span>
+        <span class="p">});</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">rej</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+        <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">uninstall</span><span class="p">()</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="k">function</span> <span class="nf">start</span><span class="p">({</span><span class="nx">name</span><span class="p">,</span> <span class="nx">description</span><span class="p">,</span> <span class="nx">script</span><span class="p">}</span><span class="o">:</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="k">string</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="k">string</span><span class="p">,</span> <span class="nx">script</span><span class="o">:</span> <span class="k">string</span> <span class="p">})</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span><span class="p">((</span><span class="nx">res</span><span class="p">,</span> <span class="nx">rej</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="s1">'starting service'</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+        <span class="k">const</span> <span class="no">svc</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">({</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">description</span><span class="p">,</span> <span class="nx">script</span> <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'start'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">res</span><span class="p">()</span>
+        <span class="p">});</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">rej</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+        <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">start</span><span class="p">()</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="k">async</span> <span class="k">function</span> <span class="nf">stop</span><span class="p">({</span><span class="nx">name</span><span class="p">,</span> <span class="nx">description</span><span class="p">,</span> <span class="nx">script</span><span class="p">}</span><span class="o">:</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="k">string</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="k">string</span><span class="p">,</span> <span class="nx">script</span><span class="o">:</span> <span class="k">string</span> <span class="p">})</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span><span class="p">((</span><span class="nx">res</span><span class="p">,</span> <span class="nx">rej</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="s1">'stopping service'</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+        <span class="k">const</span> <span class="no">svc</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Service</span><span class="p">({</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">description</span><span class="p">,</span> <span class="nx">script</span> <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'stop'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">res</span><span class="p">()</span>
+        <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'error'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">rej</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+        <span class="p">})</span>
+        <span class="nx">svc</span><span class="o">.</span><span class="nx">stop</span><span class="p">()</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Putting things togther is quite straightforward … at least now you have a clue how to do it.</p>
+
+<p>By the way, the installed service will be run automatically after the computer starts, quite neat indeed.</p>
+
+
+
+    <small>
+      
+      <a href="/tags/js/">js</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2017/02/07/run-node-as-a-background-service-windows.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

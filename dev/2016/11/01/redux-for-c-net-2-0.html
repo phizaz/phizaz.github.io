@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Redux for C#.NET 2.0 | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Redux for C#.NET 2.0" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Refer to : github.com/phizaz/redux-dotnet2.0 I made this piece of code because those redux libraries just don’t support .NET 2.0. If you are in the same situation as I was, this piece of code might shed some light on your project. If you don’t know what Redux is ? Educate yourself with http://redux.js.org, Yes! originally it was designed for javascript web development. Many people found this too good to be kept only in the js world, including me. I don’t intend for this to be a full-fledged redux library, I developed this just for a proof of concept that redux is really compatible with .NET 2.0. Feel free tailor the code to suit your need :D What’s included Libs class Act, every action should extend this class class State, every state should extend this class class Store, every store should extend this class class Reducer, every reducer should extend this class each methods in classes extending this class, should be Reducer functions in the form of public &lt;StateClass&gt; Reduce(&lt;StateClass&gt; s, &lt;ActClass&gt; act) {..} class ReduceRunner, create an instance of this class and use it to run reduce functions (keeping the program responsive while reducing). Examples Calculator program GUI Calculator program Examples Calucalator This should be an oversimplified calculator application supporting only a plus operation, and have no UI, just for demonstration purposes. All the actions for this application are defined in the file calculator/act.cs public class ActPlus : Act { public int a; public int b; } public class ActClear : Act { } And now our state calculator/state.cs public class CalculatorState : State&lt;CalculatorState&gt; { public bool has_result = false; public int result; } Reducer functions should be defined in calculator/reducer.cs public class CalculatorReducer : Reducer&lt;CalculatorState, CalculatorStore&gt; { public CalculatorReducer(CalculatorStore store) : base(store) { } public CalculatorState Reduce(CalculatorState s, ActClear act) { s = s.Clone(); s.has_result = false; s.result = default(int); return s; } public CalculatorState Reduce(CalculatorState s, ActPlus act) { s = s.Clone(); s.has_result = true; s.result = act.a + act.b; return s; } } The store is in calculator/store.cs public class CalculatorStore : Store&lt;CalculatorState, CalculatorStore, CalculatorReducer, CalculatorStore&gt; { public CalculatorStore(ReduceRunner runner) : base(runner) { } public override void Dispose() { // nothing to get rid of } public override bool IsLoading() { // we don&#39;t use this feature yet return false; } public ManualResetEvent Plus(int a, int b) { return Dispatch(new ActPlus { a = a, b = b }); } public ManualResetEvent Clear() { return Dispatch(new ActClear()); } } file calculator/god.cs, everything combined here. public class God { public CalculatorStore store; ReduceRunner runner; public God() { // create a reducer runner, and set it run runner = new ReduceRunner(); store = new CalculatorStore(runner); runner.SetUp(store.InvokeReduce, ReduceEnd); } public void ReduceEnd() { // everytime reduce finishes this runs Console.WriteLine(&quot;reduce end&quot;); store.GetState().Dump(); // dumping state to the stdout } } file Program.cs, as of C# .NET program everything starts here. class Program { static void Main(string[] args) { God god = new God(); god.store.Plus(1, 2).WaitOne(); // waits until this action is reduced god.store.Clear(); } } And here is the output enqueing action: calculator.ActPlus reducing: calculator.ActPlus reduce end has_result:True; result:3; enqueing action: calculator.ActClear reducing: calculator.ActClear reduce end has_result:False; result:0; We can see that the state changes according to an action being reduced. If you are looking for a more realistic application, such as a GUI one, you are free to dig deeper to the gui-example included in this repo!" />
+<meta property="og:description" content="Refer to : github.com/phizaz/redux-dotnet2.0 I made this piece of code because those redux libraries just don’t support .NET 2.0. If you are in the same situation as I was, this piece of code might shed some light on your project. If you don’t know what Redux is ? Educate yourself with http://redux.js.org, Yes! originally it was designed for javascript web development. Many people found this too good to be kept only in the js world, including me. I don’t intend for this to be a full-fledged redux library, I developed this just for a proof of concept that redux is really compatible with .NET 2.0. Feel free tailor the code to suit your need :D What’s included Libs class Act, every action should extend this class class State, every state should extend this class class Store, every store should extend this class class Reducer, every reducer should extend this class each methods in classes extending this class, should be Reducer functions in the form of public &lt;StateClass&gt; Reduce(&lt;StateClass&gt; s, &lt;ActClass&gt; act) {..} class ReduceRunner, create an instance of this class and use it to run reduce functions (keeping the program responsive while reducing). Examples Calculator program GUI Calculator program Examples Calucalator This should be an oversimplified calculator application supporting only a plus operation, and have no UI, just for demonstration purposes. All the actions for this application are defined in the file calculator/act.cs public class ActPlus : Act { public int a; public int b; } public class ActClear : Act { } And now our state calculator/state.cs public class CalculatorState : State&lt;CalculatorState&gt; { public bool has_result = false; public int result; } Reducer functions should be defined in calculator/reducer.cs public class CalculatorReducer : Reducer&lt;CalculatorState, CalculatorStore&gt; { public CalculatorReducer(CalculatorStore store) : base(store) { } public CalculatorState Reduce(CalculatorState s, ActClear act) { s = s.Clone(); s.has_result = false; s.result = default(int); return s; } public CalculatorState Reduce(CalculatorState s, ActPlus act) { s = s.Clone(); s.has_result = true; s.result = act.a + act.b; return s; } } The store is in calculator/store.cs public class CalculatorStore : Store&lt;CalculatorState, CalculatorStore, CalculatorReducer, CalculatorStore&gt; { public CalculatorStore(ReduceRunner runner) : base(runner) { } public override void Dispose() { // nothing to get rid of } public override bool IsLoading() { // we don&#39;t use this feature yet return false; } public ManualResetEvent Plus(int a, int b) { return Dispatch(new ActPlus { a = a, b = b }); } public ManualResetEvent Clear() { return Dispatch(new ActClear()); } } file calculator/god.cs, everything combined here. public class God { public CalculatorStore store; ReduceRunner runner; public God() { // create a reducer runner, and set it run runner = new ReduceRunner(); store = new CalculatorStore(runner); runner.SetUp(store.InvokeReduce, ReduceEnd); } public void ReduceEnd() { // everytime reduce finishes this runs Console.WriteLine(&quot;reduce end&quot;); store.GetState().Dump(); // dumping state to the stdout } } file Program.cs, as of C# .NET program everything starts here. class Program { static void Main(string[] args) { God god = new God(); god.store.Plus(1, 2).WaitOne(); // waits until this action is reduced god.store.Clear(); } } And here is the output enqueing action: calculator.ActPlus reducing: calculator.ActPlus reduce end has_result:True; result:3; enqueing action: calculator.ActClear reducing: calculator.ActClear reduce end has_result:False; result:0; We can see that the state changes according to an action being reduced. If you are looking for a more realistic application, such as a GUI one, you are free to dig deeper to the gui-example included in this repo!" />
+<link rel="canonical" href="/dev/2016/11/01/redux-for-c-net-2-0.html" />
+<meta property="og:url" content="/dev/2016/11/01/redux-for-c-net-2-0.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-11-01T16:07:24+07:00" />
+<script type="application/ld+json">
+{"description":"Refer to : github.com/phizaz/redux-dotnet2.0 I made this piece of code because those redux libraries just don’t support .NET 2.0. If you are in the same situation as I was, this piece of code might shed some light on your project. If you don’t know what Redux is ? Educate yourself with http://redux.js.org, Yes! originally it was designed for javascript web development. Many people found this too good to be kept only in the js world, including me. I don’t intend for this to be a full-fledged redux library, I developed this just for a proof of concept that redux is really compatible with .NET 2.0. Feel free tailor the code to suit your need :D What’s included Libs class Act, every action should extend this class class State, every state should extend this class class Store, every store should extend this class class Reducer, every reducer should extend this class each methods in classes extending this class, should be Reducer functions in the form of public &lt;StateClass&gt; Reduce(&lt;StateClass&gt; s, &lt;ActClass&gt; act) {..} class ReduceRunner, create an instance of this class and use it to run reduce functions (keeping the program responsive while reducing). Examples Calculator program GUI Calculator program Examples Calucalator This should be an oversimplified calculator application supporting only a plus operation, and have no UI, just for demonstration purposes. All the actions for this application are defined in the file calculator/act.cs public class ActPlus : Act { public int a; public int b; } public class ActClear : Act { } And now our state calculator/state.cs public class CalculatorState : State&lt;CalculatorState&gt; { public bool has_result = false; public int result; } Reducer functions should be defined in calculator/reducer.cs public class CalculatorReducer : Reducer&lt;CalculatorState, CalculatorStore&gt; { public CalculatorReducer(CalculatorStore store) : base(store) { } public CalculatorState Reduce(CalculatorState s, ActClear act) { s = s.Clone(); s.has_result = false; s.result = default(int); return s; } public CalculatorState Reduce(CalculatorState s, ActPlus act) { s = s.Clone(); s.has_result = true; s.result = act.a + act.b; return s; } } The store is in calculator/store.cs public class CalculatorStore : Store&lt;CalculatorState, CalculatorStore, CalculatorReducer, CalculatorStore&gt; { public CalculatorStore(ReduceRunner runner) : base(runner) { } public override void Dispose() { // nothing to get rid of } public override bool IsLoading() { // we don&#39;t use this feature yet return false; } public ManualResetEvent Plus(int a, int b) { return Dispatch(new ActPlus { a = a, b = b }); } public ManualResetEvent Clear() { return Dispatch(new ActClear()); } } file calculator/god.cs, everything combined here. public class God { public CalculatorStore store; ReduceRunner runner; public God() { // create a reducer runner, and set it run runner = new ReduceRunner(); store = new CalculatorStore(runner); runner.SetUp(store.InvokeReduce, ReduceEnd); } public void ReduceEnd() { // everytime reduce finishes this runs Console.WriteLine(&quot;reduce end&quot;); store.GetState().Dump(); // dumping state to the stdout } } file Program.cs, as of C# .NET program everything starts here. class Program { static void Main(string[] args) { God god = new God(); god.store.Plus(1, 2).WaitOne(); // waits until this action is reduced god.store.Clear(); } } And here is the output enqueing action: calculator.ActPlus reducing: calculator.ActPlus reduce end has_result:True; result:3; enqueing action: calculator.ActClear reducing: calculator.ActClear reduce end has_result:False; result:0; We can see that the state changes according to an action being reduced. If you are looking for a more realistic application, such as a GUI one, you are free to dig deeper to the gui-example included in this repo!","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2016/11/01/redux-for-c-net-2-0.html","headline":"Redux for C#.NET 2.0","dateModified":"2016-11-01T16:07:24+07:00","datePublished":"2016-11-01T16:07:24+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2016/11/01/redux-for-c-net-2-0.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Redux for C#.NET 2.0</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2016-11-01T16:07:24+07:00" itemprop="datePublished">Nov 1, 2016
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Refer to : <a href="https://github.com/phizaz/redux-dotnet2.0">github.com/phizaz/redux-dotnet2.0</a></p>
+
+<p>I made this piece of code because those redux libraries just don’t support .NET 2.0. If you are in the same situation as I was, this piece of code might shed some light on your project.</p>
+
+<p>If you don’t know what Redux is ? Educate yourself with <a href="http://redux.js.org">http://redux.js.org</a>, Yes! originally it was designed for javascript web development. Many people found this too good to be kept only in the js world, including me.</p>
+
+<p>I don’t intend for this to be a full-fledged redux library, I developed this just for a proof of concept that redux is really compatible with .NET 2.0. Feel free tailor the code to suit your need :D</p>
+
+<h2 id="whats-included">What’s included</h2>
+
+<ol>
+  <li><strong>Libs</strong>
+    <ol>
+      <li>class <strong>Act</strong>, every action should extend this class</li>
+      <li>class <strong>State</strong>, every state should extend this class</li>
+      <li>class <strong>Store</strong>, every store should extend this class</li>
+      <li>class <strong>Reducer</strong>, every reducer should extend this class
+        <ul>
+          <li>each methods in classes extending this class, should be Reducer functions in the form of <code class="highlighter-rouge">public &lt;StateClass&gt; Reduce(&lt;StateClass&gt; s, &lt;ActClass&gt; act) {..}</code></li>
+        </ul>
+      </li>
+      <li>class <strong>ReduceRunner</strong>, create an instance of this class and use it to run reduce functions (keeping the program responsive while reducing).</li>
+    </ol>
+  </li>
+  <li><strong>Examples</strong>
+    <ol>
+      <li>Calculator program</li>
+      <li>GUI Calculator program</li>
+    </ol>
+  </li>
+</ol>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="calucalator">Calucalator</h3>
+
+<p>This should be an oversimplified calculator application supporting only a plus operation, and have no UI, just for demonstration purposes.</p>
+
+<p>All the actions for this application are defined in the file <code class="highlighter-rouge">calculator/act.cs</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class ActPlus : Act { public int a; public int b; }
+public class ActClear : Act { }
+</code></pre></div></div>
+
+<p>And now our state <code class="highlighter-rouge">calculator/state.cs</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class CalculatorState : State&lt;CalculatorState&gt;
+{
+    public bool has_result = false;
+    public int result;
+}
+</code></pre></div></div>
+
+<p>Reducer functions should be defined in <code class="highlighter-rouge">calculator/reducer.cs</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class CalculatorReducer : Reducer&lt;CalculatorState, CalculatorStore&gt;
+{
+    public CalculatorReducer(CalculatorStore store) : base(store)
+    {
+    }
+
+    public CalculatorState Reduce(CalculatorState s, ActClear act)
+    {
+        s = s.Clone();
+        s.has_result = false;
+        s.result = default(int);
+        return s;
+    }
+
+    public CalculatorState Reduce(CalculatorState s, ActPlus act)
+    {
+        s = s.Clone();
+        s.has_result = true;
+        s.result = act.a + act.b;
+        return s;
+    }
+}
+</code></pre></div></div>
+
+<p>The store is in <code class="highlighter-rouge">calculator/store.cs</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class CalculatorStore : Store&lt;CalculatorState, CalculatorStore, CalculatorReducer, CalculatorStore&gt;
+{
+    public CalculatorStore(ReduceRunner runner) : base(runner)
+    {
+         
+    }
+
+    public override void Dispose()
+    {
+        // nothing to get rid of
+    }
+
+    public override bool IsLoading()
+    {
+        // we don't use this feature yet
+        return false;
+    }
+
+    public ManualResetEvent Plus(int a, int b)
+    {
+        return Dispatch(new ActPlus { a = a, b = b });
+    }
+
+    public ManualResetEvent Clear()
+    {
+        return Dispatch(new ActClear());
+    }
+
+}
+</code></pre></div></div>
+
+<p>file <code class="highlighter-rouge">calculator/god.cs</code>, everything combined here.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public class God
+{
+    public CalculatorStore store;
+    ReduceRunner runner;
+    
+    public God()
+    {
+        // create a reducer runner, and set it run
+        runner = new ReduceRunner();
+        store = new CalculatorStore(runner);
+        runner.SetUp(store.InvokeReduce, ReduceEnd);
+    }
+
+    public void ReduceEnd()
+    {
+        // everytime reduce finishes this runs
+        Console.WriteLine("reduce end");
+        store.GetState().Dump(); // dumping state to the stdout
+    }
+}
+</code></pre></div></div>
+
+<p>file <code class="highlighter-rouge">Program.cs</code>, as of C# .NET program everything starts here.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class Program
+{
+    static void Main(string[] args)
+    {
+        God god = new God();
+        god.store.Plus(1, 2).WaitOne(); // waits until this action is reduced
+        god.store.Clear();
+    }
+}
+</code></pre></div></div>
+
+<p>And here is the output</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>enqueing action: calculator.ActPlus
+reducing: calculator.ActPlus
+reduce end
+has_result:True; result:3;
+
+enqueing action: calculator.ActClear
+reducing: calculator.ActClear
+reduce end
+has_result:False; result:0;
+</code></pre></div></div>
+
+<p>We can see that the state changes according to an action being reduced. If you are looking for a more realistic application, such as a GUI one, you are free to dig deeper to the gui-example included in this repo!</p>
+
+
+    <small>
+      
+      <a href="/tags/c#/">c#</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2016/11/01/redux-for-c-net-2-0.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

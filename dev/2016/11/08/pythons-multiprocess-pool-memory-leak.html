@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Python’s Multiprocess Pool Memory Leak | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Python’s Multiprocess Pool Memory Leak" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Update : I investigated further to the problem, and found a better solution. I will write a topic on that. categories: dev Actually, I don’t know how this happen, just can’t narrow it down enough to a pin point. The situation can be described here: # no globals def ... def ... def ... def trigger(): ... pool = Pool() for each in pool.imap_unordered(memory_consuming_fn, some_list): ... pool.close() pool.join() ... # run the trigger() function many times Note : In my case the memory_cosuming_fn involves opening many large files, this could be the case (but I personally don’t think so because the running context is separated from the main process, and is essentially freed up every time without fail). Note2: For those who aren’t familiar with multiprocess, it’s essentially important to make sure that the global variables are not huge because it will be forked and duplicated ! esp. under Python 2. Moreover, it’s much better if you keep the globals immutable. The point is to run trigger() many times, may be in this fashion: for i in range(10): trigger() After each run, not all memory are freed, more or less, so, I assume that memory leakage is encountered. I strayed trying to make small changes to the code involving putting many gc.collect() to multiple places, still no luck. Here are some of my unfruitful experiments: Making sure that a new process is spawn for each job, pool = Pool(maxtasksperchild=1). Put gc.collect() to the beginning of the memory_consuming_fn. Try deallocate large vars by &lt;var&gt; = None or del &lt;var&gt; and then gc.collect(). And, here are some working experiments: A. Declaring an initializer: def pool_init(): import gc gc.collect() pool = Pool(initializer=pool_init) B. Put gc.collect() before declaring pool: import gc gc.collect() pool = Pool() Note: both are not the same thing ! If initializer is not None then each worker process will call initializer(*initargs) when it starts. That means the A. runs gc.collect() in the context of pool processes not the main process as the B. would. And this makes the A. to be kinda same of the 2. and the 1. ? Don’t know why both of those don’t work. I don’t know specifically why all the memory leak is gone, in part, because I don’t really know where the leakages are. But, it’s likely that the memory leakage is somewhere (very tight) before spawning the pool processes. This might be some of the globals (if there is any) or the parameters of the memory_consuming_fn itself." />
+<meta property="og:description" content="Update : I investigated further to the problem, and found a better solution. I will write a topic on that. categories: dev Actually, I don’t know how this happen, just can’t narrow it down enough to a pin point. The situation can be described here: # no globals def ... def ... def ... def trigger(): ... pool = Pool() for each in pool.imap_unordered(memory_consuming_fn, some_list): ... pool.close() pool.join() ... # run the trigger() function many times Note : In my case the memory_cosuming_fn involves opening many large files, this could be the case (but I personally don’t think so because the running context is separated from the main process, and is essentially freed up every time without fail). Note2: For those who aren’t familiar with multiprocess, it’s essentially important to make sure that the global variables are not huge because it will be forked and duplicated ! esp. under Python 2. Moreover, it’s much better if you keep the globals immutable. The point is to run trigger() many times, may be in this fashion: for i in range(10): trigger() After each run, not all memory are freed, more or less, so, I assume that memory leakage is encountered. I strayed trying to make small changes to the code involving putting many gc.collect() to multiple places, still no luck. Here are some of my unfruitful experiments: Making sure that a new process is spawn for each job, pool = Pool(maxtasksperchild=1). Put gc.collect() to the beginning of the memory_consuming_fn. Try deallocate large vars by &lt;var&gt; = None or del &lt;var&gt; and then gc.collect(). And, here are some working experiments: A. Declaring an initializer: def pool_init(): import gc gc.collect() pool = Pool(initializer=pool_init) B. Put gc.collect() before declaring pool: import gc gc.collect() pool = Pool() Note: both are not the same thing ! If initializer is not None then each worker process will call initializer(*initargs) when it starts. That means the A. runs gc.collect() in the context of pool processes not the main process as the B. would. And this makes the A. to be kinda same of the 2. and the 1. ? Don’t know why both of those don’t work. I don’t know specifically why all the memory leak is gone, in part, because I don’t really know where the leakages are. But, it’s likely that the memory leakage is somewhere (very tight) before spawning the pool processes. This might be some of the globals (if there is any) or the parameters of the memory_consuming_fn itself." />
+<link rel="canonical" href="/dev/2016/11/08/pythons-multiprocess-pool-memory-leak.html" />
+<meta property="og:url" content="/dev/2016/11/08/pythons-multiprocess-pool-memory-leak.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-11-08T05:09:48+07:00" />
+<script type="application/ld+json">
+{"description":"Update : I investigated further to the problem, and found a better solution. I will write a topic on that. categories: dev Actually, I don’t know how this happen, just can’t narrow it down enough to a pin point. The situation can be described here: # no globals def ... def ... def ... def trigger(): ... pool = Pool() for each in pool.imap_unordered(memory_consuming_fn, some_list): ... pool.close() pool.join() ... # run the trigger() function many times Note : In my case the memory_cosuming_fn involves opening many large files, this could be the case (but I personally don’t think so because the running context is separated from the main process, and is essentially freed up every time without fail). Note2: For those who aren’t familiar with multiprocess, it’s essentially important to make sure that the global variables are not huge because it will be forked and duplicated ! esp. under Python 2. Moreover, it’s much better if you keep the globals immutable. The point is to run trigger() many times, may be in this fashion: for i in range(10): trigger() After each run, not all memory are freed, more or less, so, I assume that memory leakage is encountered. I strayed trying to make small changes to the code involving putting many gc.collect() to multiple places, still no luck. Here are some of my unfruitful experiments: Making sure that a new process is spawn for each job, pool = Pool(maxtasksperchild=1). Put gc.collect() to the beginning of the memory_consuming_fn. Try deallocate large vars by &lt;var&gt; = None or del &lt;var&gt; and then gc.collect(). And, here are some working experiments: A. Declaring an initializer: def pool_init(): import gc gc.collect() pool = Pool(initializer=pool_init) B. Put gc.collect() before declaring pool: import gc gc.collect() pool = Pool() Note: both are not the same thing ! If initializer is not None then each worker process will call initializer(*initargs) when it starts. That means the A. runs gc.collect() in the context of pool processes not the main process as the B. would. And this makes the A. to be kinda same of the 2. and the 1. ? Don’t know why both of those don’t work. I don’t know specifically why all the memory leak is gone, in part, because I don’t really know where the leakages are. But, it’s likely that the memory leakage is somewhere (very tight) before spawning the pool processes. This might be some of the globals (if there is any) or the parameters of the memory_consuming_fn itself.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2016/11/08/pythons-multiprocess-pool-memory-leak.html","headline":"Python’s Multiprocess Pool Memory Leak","dateModified":"2016-11-08T05:09:48+07:00","datePublished":"2016-11-08T05:09:48+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2016/11/08/pythons-multiprocess-pool-memory-leak.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Python&#39;s Multiprocess Pool Memory Leak</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2016-11-08T05:09:48+07:00" itemprop="datePublished">Nov 8, 2016
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Update : I investigated further to the problem, and found a better solution. I will write a topic on that.
+categories: dev</p>
+
+<p>Actually, I don’t know how this happen, just can’t narrow it down enough to a pin point.</p>
+
+<p>The situation can be described here:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># no globals
+
+def ...
+
+def ...
+
+def ...
+
+def trigger():
+	...
+	pool = Pool()
+	for each in pool.imap_unordered(memory_consuming_fn, some_list):
+		...
+	pool.close()
+	pool.join()
+	...
+
+# run the trigger() function many times
+</code></pre></div></div>
+
+<p>Note : In my case the <code class="highlighter-rouge">memory_cosuming_fn</code> involves opening many large files, this could be the case (but I personally don’t think so because the running context is separated from the main process, and is essentially freed up every time without fail).</p>
+
+<p>Note2: For those who aren’t familiar with <code class="highlighter-rouge">multiprocess</code>, it’s essentially important to make sure that the global variables are not huge because it will be forked and duplicated ! esp. under Python 2. Moreover, it’s much better if you keep the globals immutable.</p>
+
+<p>The point is to run <code class="highlighter-rouge">trigger()</code> many times, may be in this fashion:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for i in range(10):
+	trigger()
+</code></pre></div></div>
+
+<p>After each run, not all memory are freed, more or less, so, I assume that memory leakage is encountered.</p>
+
+<p>I strayed trying to make small changes to the code involving putting many <code class="highlighter-rouge">gc.collect()</code> to multiple places, still no luck.</p>
+
+<p>Here are some of my unfruitful experiments:</p>
+
+<ol>
+  <li>Making sure that a new process is spawn for each job, <code class="highlighter-rouge">pool = Pool(maxtasksperchild=1)</code>.</li>
+  <li>Put <code class="highlighter-rouge">gc.collect()</code> to the beginning of the <code class="highlighter-rouge">memory_consuming_fn</code>.</li>
+  <li>Try deallocate large vars by <code class="highlighter-rouge">&lt;var&gt; = None</code> or <code class="highlighter-rouge">del &lt;var&gt;</code> and then <code class="highlighter-rouge">gc.collect()</code>.</li>
+</ol>
+
+<p>And, here are some working experiments:</p>
+
+<p>A. Declaring an initializer:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def pool_init():
+	import gc
+	gc.collect()
+
+pool = Pool(initializer=pool_init)
+</code></pre></div></div>
+
+<p>B. Put <code class="highlighter-rouge">gc.collect()</code> before declaring pool:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import gc
+gc.collect()
+pool = Pool()
+</code></pre></div></div>
+
+<p>Note: both are not the same thing !</p>
+<blockquote>
+  <p>If initializer is not None then each worker process will call initializer(*initargs) when it starts.</p>
+</blockquote>
+
+<p>That means the A. runs <code class="highlighter-rouge">gc.collect()</code> in the context of pool processes not the main process as the B. would.</p>
+
+<p>And this makes the A. to be kinda same of the 2. and the 1. ? Don’t know why both of those don’t work.</p>
+
+<p>I don’t know specifically why all the memory leak is gone, in part, because I don’t really know where the leakages are. But, it’s likely that the memory leakage is somewhere (very tight) before spawning the pool processes. <strong>This might be some of the globals (if there is any) or the parameters of the <code class="highlighter-rouge">memory_consuming_fn</code> itself.</strong></p>
+
+
+
+    <small>
+      
+      <a href="/tags/python/">python</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2016/11/08/pythons-multiprocess-pool-memory-leak.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

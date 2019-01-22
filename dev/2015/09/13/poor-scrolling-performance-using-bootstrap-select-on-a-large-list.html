@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Poor scrolling performance using bootstrap-select on a large list | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Poor scrolling performance using bootstrap-select on a large list" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Bootstrap select (เว็บไซต์) เป็น plugin ที่ทำให้เราสามารถ “รับประกัน” ประสบการณ์การใช้งาน dropdown list ของผู้ใช้ได้ เนื่องจากโดยปกติแล้ว dropdown list หรือ &lt;select&gt; มีความแตกต่างขึ้นอยู่กับ browser และก็ยากต่อการกำหนดค่าต่าง ๆ เนื่องจากสามารถกำหนดค่า CSS ได้อย่างจำกัดอย่างยิ่ง จึงมีคนคิด bootstrap select ขึ้นมาโดยอาศัยการจำลอง “ปุ่มกด” ประกอบกับเทคนิคเล็กน้อย เพื่อใช้แทน &lt;select&gt; หากเราท่านติดตั้ง bootstrap select และใช้งานมันอย่างที่ได้เขียนกำกับไว้แล้วนั้น ผลลัพธ์ก็จะงดงามอย่างไม่น่ามีปัญหาอะไร ทว่าปัญหาจะเกิดขึ้นก็ต่อเมื่อ เราเริ่มใช้ list ที่มีขนาด “ใหญ่” นี่ที่นี้ผมกล่าวถึง ราว ๆ 60-70 ขึ้นไป เช่น จังหวัดในประเทศไทย หรือรายชื่อมหาวิทยาลัยในประเทศไทย ซึ่งผมได้ใช้ bootstrap select กับข้อมูลเหล่านี้ แล้วพบว่าในบางกรณีมีปัญหาการ “scroll หน้าเว็บที่ช้าเอามาก ๆ” และเป็นไปอย่างผิดปกติ กล่าวคือเมื่อเรา คลี่ select ออกมาการ scroll ก็ลื่นปรื้ดตามปกติ แต่เมื่อเรา หุบ select เข้าไปการ scroll กับช้าราวกับเต่าคลาน (framerate ที่ผมพบไม่น่าจะเกิน 5 ต่อวินาที) เมื่อผมลองดูหน้าต่าง performance ของ google chrome ก็จะได้ภาพดังต่อไปนี้ จะเห็นว่า framerate น้อยมาก ๆ ตอนที่มีการ scroll เกิดขึ้นจะเห็นกราฟสีเขียวดรอปลงในช่วงนี้ ที่แปลกคือปัญหาการ scroll เกิดขึ้นเมื่อ หุบ list เข้าไปแล้วซึ่งหมายความมว่า display: none ซึ่งตามความเข้าใจของผม browser ก็ควรจะทำงานน้อยลง แม้ว่า list จะใหญ่มี items เยอะ แต่มันก็สามารถมองข้ามไปด้วยเพราะว่ามันไม่ต้อง render เลยแม้แต่น้อย (ซึ่งผมอาจจะผิด) หากมองลึกลงไปหน่อยจะเห็นว่าส่วนที่ช้าที่สุด ที่ทำให้การ render ในภาพรวมช้าลงคือการ Layout ของ browser ผมพยายามหาวิธีแก้ปัญหาตรงนี้ ก็ยังไม่พบวิธีแก้ แต่ผมก็พบบทความดี ๆ เอาไว้อ่านเล่น ๆ นะครับ เกี่ยวกับการลดภาระการ Layout Avoid large, complex layouts and layout thrashing ผมได้โพสปัญหานี้ไว้ที่ github.com/bootstrap-select แต่ว่ายังไม่ได้รับการตอบกลับแต่อย่างใด ผมเลยคิดว่าอาจจะต้องแก้ปัญหาด้วยวิธีการที่ hack ซักหน่อย ตอนนี้ผมรู้ว่า display:none ทำให้ช้า ไม่ว่าจะช้าด้วยอะไรก็แล้วแต่ และผมลองแล้วว่าถ้าเปลี่ยนจาก display:none เป็น visibility: hidden ปัญหานี้จะไม่เกิดขึ้น เพราะฉะนั้นผมจะแก้ปัญหานี้ด้วย การเปลี่นยวิธีการซ่อน ซึ่งแน่นอนว่าแม้ทั้่งคู่จะทำให้มองไม่เห็นวัตถุเหมือนกันแต่ไม่ได้ให้ผลลัพธ์ที่เหมือนกันซะทีเดียว เนื่องจาก display:none จะไม่มีการ render เลย แต่ว่า visibility: hidden จะมีการ render อยู่ คือมีการจองพื้นที่ใน document แต่ว่าไม่แสดงออกมาให้เห็นเฉย ๆ นั่นแปลว่า ถ้าเรามีวัตถุใหญ่ ๆ แต่ว่า visibility: hidden ไว้ แม้เราจะมองไม่เห็นแต่ว่าเราจะเห็นว่าหน้านี้วัตถุขนาดใหญ่เนื่องจากจะมี scroll bar ให้เห็น และในที่นี้เรากำลังพูดถึง list ขนาดใหญ่ ซึ่งจะกินพื้นที่ใหญ่มาก ๆ ถ้าเราซ่อนมันไว้ด้วยวิธี visibilty: hidden มันจะทำให้เว็บไซต์เรามีพื้นที่ scroll ที่ว่างเปล่าจำนวนมาก แต่ก็ด้วยความจำเพาะของ bootstrap select อีกนั่นแหละทีว่า ถ้าหากเรากด คลี่ &lt;select&gt; ออกมาแล้ว มันจะพยายามปรับให้ ขนาดของ dropdown list ไม่เกินขนาดของหน้าจอ นั่นแปลว่าถ้าเราคลีออกมาแล้ว ไม่ว่า list เราจะใหญ่ขนาดไหน มันก็จะปรับให้มีขนาดไม่เกินหน้าจอ ด้วยทั้งหมดทั้งมวลนี้ผมจึงคิดได้ว่า ถ้าผมบังคับให้ bootstrap select คลี่ีตั้งแต่ต้น (จะได้มีขนาดไม่เกินหน้าจอ) แต่ว่าซ่อนเอาไว้ ผมก็จะสามารถแก้ปัญหานี้ได้ชงัดนัก ผมจะยกตัวอย่างโค้ดที่ผมใช้ implement ตัวแก้ปัญหานี้ ในรูปแบบของ angular (ใช้ es6) ผมสร้าง directive ใหม่ชื่อว่า selectpicker-fatser // this is only for large options scrolling performance fix import angular from &#39;angular&#39;; import &#39;./selectpicker-faster.css&#39;; let partial = angular.module(&#39;selectpickerFaster&#39;, []); partial.directive(&#39;selectpickerFaster&#39;, () =&gt; { return { restrict: &#39;EA&#39;, link: link, }; }); function link($scope, element, attrs) { let $element = $(element); $element .siblings(&#39;.bootstrap-select&#39;) .click( function () { $(this).addClass(&#39;faster&#39;); }); } export var selectpickerFasterComponentModule = partial; โดยในไฟล์ selectpicker-faster.sass (ซึ่งจะถูก compile เป็น .css) กำหนดไว้ว่า .bootstrap-select.faster .dropdown-menu display: block visibility: hidden .bootstrap-select.faster.open .dropdown-menu visibility: visible กล่าวคือใช้ visibility: hidden แทน display:block นั่นเอง เวลาเราใช้งานใน angular ถ้าหากเราใช้ angular-bootstrap-select ด้วยแล้ว จะทำให้เราใช้ directive “selectpicker” ในการสร้าง bootstrap select สำหรับ &lt;select&gt; ที่ต้องการได้ จะได้โค้ดการใช้งานเป็นแบบนี้ ในภาษา html &lt;select selectpicker selectpicker-faster ng-options=&quot;....&quot;&gt; &lt;option value=&quot;&quot;&gt;โปรดเลือก&lt;/option&gt; &lt;/select&gt; เท่านี้ปัญหาการ scroll ก็จะหมดไป โดยที่เราไม่รู้เสียด้วยซ้ำว่าต้นเหตุจริง ๆ แล้วมันเกิดขึ้นมาได้ยังไง (-_-“)" />
+<meta property="og:description" content="Bootstrap select (เว็บไซต์) เป็น plugin ที่ทำให้เราสามารถ “รับประกัน” ประสบการณ์การใช้งาน dropdown list ของผู้ใช้ได้ เนื่องจากโดยปกติแล้ว dropdown list หรือ &lt;select&gt; มีความแตกต่างขึ้นอยู่กับ browser และก็ยากต่อการกำหนดค่าต่าง ๆ เนื่องจากสามารถกำหนดค่า CSS ได้อย่างจำกัดอย่างยิ่ง จึงมีคนคิด bootstrap select ขึ้นมาโดยอาศัยการจำลอง “ปุ่มกด” ประกอบกับเทคนิคเล็กน้อย เพื่อใช้แทน &lt;select&gt; หากเราท่านติดตั้ง bootstrap select และใช้งานมันอย่างที่ได้เขียนกำกับไว้แล้วนั้น ผลลัพธ์ก็จะงดงามอย่างไม่น่ามีปัญหาอะไร ทว่าปัญหาจะเกิดขึ้นก็ต่อเมื่อ เราเริ่มใช้ list ที่มีขนาด “ใหญ่” นี่ที่นี้ผมกล่าวถึง ราว ๆ 60-70 ขึ้นไป เช่น จังหวัดในประเทศไทย หรือรายชื่อมหาวิทยาลัยในประเทศไทย ซึ่งผมได้ใช้ bootstrap select กับข้อมูลเหล่านี้ แล้วพบว่าในบางกรณีมีปัญหาการ “scroll หน้าเว็บที่ช้าเอามาก ๆ” และเป็นไปอย่างผิดปกติ กล่าวคือเมื่อเรา คลี่ select ออกมาการ scroll ก็ลื่นปรื้ดตามปกติ แต่เมื่อเรา หุบ select เข้าไปการ scroll กับช้าราวกับเต่าคลาน (framerate ที่ผมพบไม่น่าจะเกิน 5 ต่อวินาที) เมื่อผมลองดูหน้าต่าง performance ของ google chrome ก็จะได้ภาพดังต่อไปนี้ จะเห็นว่า framerate น้อยมาก ๆ ตอนที่มีการ scroll เกิดขึ้นจะเห็นกราฟสีเขียวดรอปลงในช่วงนี้ ที่แปลกคือปัญหาการ scroll เกิดขึ้นเมื่อ หุบ list เข้าไปแล้วซึ่งหมายความมว่า display: none ซึ่งตามความเข้าใจของผม browser ก็ควรจะทำงานน้อยลง แม้ว่า list จะใหญ่มี items เยอะ แต่มันก็สามารถมองข้ามไปด้วยเพราะว่ามันไม่ต้อง render เลยแม้แต่น้อย (ซึ่งผมอาจจะผิด) หากมองลึกลงไปหน่อยจะเห็นว่าส่วนที่ช้าที่สุด ที่ทำให้การ render ในภาพรวมช้าลงคือการ Layout ของ browser ผมพยายามหาวิธีแก้ปัญหาตรงนี้ ก็ยังไม่พบวิธีแก้ แต่ผมก็พบบทความดี ๆ เอาไว้อ่านเล่น ๆ นะครับ เกี่ยวกับการลดภาระการ Layout Avoid large, complex layouts and layout thrashing ผมได้โพสปัญหานี้ไว้ที่ github.com/bootstrap-select แต่ว่ายังไม่ได้รับการตอบกลับแต่อย่างใด ผมเลยคิดว่าอาจจะต้องแก้ปัญหาด้วยวิธีการที่ hack ซักหน่อย ตอนนี้ผมรู้ว่า display:none ทำให้ช้า ไม่ว่าจะช้าด้วยอะไรก็แล้วแต่ และผมลองแล้วว่าถ้าเปลี่ยนจาก display:none เป็น visibility: hidden ปัญหานี้จะไม่เกิดขึ้น เพราะฉะนั้นผมจะแก้ปัญหานี้ด้วย การเปลี่นยวิธีการซ่อน ซึ่งแน่นอนว่าแม้ทั้่งคู่จะทำให้มองไม่เห็นวัตถุเหมือนกันแต่ไม่ได้ให้ผลลัพธ์ที่เหมือนกันซะทีเดียว เนื่องจาก display:none จะไม่มีการ render เลย แต่ว่า visibility: hidden จะมีการ render อยู่ คือมีการจองพื้นที่ใน document แต่ว่าไม่แสดงออกมาให้เห็นเฉย ๆ นั่นแปลว่า ถ้าเรามีวัตถุใหญ่ ๆ แต่ว่า visibility: hidden ไว้ แม้เราจะมองไม่เห็นแต่ว่าเราจะเห็นว่าหน้านี้วัตถุขนาดใหญ่เนื่องจากจะมี scroll bar ให้เห็น และในที่นี้เรากำลังพูดถึง list ขนาดใหญ่ ซึ่งจะกินพื้นที่ใหญ่มาก ๆ ถ้าเราซ่อนมันไว้ด้วยวิธี visibilty: hidden มันจะทำให้เว็บไซต์เรามีพื้นที่ scroll ที่ว่างเปล่าจำนวนมาก แต่ก็ด้วยความจำเพาะของ bootstrap select อีกนั่นแหละทีว่า ถ้าหากเรากด คลี่ &lt;select&gt; ออกมาแล้ว มันจะพยายามปรับให้ ขนาดของ dropdown list ไม่เกินขนาดของหน้าจอ นั่นแปลว่าถ้าเราคลีออกมาแล้ว ไม่ว่า list เราจะใหญ่ขนาดไหน มันก็จะปรับให้มีขนาดไม่เกินหน้าจอ ด้วยทั้งหมดทั้งมวลนี้ผมจึงคิดได้ว่า ถ้าผมบังคับให้ bootstrap select คลี่ีตั้งแต่ต้น (จะได้มีขนาดไม่เกินหน้าจอ) แต่ว่าซ่อนเอาไว้ ผมก็จะสามารถแก้ปัญหานี้ได้ชงัดนัก ผมจะยกตัวอย่างโค้ดที่ผมใช้ implement ตัวแก้ปัญหานี้ ในรูปแบบของ angular (ใช้ es6) ผมสร้าง directive ใหม่ชื่อว่า selectpicker-fatser // this is only for large options scrolling performance fix import angular from &#39;angular&#39;; import &#39;./selectpicker-faster.css&#39;; let partial = angular.module(&#39;selectpickerFaster&#39;, []); partial.directive(&#39;selectpickerFaster&#39;, () =&gt; { return { restrict: &#39;EA&#39;, link: link, }; }); function link($scope, element, attrs) { let $element = $(element); $element .siblings(&#39;.bootstrap-select&#39;) .click( function () { $(this).addClass(&#39;faster&#39;); }); } export var selectpickerFasterComponentModule = partial; โดยในไฟล์ selectpicker-faster.sass (ซึ่งจะถูก compile เป็น .css) กำหนดไว้ว่า .bootstrap-select.faster .dropdown-menu display: block visibility: hidden .bootstrap-select.faster.open .dropdown-menu visibility: visible กล่าวคือใช้ visibility: hidden แทน display:block นั่นเอง เวลาเราใช้งานใน angular ถ้าหากเราใช้ angular-bootstrap-select ด้วยแล้ว จะทำให้เราใช้ directive “selectpicker” ในการสร้าง bootstrap select สำหรับ &lt;select&gt; ที่ต้องการได้ จะได้โค้ดการใช้งานเป็นแบบนี้ ในภาษา html &lt;select selectpicker selectpicker-faster ng-options=&quot;....&quot;&gt; &lt;option value=&quot;&quot;&gt;โปรดเลือก&lt;/option&gt; &lt;/select&gt; เท่านี้ปัญหาการ scroll ก็จะหมดไป โดยที่เราไม่รู้เสียด้วยซ้ำว่าต้นเหตุจริง ๆ แล้วมันเกิดขึ้นมาได้ยังไง (-_-“)" />
+<link rel="canonical" href="/dev/2015/09/13/poor-scrolling-performance-using-bootstrap-select-on-a-large-list.html" />
+<meta property="og:url" content="/dev/2015/09/13/poor-scrolling-performance-using-bootstrap-select-on-a-large-list.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-09-13T11:13:00+07:00" />
+<script type="application/ld+json">
+{"description":"Bootstrap select (เว็บไซต์) เป็น plugin ที่ทำให้เราสามารถ “รับประกัน” ประสบการณ์การใช้งาน dropdown list ของผู้ใช้ได้ เนื่องจากโดยปกติแล้ว dropdown list หรือ &lt;select&gt; มีความแตกต่างขึ้นอยู่กับ browser และก็ยากต่อการกำหนดค่าต่าง ๆ เนื่องจากสามารถกำหนดค่า CSS ได้อย่างจำกัดอย่างยิ่ง จึงมีคนคิด bootstrap select ขึ้นมาโดยอาศัยการจำลอง “ปุ่มกด” ประกอบกับเทคนิคเล็กน้อย เพื่อใช้แทน &lt;select&gt; หากเราท่านติดตั้ง bootstrap select และใช้งานมันอย่างที่ได้เขียนกำกับไว้แล้วนั้น ผลลัพธ์ก็จะงดงามอย่างไม่น่ามีปัญหาอะไร ทว่าปัญหาจะเกิดขึ้นก็ต่อเมื่อ เราเริ่มใช้ list ที่มีขนาด “ใหญ่” นี่ที่นี้ผมกล่าวถึง ราว ๆ 60-70 ขึ้นไป เช่น จังหวัดในประเทศไทย หรือรายชื่อมหาวิทยาลัยในประเทศไทย ซึ่งผมได้ใช้ bootstrap select กับข้อมูลเหล่านี้ แล้วพบว่าในบางกรณีมีปัญหาการ “scroll หน้าเว็บที่ช้าเอามาก ๆ” และเป็นไปอย่างผิดปกติ กล่าวคือเมื่อเรา คลี่ select ออกมาการ scroll ก็ลื่นปรื้ดตามปกติ แต่เมื่อเรา หุบ select เข้าไปการ scroll กับช้าราวกับเต่าคลาน (framerate ที่ผมพบไม่น่าจะเกิน 5 ต่อวินาที) เมื่อผมลองดูหน้าต่าง performance ของ google chrome ก็จะได้ภาพดังต่อไปนี้ จะเห็นว่า framerate น้อยมาก ๆ ตอนที่มีการ scroll เกิดขึ้นจะเห็นกราฟสีเขียวดรอปลงในช่วงนี้ ที่แปลกคือปัญหาการ scroll เกิดขึ้นเมื่อ หุบ list เข้าไปแล้วซึ่งหมายความมว่า display: none ซึ่งตามความเข้าใจของผม browser ก็ควรจะทำงานน้อยลง แม้ว่า list จะใหญ่มี items เยอะ แต่มันก็สามารถมองข้ามไปด้วยเพราะว่ามันไม่ต้อง render เลยแม้แต่น้อย (ซึ่งผมอาจจะผิด) หากมองลึกลงไปหน่อยจะเห็นว่าส่วนที่ช้าที่สุด ที่ทำให้การ render ในภาพรวมช้าลงคือการ Layout ของ browser ผมพยายามหาวิธีแก้ปัญหาตรงนี้ ก็ยังไม่พบวิธีแก้ แต่ผมก็พบบทความดี ๆ เอาไว้อ่านเล่น ๆ นะครับ เกี่ยวกับการลดภาระการ Layout Avoid large, complex layouts and layout thrashing ผมได้โพสปัญหานี้ไว้ที่ github.com/bootstrap-select แต่ว่ายังไม่ได้รับการตอบกลับแต่อย่างใด ผมเลยคิดว่าอาจจะต้องแก้ปัญหาด้วยวิธีการที่ hack ซักหน่อย ตอนนี้ผมรู้ว่า display:none ทำให้ช้า ไม่ว่าจะช้าด้วยอะไรก็แล้วแต่ และผมลองแล้วว่าถ้าเปลี่ยนจาก display:none เป็น visibility: hidden ปัญหานี้จะไม่เกิดขึ้น เพราะฉะนั้นผมจะแก้ปัญหานี้ด้วย การเปลี่นยวิธีการซ่อน ซึ่งแน่นอนว่าแม้ทั้่งคู่จะทำให้มองไม่เห็นวัตถุเหมือนกันแต่ไม่ได้ให้ผลลัพธ์ที่เหมือนกันซะทีเดียว เนื่องจาก display:none จะไม่มีการ render เลย แต่ว่า visibility: hidden จะมีการ render อยู่ คือมีการจองพื้นที่ใน document แต่ว่าไม่แสดงออกมาให้เห็นเฉย ๆ นั่นแปลว่า ถ้าเรามีวัตถุใหญ่ ๆ แต่ว่า visibility: hidden ไว้ แม้เราจะมองไม่เห็นแต่ว่าเราจะเห็นว่าหน้านี้วัตถุขนาดใหญ่เนื่องจากจะมี scroll bar ให้เห็น และในที่นี้เรากำลังพูดถึง list ขนาดใหญ่ ซึ่งจะกินพื้นที่ใหญ่มาก ๆ ถ้าเราซ่อนมันไว้ด้วยวิธี visibilty: hidden มันจะทำให้เว็บไซต์เรามีพื้นที่ scroll ที่ว่างเปล่าจำนวนมาก แต่ก็ด้วยความจำเพาะของ bootstrap select อีกนั่นแหละทีว่า ถ้าหากเรากด คลี่ &lt;select&gt; ออกมาแล้ว มันจะพยายามปรับให้ ขนาดของ dropdown list ไม่เกินขนาดของหน้าจอ นั่นแปลว่าถ้าเราคลีออกมาแล้ว ไม่ว่า list เราจะใหญ่ขนาดไหน มันก็จะปรับให้มีขนาดไม่เกินหน้าจอ ด้วยทั้งหมดทั้งมวลนี้ผมจึงคิดได้ว่า ถ้าผมบังคับให้ bootstrap select คลี่ีตั้งแต่ต้น (จะได้มีขนาดไม่เกินหน้าจอ) แต่ว่าซ่อนเอาไว้ ผมก็จะสามารถแก้ปัญหานี้ได้ชงัดนัก ผมจะยกตัวอย่างโค้ดที่ผมใช้ implement ตัวแก้ปัญหานี้ ในรูปแบบของ angular (ใช้ es6) ผมสร้าง directive ใหม่ชื่อว่า selectpicker-fatser // this is only for large options scrolling performance fix import angular from &#39;angular&#39;; import &#39;./selectpicker-faster.css&#39;; let partial = angular.module(&#39;selectpickerFaster&#39;, []); partial.directive(&#39;selectpickerFaster&#39;, () =&gt; { return { restrict: &#39;EA&#39;, link: link, }; }); function link($scope, element, attrs) { let $element = $(element); $element .siblings(&#39;.bootstrap-select&#39;) .click( function () { $(this).addClass(&#39;faster&#39;); }); } export var selectpickerFasterComponentModule = partial; โดยในไฟล์ selectpicker-faster.sass (ซึ่งจะถูก compile เป็น .css) กำหนดไว้ว่า .bootstrap-select.faster .dropdown-menu display: block visibility: hidden .bootstrap-select.faster.open .dropdown-menu visibility: visible กล่าวคือใช้ visibility: hidden แทน display:block นั่นเอง เวลาเราใช้งานใน angular ถ้าหากเราใช้ angular-bootstrap-select ด้วยแล้ว จะทำให้เราใช้ directive “selectpicker” ในการสร้าง bootstrap select สำหรับ &lt;select&gt; ที่ต้องการได้ จะได้โค้ดการใช้งานเป็นแบบนี้ ในภาษา html &lt;select selectpicker selectpicker-faster ng-options=&quot;....&quot;&gt; &lt;option value=&quot;&quot;&gt;โปรดเลือก&lt;/option&gt; &lt;/select&gt; เท่านี้ปัญหาการ scroll ก็จะหมดไป โดยที่เราไม่รู้เสียด้วยซ้ำว่าต้นเหตุจริง ๆ แล้วมันเกิดขึ้นมาได้ยังไง (-_-“)","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2015/09/13/poor-scrolling-performance-using-bootstrap-select-on-a-large-list.html","headline":"Poor scrolling performance using bootstrap-select on a large list","dateModified":"2015-09-13T11:13:00+07:00","datePublished":"2015-09-13T11:13:00+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2015/09/13/poor-scrolling-performance-using-bootstrap-select-on-a-large-list.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Poor scrolling performance using bootstrap-select on a large list</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2015-09-13T11:13:00+07:00" itemprop="datePublished">Sep 13, 2015
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><strong>Bootstrap select</strong> (<a href="http://silviomoreto.github.io/bootstrap-select/">เว็บไซต์</a>) เป็น plugin ที่ทำให้เราสามารถ “รับประกัน” ประสบการณ์การใช้งาน dropdown list ของผู้ใช้ได้ เนื่องจากโดยปกติแล้ว dropdown list หรือ <code class="highlighter-rouge">&lt;select&gt;</code> มีความแตกต่างขึ้นอยู่กับ browser และก็ยากต่อการกำหนดค่าต่าง ๆ เนื่องจากสามารถกำหนดค่า CSS ได้อย่างจำกัดอย่างยิ่ง จึงมีคนคิด bootstrap select ขึ้นมาโดยอาศัยการจำลอง “ปุ่มกด” ประกอบกับเทคนิคเล็กน้อย เพื่อใช้แทน <code class="highlighter-rouge">&lt;select&gt;</code></p>
+
+<p>หากเราท่านติดตั้ง bootstrap select และใช้งานมันอย่างที่ได้เขียนกำกับไว้แล้วนั้น ผลลัพธ์ก็จะงดงามอย่างไม่น่ามีปัญหาอะไร</p>
+
+<p><img src="/content/images/2016/07/bootstrap-select-ex.png" alt="" /></p>
+
+<p>ทว่าปัญหาจะเกิดขึ้นก็ต่อเมื่อ เราเริ่มใช้ list ที่มีขนาด “ใหญ่” นี่ที่นี้ผมกล่าวถึง ราว ๆ 60-70 ขึ้นไป เช่น จังหวัดในประเทศไทย หรือรายชื่อมหาวิทยาลัยในประเทศไทย ซึ่งผมได้ใช้ bootstrap select กับข้อมูลเหล่านี้ แล้วพบว่าในบางกรณีมีปัญหาการ “scroll หน้าเว็บที่ช้าเอามาก ๆ” และเป็นไปอย่าง<strong>ผิดปกติ</strong> กล่าวคือเมื่อเรา <strong>คลี่</strong> <code class="highlighter-rouge">select</code> ออกมาการ scroll ก็ลื่นปรื้ดตามปกติ แต่เมื่อเรา <strong>หุบ</strong> <code class="highlighter-rouge">select</code> เข้าไปการ scroll กับช้าราวกับเต่าคลาน (framerate ที่ผมพบไม่น่าจะเกิน 5 ต่อวินาที)</p>
+
+<p>เมื่อผมลองดูหน้าต่าง performance ของ google chrome ก็จะได้ภาพดังต่อไปนี้</p>
+
+<p><img src="/content/images/2016/07/bootstrap-select-problem.png" alt="" /></p>
+
+<p>จะเห็นว่า framerate น้อยมาก ๆ ตอนที่มีการ scroll เกิดขึ้นจะเห็นกราฟสีเขียวดรอปลงในช่วงนี้</p>
+
+<p>ที่แปลกคือปัญหาการ scroll เกิดขึ้นเมื่อ <strong>หุบ</strong> list เข้าไปแล้วซึ่งหมายความมว่า <code class="highlighter-rouge">display: none</code> ซึ่งตามความเข้าใจของผม browser ก็ควรจะทำงานน้อยลง แม้ว่า list จะใหญ่มี items เยอะ แต่มันก็สามารถมองข้ามไปด้วยเพราะว่ามันไม่ต้อง render เลยแม้แต่น้อย (ซึ่งผมอาจจะผิด)</p>
+
+<p>หากมองลึกลงไปหน่อยจะเห็นว่าส่วนที่ช้าที่สุด ที่ทำให้การ render ในภาพรวมช้าลงคือการ Layout ของ browser ผมพยายามหาวิธีแก้ปัญหาตรงนี้ ก็ยังไม่พบวิธีแก้ แต่ผมก็พบบทความดี ๆ เอาไว้อ่านเล่น ๆ นะครับ เกี่ยวกับการลดภาระการ Layout <a href="https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing?hl=en">Avoid large, complex layouts and layout thrashing</a></p>
+
+<p>ผมได้โพสปัญหานี้ไว้ที่ <a href="https://github.com/silviomoreto/bootstrap-select/issues/1144">github.com/bootstrap-select</a> แต่ว่ายังไม่ได้รับการตอบกลับแต่อย่างใด</p>
+
+<p>ผมเลยคิดว่าอาจจะต้องแก้ปัญหาด้วยวิธีการที่ <strong>hack</strong> ซักหน่อย ตอนนี้ผมรู้ว่า <code class="highlighter-rouge">display:none</code> ทำให้ช้า ไม่ว่าจะช้าด้วยอะไรก็แล้วแต่ และผมลองแล้วว่าถ้าเปลี่ยนจาก <code class="highlighter-rouge">display:none</code> เป็น <code class="highlighter-rouge">visibility: hidden</code> ปัญหานี้จะไม่เกิดขึ้น เพราะฉะนั้นผมจะแก้ปัญหานี้ด้วย <strong>การเปลี่นยวิธีการซ่อน</strong> ซึ่งแน่นอนว่าแม้ทั้่งคู่จะทำให้มองไม่เห็นวัตถุเหมือนกันแต่ไม่ได้ให้ผลลัพธ์ที่เหมือนกันซะทีเดียว เนื่องจาก <code class="highlighter-rouge">display:none</code> จะไม่มีการ render เลย แต่ว่า <code class="highlighter-rouge">visibility: hidden</code> จะมีการ render อยู่ คือมีการจองพื้นที่ใน <code class="highlighter-rouge">document</code> แต่ว่าไม่แสดงออกมาให้เห็นเฉย ๆ นั่นแปลว่า ถ้าเรามีวัตถุใหญ่ ๆ แต่ว่า <code class="highlighter-rouge">visibility: hidden</code> ไว้ แม้เราจะมองไม่เห็นแต่ว่าเราจะเห็นว่าหน้านี้วัตถุขนาดใหญ่เนื่องจากจะมี scroll bar ให้เห็น</p>
+
+<p>และในที่นี้เรากำลังพูดถึง list ขนาดใหญ่ ซึ่งจะกินพื้นที่ใหญ่มาก ๆ ถ้าเราซ่อนมันไว้ด้วยวิธี <code class="highlighter-rouge">visibilty: hidden</code> มันจะทำให้เว็บไซต์เรามีพื้นที่ scroll ที่ว่างเปล่าจำนวนมาก</p>
+
+<p>แต่ก็ด้วยความจำเพาะของ bootstrap select อีกนั่นแหละทีว่า ถ้าหากเรากด <strong>คลี่</strong> <code class="highlighter-rouge">&lt;select&gt;</code> ออกมาแล้ว มันจะพยายามปรับให้ ขนาดของ dropdown list ไม่เกินขนาดของหน้าจอ นั่นแปลว่าถ้าเราคลีออกมาแล้ว ไม่ว่า list เราจะใหญ่ขนาดไหน มันก็จะปรับให้มีขนาดไม่เกินหน้าจอ</p>
+
+<p>ด้วยทั้งหมดทั้งมวลนี้ผมจึงคิดได้ว่า ถ้าผมบังคับให้ bootstrap select คลี่ีตั้งแต่ต้น (จะได้มีขนาดไม่เกินหน้าจอ) แต่ว่าซ่อนเอาไว้ ผมก็จะสามารถแก้ปัญหานี้ได้ชงัดนัก</p>
+
+<p>ผมจะยกตัวอย่างโค้ดที่ผมใช้ implement ตัวแก้ปัญหานี้ ในรูปแบบของ angular (ใช้ es6) ผมสร้าง directive ใหม่ชื่อว่า <strong>selectpicker-fatser</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// this is only for large options scrolling performance fix
+
+import angular from 'angular';
+
+import './selectpicker-faster.css';
+
+let partial = angular.module('selectpickerFaster', []);
+
+partial.directive('selectpickerFaster',
+  () =&gt; {
+    return {
+      restrict: 'EA',
+      link: link,
+    };
+  });
+
+function link($scope, element, attrs) {
+  let $element = $(element);
+  $element
+    .siblings('.bootstrap-select')
+    .click(
+      function () {
+        $(this).addClass('faster');
+      });
+}
+
+export var selectpickerFasterComponentModule = partial;
+
+</code></pre></div></div>
+
+<p>โดยในไฟล์ selectpicker-faster.sass (ซึ่งจะถูก compile เป็น .css) กำหนดไว้ว่า</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.bootstrap-select.faster
+  .dropdown-menu
+    display: block
+    visibility: hidden
+.bootstrap-select.faster.open
+  .dropdown-menu
+    visibility: visible
+</code></pre></div></div>
+
+<p>กล่าวคือใช้ <code class="highlighter-rouge">visibility: hidden</code> แทน <code class="highlighter-rouge">display:block</code> นั่นเอง</p>
+
+<p>เวลาเราใช้งานใน angular ถ้าหากเราใช้ <a href="https://github.com/joaoneto/angular-bootstrap-select">angular-bootstrap-select</a> ด้วยแล้ว จะทำให้เราใช้ directive “selectpicker” ในการสร้าง bootstrap select สำหรับ <code class="highlighter-rouge">&lt;select&gt;</code> ที่ต้องการได้ จะได้โค้ดการใช้งานเป็นแบบนี้ ในภาษา html</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;select selectpicker
+        selectpicker-faster
+        ng-options="...."&gt;
+  &lt;option value=""&gt;โปรดเลือก&lt;/option&gt;
+&lt;/select&gt;
+</code></pre></div></div>
+
+<p>เท่านี้ปัญหาการ scroll ก็จะหมดไป โดยที่เราไม่รู้เสียด้วยซ้ำว่าต้นเหตุจริง ๆ แล้วมันเกิดขึ้นมาได้ยังไง (-_-“)</p>
+
+
+    <small>
+      
+      <a href="/tags/web/">web</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2015/09/13/poor-scrolling-performance-using-bootstrap-select-on-a-large-list.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

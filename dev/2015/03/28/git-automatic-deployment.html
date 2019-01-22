@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Git Automatic Deployment | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Git Automatic Deployment" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ผมเพิ่งให้ความสนใจกับการ deploy ไม่นานมานี้ เนื่องจากเร่ิมรู้สึกว่าน่าจะมีวิธีดีกว่าที่เราทำอยู่ แต่ก่อนที่ FTP ลาก ๆ วาง ๆ ว่าเจ๋งแล้ว ก็ได้รู้จักกับ Git ที่ก็แค่กด push แล้วก็ไปกด pull ที่เครื่อง server แต่ดูเหมือนว่าที่จริงมันก็มีวิธีที่ง่ายกว่านี้ ก็จริงที่ว่าทำไมเราต้องไปกด pull เองที่ server ด้วยหล่ะ ? ทำไมเราไม่ให้มัน pull ให้เราเอง หรือไม่ เราก็ push โดยตรงไปที่ server เครื่องนั้นเลย โดยไม่ต้องผ่านบริการ third-party เช่น github.com หรือ bitbucket หลังจาก google อยู่ซักพักผมก็ได้คำตอบจากโพสของ DigitalOcean วิธีการที่เค้าเสนอคือทำให้ server เครื่องที่เราใช้เป็น remote repository ไปเลย หากเราต้องการ deploy ขึ้นไป ก็โยนไปที่นี่เลย ไฟล์ก็จะไปอยู่ในที่ ๆ เรากำหนดใน server เราเองอย่างง่ายดาย (เนื่องจากผมใช้บริการ VPS อยู่แล้ว) หมายเหตุ ผมไม่ได้เข้าใจอย่างถ่องแท้ ก็แค่พิมพ์ ๆ ตามเค้าแล้วก็พยายามหาคำอธิบายเท่าที่ความรู้ตัวเองพึงจะอธิบายได้ ###เริ่มด้วยการเตรียม remote repository บน VPS ที่จริงแล้วเราสามารถสร้าง remote repository ด้วยตัวเองได้ไม่ต้องพึ่ง github หรือ bitbucket แต่อย่างใด และวิธีการก็ไม่ได้ยากไปกว่าการสร้าง directory ใหม่เท่านั้นเอง แต่ไม่ได้แปลว่าเราจะโยน repository เก่าเราทิ้งไปนะ เราใช้ควบคู่กันไปได้ สมมติว่าผมต้องการสร้าง git repository ไว้ที่ /var/repo/phizaz-blog.git เพื่อจะได้เรียกได้จาก ssh://user@domain/var/repo/phizaz-blog.git และผมต้องการเก็บไฟล์ที่ push มาไว้ที่ var/www/html สร้าง repository cd /var mkdir repo การเรียกอาจจะต้องพึ่ง sudo เนื่องจาก /var มักเป็น directory ของ root หากเป็นเช่นนั้นเรายังต้อง sudo chown username repo ด้วยเพื่อให้เราสามารถแตะต้อง directory repo ได้อย่างสะดวก mkdir phizaz-blog.git &amp;&amp; cd phizaz-blog.git ครั้งนี้ไม่จำเป็นต้อง sudo แล้ว git init --bare คำสั่งนี้คือการเสกให้ directory นี้เป็น git repository โดย –bare บอกว่า directory นี้จะไม่เก็บส่วนที่เป็น work tree จะเก็บเฉพาะส่วน version control เท่านั้น (แปลว่าเราจะโยนไฟล์ไปเก็บไว้ที่ directory ที่เราต้องการภายนอกได้ ในที่นี้คือ var/www/html) ตั้งค่าให้ work tree เป็น directory ภายนอกที่ต้องการ cd hooks cat &gt; post-receive ไฟล์ post-receive ใน directory hooks จะบอกว่าหลังจากได้รับไฟล์จากการ push (หลังจากถูก push) เข้ามาที่ repository นี้จะต้องทำคำสั่งใดบ้าง (คำสั่งต่าง ๆ ถูกเขียนในไฟล์นี้) #!/bin/sh git --work-tree=/var/www/html --git-dir=/var/repo/phizaz-blog.git checkout -f เมื่อเสร็จแล้วกด ctrl + d เพื่อส่งสัญญาณสิ้นสุดการ input chmod +x post-receive เพื่อให้ script ที่เราเขียนไว้สามารถรันได้ เท่านี้ remote repository ของเราก็พร้อมสำหรับการใช้งานแล้ว เพิ่ม repository นี้เข้าไปใน project ของเรา สมมติว่าเรามี local git repository อยู่ที่ project ของเราอยู่แล้ว ซึ่งอาจจะมี remote อื่นอยู่แล้วก็ดี (เช่นผูกกับ github.com อยู่แล้ว) หรือไม่ผูกก็ได้ ใช้คำสั่งต่อไปนี้ที่ root directory ของ repository git remote add live ssh://user@domain/var/repo/phizaz-blog.git ถ้าและหากเราใช้โปรแกรมพวก sourcetree อยู่แล้วก็จะเห็นว่าในแถบ remote จะมีอันใหม่ชื่อว่า live หากเรา push commit ไปยัง remote นี้สิ่งที่เรา push ก็จะไปโผล่ที่ /var/www/html ยังเครื่อง server ดังที่เราได้กำหนดไว้ วิธีการนี้ผมใช้ในการ deploy บล็อก ๆ นี้ขึ้นไปยัง server อยู่ในปัจจุบัน" />
+<meta property="og:description" content="ผมเพิ่งให้ความสนใจกับการ deploy ไม่นานมานี้ เนื่องจากเร่ิมรู้สึกว่าน่าจะมีวิธีดีกว่าที่เราทำอยู่ แต่ก่อนที่ FTP ลาก ๆ วาง ๆ ว่าเจ๋งแล้ว ก็ได้รู้จักกับ Git ที่ก็แค่กด push แล้วก็ไปกด pull ที่เครื่อง server แต่ดูเหมือนว่าที่จริงมันก็มีวิธีที่ง่ายกว่านี้ ก็จริงที่ว่าทำไมเราต้องไปกด pull เองที่ server ด้วยหล่ะ ? ทำไมเราไม่ให้มัน pull ให้เราเอง หรือไม่ เราก็ push โดยตรงไปที่ server เครื่องนั้นเลย โดยไม่ต้องผ่านบริการ third-party เช่น github.com หรือ bitbucket หลังจาก google อยู่ซักพักผมก็ได้คำตอบจากโพสของ DigitalOcean วิธีการที่เค้าเสนอคือทำให้ server เครื่องที่เราใช้เป็น remote repository ไปเลย หากเราต้องการ deploy ขึ้นไป ก็โยนไปที่นี่เลย ไฟล์ก็จะไปอยู่ในที่ ๆ เรากำหนดใน server เราเองอย่างง่ายดาย (เนื่องจากผมใช้บริการ VPS อยู่แล้ว) หมายเหตุ ผมไม่ได้เข้าใจอย่างถ่องแท้ ก็แค่พิมพ์ ๆ ตามเค้าแล้วก็พยายามหาคำอธิบายเท่าที่ความรู้ตัวเองพึงจะอธิบายได้ ###เริ่มด้วยการเตรียม remote repository บน VPS ที่จริงแล้วเราสามารถสร้าง remote repository ด้วยตัวเองได้ไม่ต้องพึ่ง github หรือ bitbucket แต่อย่างใด และวิธีการก็ไม่ได้ยากไปกว่าการสร้าง directory ใหม่เท่านั้นเอง แต่ไม่ได้แปลว่าเราจะโยน repository เก่าเราทิ้งไปนะ เราใช้ควบคู่กันไปได้ สมมติว่าผมต้องการสร้าง git repository ไว้ที่ /var/repo/phizaz-blog.git เพื่อจะได้เรียกได้จาก ssh://user@domain/var/repo/phizaz-blog.git และผมต้องการเก็บไฟล์ที่ push มาไว้ที่ var/www/html สร้าง repository cd /var mkdir repo การเรียกอาจจะต้องพึ่ง sudo เนื่องจาก /var มักเป็น directory ของ root หากเป็นเช่นนั้นเรายังต้อง sudo chown username repo ด้วยเพื่อให้เราสามารถแตะต้อง directory repo ได้อย่างสะดวก mkdir phizaz-blog.git &amp;&amp; cd phizaz-blog.git ครั้งนี้ไม่จำเป็นต้อง sudo แล้ว git init --bare คำสั่งนี้คือการเสกให้ directory นี้เป็น git repository โดย –bare บอกว่า directory นี้จะไม่เก็บส่วนที่เป็น work tree จะเก็บเฉพาะส่วน version control เท่านั้น (แปลว่าเราจะโยนไฟล์ไปเก็บไว้ที่ directory ที่เราต้องการภายนอกได้ ในที่นี้คือ var/www/html) ตั้งค่าให้ work tree เป็น directory ภายนอกที่ต้องการ cd hooks cat &gt; post-receive ไฟล์ post-receive ใน directory hooks จะบอกว่าหลังจากได้รับไฟล์จากการ push (หลังจากถูก push) เข้ามาที่ repository นี้จะต้องทำคำสั่งใดบ้าง (คำสั่งต่าง ๆ ถูกเขียนในไฟล์นี้) #!/bin/sh git --work-tree=/var/www/html --git-dir=/var/repo/phizaz-blog.git checkout -f เมื่อเสร็จแล้วกด ctrl + d เพื่อส่งสัญญาณสิ้นสุดการ input chmod +x post-receive เพื่อให้ script ที่เราเขียนไว้สามารถรันได้ เท่านี้ remote repository ของเราก็พร้อมสำหรับการใช้งานแล้ว เพิ่ม repository นี้เข้าไปใน project ของเรา สมมติว่าเรามี local git repository อยู่ที่ project ของเราอยู่แล้ว ซึ่งอาจจะมี remote อื่นอยู่แล้วก็ดี (เช่นผูกกับ github.com อยู่แล้ว) หรือไม่ผูกก็ได้ ใช้คำสั่งต่อไปนี้ที่ root directory ของ repository git remote add live ssh://user@domain/var/repo/phizaz-blog.git ถ้าและหากเราใช้โปรแกรมพวก sourcetree อยู่แล้วก็จะเห็นว่าในแถบ remote จะมีอันใหม่ชื่อว่า live หากเรา push commit ไปยัง remote นี้สิ่งที่เรา push ก็จะไปโผล่ที่ /var/www/html ยังเครื่อง server ดังที่เราได้กำหนดไว้ วิธีการนี้ผมใช้ในการ deploy บล็อก ๆ นี้ขึ้นไปยัง server อยู่ในปัจจุบัน" />
+<link rel="canonical" href="/dev/2015/03/28/git-automatic-deployment.html" />
+<meta property="og:url" content="/dev/2015/03/28/git-automatic-deployment.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-03-28T11:10:00+07:00" />
+<script type="application/ld+json">
+{"description":"ผมเพิ่งให้ความสนใจกับการ deploy ไม่นานมานี้ เนื่องจากเร่ิมรู้สึกว่าน่าจะมีวิธีดีกว่าที่เราทำอยู่ แต่ก่อนที่ FTP ลาก ๆ วาง ๆ ว่าเจ๋งแล้ว ก็ได้รู้จักกับ Git ที่ก็แค่กด push แล้วก็ไปกด pull ที่เครื่อง server แต่ดูเหมือนว่าที่จริงมันก็มีวิธีที่ง่ายกว่านี้ ก็จริงที่ว่าทำไมเราต้องไปกด pull เองที่ server ด้วยหล่ะ ? ทำไมเราไม่ให้มัน pull ให้เราเอง หรือไม่ เราก็ push โดยตรงไปที่ server เครื่องนั้นเลย โดยไม่ต้องผ่านบริการ third-party เช่น github.com หรือ bitbucket หลังจาก google อยู่ซักพักผมก็ได้คำตอบจากโพสของ DigitalOcean วิธีการที่เค้าเสนอคือทำให้ server เครื่องที่เราใช้เป็น remote repository ไปเลย หากเราต้องการ deploy ขึ้นไป ก็โยนไปที่นี่เลย ไฟล์ก็จะไปอยู่ในที่ ๆ เรากำหนดใน server เราเองอย่างง่ายดาย (เนื่องจากผมใช้บริการ VPS อยู่แล้ว) หมายเหตุ ผมไม่ได้เข้าใจอย่างถ่องแท้ ก็แค่พิมพ์ ๆ ตามเค้าแล้วก็พยายามหาคำอธิบายเท่าที่ความรู้ตัวเองพึงจะอธิบายได้ ###เริ่มด้วยการเตรียม remote repository บน VPS ที่จริงแล้วเราสามารถสร้าง remote repository ด้วยตัวเองได้ไม่ต้องพึ่ง github หรือ bitbucket แต่อย่างใด และวิธีการก็ไม่ได้ยากไปกว่าการสร้าง directory ใหม่เท่านั้นเอง แต่ไม่ได้แปลว่าเราจะโยน repository เก่าเราทิ้งไปนะ เราใช้ควบคู่กันไปได้ สมมติว่าผมต้องการสร้าง git repository ไว้ที่ /var/repo/phizaz-blog.git เพื่อจะได้เรียกได้จาก ssh://user@domain/var/repo/phizaz-blog.git และผมต้องการเก็บไฟล์ที่ push มาไว้ที่ var/www/html สร้าง repository cd /var mkdir repo การเรียกอาจจะต้องพึ่ง sudo เนื่องจาก /var มักเป็น directory ของ root หากเป็นเช่นนั้นเรายังต้อง sudo chown username repo ด้วยเพื่อให้เราสามารถแตะต้อง directory repo ได้อย่างสะดวก mkdir phizaz-blog.git &amp;&amp; cd phizaz-blog.git ครั้งนี้ไม่จำเป็นต้อง sudo แล้ว git init --bare คำสั่งนี้คือการเสกให้ directory นี้เป็น git repository โดย –bare บอกว่า directory นี้จะไม่เก็บส่วนที่เป็น work tree จะเก็บเฉพาะส่วน version control เท่านั้น (แปลว่าเราจะโยนไฟล์ไปเก็บไว้ที่ directory ที่เราต้องการภายนอกได้ ในที่นี้คือ var/www/html) ตั้งค่าให้ work tree เป็น directory ภายนอกที่ต้องการ cd hooks cat &gt; post-receive ไฟล์ post-receive ใน directory hooks จะบอกว่าหลังจากได้รับไฟล์จากการ push (หลังจากถูก push) เข้ามาที่ repository นี้จะต้องทำคำสั่งใดบ้าง (คำสั่งต่าง ๆ ถูกเขียนในไฟล์นี้) #!/bin/sh git --work-tree=/var/www/html --git-dir=/var/repo/phizaz-blog.git checkout -f เมื่อเสร็จแล้วกด ctrl + d เพื่อส่งสัญญาณสิ้นสุดการ input chmod +x post-receive เพื่อให้ script ที่เราเขียนไว้สามารถรันได้ เท่านี้ remote repository ของเราก็พร้อมสำหรับการใช้งานแล้ว เพิ่ม repository นี้เข้าไปใน project ของเรา สมมติว่าเรามี local git repository อยู่ที่ project ของเราอยู่แล้ว ซึ่งอาจจะมี remote อื่นอยู่แล้วก็ดี (เช่นผูกกับ github.com อยู่แล้ว) หรือไม่ผูกก็ได้ ใช้คำสั่งต่อไปนี้ที่ root directory ของ repository git remote add live ssh://user@domain/var/repo/phizaz-blog.git ถ้าและหากเราใช้โปรแกรมพวก sourcetree อยู่แล้วก็จะเห็นว่าในแถบ remote จะมีอันใหม่ชื่อว่า live หากเรา push commit ไปยัง remote นี้สิ่งที่เรา push ก็จะไปโผล่ที่ /var/www/html ยังเครื่อง server ดังที่เราได้กำหนดไว้ วิธีการนี้ผมใช้ในการ deploy บล็อก ๆ นี้ขึ้นไปยัง server อยู่ในปัจจุบัน","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2015/03/28/git-automatic-deployment.html","headline":"Git Automatic Deployment","dateModified":"2015-03-28T11:10:00+07:00","datePublished":"2015-03-28T11:10:00+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2015/03/28/git-automatic-deployment.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Git Automatic Deployment</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2015-03-28T11:10:00+07:00" itemprop="datePublished">Mar 28, 2015
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>ผมเพิ่งให้ความสนใจกับการ deploy ไม่นานมานี้ เนื่องจากเร่ิมรู้สึกว่าน่าจะมีวิธีดีกว่าที่เราทำอยู่ แต่ก่อนที่ FTP ลาก ๆ วาง ๆ ว่าเจ๋งแล้ว ก็ได้รู้จักกับ Git ที่ก็แค่กด push แล้วก็ไปกด pull ที่เครื่อง server แต่ดูเหมือนว่าที่จริงมันก็มีวิธีที่ง่ายกว่านี้ <strong>ก็จริงที่ว่าทำไมเราต้องไปกด pull เองที่ server ด้วยหล่ะ ?</strong> ทำไมเราไม่ให้มัน pull ให้เราเอง หรือไม่ <strong>เราก็ push โดยตรงไปที่ server เครื่องนั้นเลย โดยไม่ต้องผ่านบริการ third-party เช่น github.com หรือ bitbucket</strong></p>
+
+<p>หลังจาก google อยู่ซักพักผมก็ได้คำตอบจากโพสของ <a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-automatic-deployment-with-git-with-a-vps">DigitalOcean</a> วิธีการที่เค้าเสนอคือทำให้ server เครื่องที่เราใช้เป็น remote repository ไปเลย หากเราต้องการ deploy ขึ้นไป ก็โยนไปที่นี่เลย ไฟล์ก็จะไปอยู่ในที่ ๆ เรากำหนดใน server เราเองอย่างง่ายดาย (เนื่องจากผมใช้บริการ VPS อยู่แล้ว)</p>
+
+<p><strong>หมายเหตุ</strong> ผมไม่ได้เข้าใจอย่างถ่องแท้ ก็แค่พิมพ์ ๆ ตามเค้าแล้วก็พยายามหาคำอธิบายเท่าที่ความรู้ตัวเองพึงจะอธิบายได้</p>
+
+<p>###เริ่มด้วยการเตรียม remote repository บน VPS
+ที่จริงแล้วเราสามารถสร้าง remote repository ด้วยตัวเองได้ไม่ต้องพึ่ง github หรือ bitbucket แต่อย่างใด และวิธีการก็ไม่ได้ยากไปกว่าการสร้าง directory ใหม่เท่านั้นเอง แต่ไม่ได้แปลว่าเราจะโยน repository เก่าเราทิ้งไปนะ เราใช้ควบคู่กันไปได้</p>
+
+<p>สมมติว่าผมต้องการสร้าง git repository ไว้ที่ <em>/var/repo/phizaz-blog.git</em> <br />
+เพื่อจะได้เรียกได้จาก <em>ssh://user@domain/var/repo/phizaz-blog.git</em>
+และผมต้องการเก็บไฟล์ที่ push มาไว้ที่ <em>var/www/html</em></p>
+
+<h4 id="สร้าง-repository">สร้าง repository</h4>
+<ol>
+  <li><code class="highlighter-rouge">cd /var</code></li>
+  <li><code class="highlighter-rouge">mkdir repo</code><br />
+การเรียกอาจจะต้องพึ่ง <code class="highlighter-rouge">sudo</code> เนื่องจาก <em>/var</em> มักเป็น directory ของ root หากเป็นเช่นนั้นเรายังต้อง <code class="highlighter-rouge">sudo chown username repo</code> ด้วยเพื่อให้เราสามารถแตะต้อง directory repo ได้อย่างสะดวก</li>
+  <li><code class="highlighter-rouge">mkdir phizaz-blog.git &amp;&amp; cd phizaz-blog.git</code><br />
+ครั้งนี้ไม่จำเป็นต้อง sudo แล้ว</li>
+  <li><code class="highlighter-rouge">git init --bare</code><br />
+คำสั่งนี้คือการเสกให้ directory นี้เป็น git repository โดย –bare บอกว่า directory นี้จะไม่เก็บส่วนที่เป็น work tree จะเก็บเฉพาะส่วน version control เท่านั้น (แปลว่าเราจะโยนไฟล์ไปเก็บไว้ที่ directory ที่เราต้องการภายนอกได้ ในที่นี้คือ <em>var/www/html</em>)</li>
+</ol>
+
+<h4 id="ตั้งค่าให้-work-tree-เป็น-directory-ภายนอกที่ต้องการ">ตั้งค่าให้ work tree เป็น directory ภายนอกที่ต้องการ</h4>
+<ol>
+  <li><code class="highlighter-rouge">cd hooks</code></li>
+  <li><code class="highlighter-rouge">cat &gt; post-receive</code><br />
+ไฟล์ post-receive ใน directory <em>hooks</em> จะบอกว่าหลังจากได้รับไฟล์จากการ push (หลังจากถูก push) เข้ามาที่ repository นี้จะต้องทำคำสั่งใดบ้าง (คำสั่งต่าง ๆ ถูกเขียนในไฟล์นี้)</li>
+  <li><code class="highlighter-rouge"><span class="c">#!/bin/sh</span></code>
+<code class="highlighter-rouge">git --work-tree=/var/www/html --git-dir=/var/repo/phizaz-blog.git checkout -f</code><br />
+เมื่อเสร็จแล้วกด <code class="highlighter-rouge">ctrl + d</code> เพื่อส่งสัญญาณสิ้นสุดการ input</li>
+  <li><code class="highlighter-rouge">chmod +x post-receive</code><br />
+เพื่อให้ script ที่เราเขียนไว้สามารถรันได้</li>
+</ol>
+
+<p>เท่านี้ remote repository ของเราก็พร้อมสำหรับการใช้งานแล้ว</p>
+
+<h4 id="เพิ่ม-repository-นี้เข้าไปใน-project-ของเรา">เพิ่ม repository นี้เข้าไปใน project ของเรา</h4>
+<p>สมมติว่าเรามี local git repository อยู่ที่ project ของเราอยู่แล้ว ซึ่งอาจจะมี remote อื่นอยู่แล้วก็ดี (เช่นผูกกับ github.com อยู่แล้ว) หรือไม่ผูกก็ได้ ใช้คำสั่งต่อไปนี้ที่ root directory ของ repository<br />
+<code class="highlighter-rouge">git remote add live ssh://user@domain/var/repo/phizaz-blog.git</code></p>
+
+<p>ถ้าและหากเราใช้โปรแกรมพวก sourcetree อยู่แล้วก็จะเห็นว่าในแถบ <em>remote</em> จะมีอันใหม่ชื่อว่า <em>live</em> หากเรา push commit ไปยัง remote นี้สิ่งที่เรา push ก็จะไปโผล่ที่ <em>/var/www/html</em> ยังเครื่อง server ดังที่เราได้กำหนดไว้</p>
+
+<p>วิธีการนี้ผมใช้ในการ deploy บล็อก ๆ นี้ขึ้นไปยัง server อยู่ในปัจจุบัน</p>
+
+
+    <small>
+      
+      <a href="/tags/devops/">devops</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2015/03/28/git-automatic-deployment.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

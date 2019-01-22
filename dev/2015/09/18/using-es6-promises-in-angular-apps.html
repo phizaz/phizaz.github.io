@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Using ES6 Promises in Angular Apps | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Using ES6 Promises in Angular Apps" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ที่จริงคอนเซ็ปต์เรื่อง promise ไม่ใช่เรื่องใหม่ (อ่านเพิ่มเติมเรื่อง promise) และ Angular เองก็ได้รับเอาคอนเซ็ปต์นี้เข้ามาเป็นส่วนหนึ่งของ framework ซึ่งเราจะเรียกใช้งานได้จากการ inject $q (วิธีการใช้ $q) โดยผมพบด้วยตัวผมเองว่าการใช้ promise ทำให้ผมสามารถทำงานกับ Angular ได้อย่างมีความสุขขึ้นอย่างมาก โค้ดที่เขียนออกมานั้นอ่านและเข้าใจได้ง่ายกว่าเดิมมาก จากเดิมต้องเขียนด้วยการใช้ callback ซึ่งก็เข้าใจยากด้วยตัวเองอยู่แล้ว ยังยากต่อการอ่านให้รู้เรื่องด้วยเนื่องจากการเขียน callback ไม่ได้ถูกออกแบบมาให้อ่านด้วยมนุษย์ได้ง่าย ๆ แต่สำหรับคนที่ไม่เคยได้ยินคำว่า promise มาก่อน ผมจะอธิบยไว้ตรงนี้เสียหน่อยว่ามันก็เหมือนกับ “สัญญา” ดังความหมายของมันนั่นแหละ มันคือสิ่งที่จะมี “ค่า” ในอนาคต แม้ว่ายังไม่ใช่ตอนนี้ ลักษณะการใช้งานทั่ว ๆ ไปที่เราจะเห็นได้ก็เช่น let a = some promise; a.then( function afterA(promisedValue) { ... do something here ... }); จากตัวอย่างนี้ … ฟังก์ชัน afterA จะถูกเรียกเมื่อ “สัญญา” ได้กลายเป็นความจริงแล้ว (ไม่เกิดขั้นทันที) และจะถูกส่งค่าที่ได้สัญญาเอาไว้ใส่ไปใน promisedValue ด้วย ถ้าดูตรงนี้แค่นี้ก็อาจจะคิดว่ามันก็ไม่ได้ต่างกับ callback หนิ แค่มีตัวอักษร .then ซึ่งก็จริง เพราะว่า .then เองก็ยังต้องใช้ callback เลย แต่เชื่อหรือไม่ว่าแค่มี .then ก็ทำให้อ่านโค้ดได้ง่ายขึ้นเป็นโขแล้ว อีกหนึ่งตัวอย่างที่แสดงว่า promise มันน่าจะดีกว่า callback แน่ ๆ ก็เช่น let a = some promise; a .then( function afterA(promisedValue) { ... do something here ... let b = some promise; return b; }) .then( function afterB(promisedValue) { ... do something else here ... }); ตอนนี้เรามีสองฟังก์ชัยคือ afterA กับ afterB โดย afterA จะถูกเรียกก่อน ก็คือตอนที่ “สัญญา” ถูกทำให้เป็นจริงแล้ว และถ้า afterA ยัง return เป็น “สัญญา” ใหม่ เราก็จะสามารถ “เชื่อม” (chain) สำหรับ .then ตัวถัดไปได้ อย่างในตัวอย่างด้านบน afterA ทำงานหลังจาก สัญญา a เสร็จสิ้น และ afterB ก็จะทำงานเมื่อ สัญญาที่ return มาจาก afterA นั่นคือสัญญา b ทำงานเสร็จสิ้นนั่นเอง จะเห็นว่า afterB จะทำงานหลังจาก afterA ซึ่งหากเราต้องการให้ มีการทำงานของทั้งสัญญา a และ b พร้อม ๆ แบบไม่ต้องรอกัน แต่เราต้องการดูเพียงว่า ทั้งสองทำงานเสร็จแล้วจึงเรียกอะไรบางอย่างมาทำงาน เราจะเขียนได้แบบนี้ let a = some promise; let b = some other promise; Promise .all([a, b]) .then( function afterAB(values) { let promisedValueFromA = values[0]; let promisedValueFromB = values[1]; ... do something after a, b are finished ... }); การเชื่อมโดยใช้ .then() ต่อ ๆ กันไปเรื่อย ๆ ก็น่าสนใจดี แต่ว่าบางครั้ง เราต้องการเชื่อมอย่างมีเงื่อนไข เช่นว่าถ้าในเงื่อนไขแบบหนึ่งเราก็จะเชื่อมแบบหนึ่ง หากภายใต้เงื่อนไขอีกแบบหนึ่งเราอจจะเชื่อมอีกแบบ สามารถเขียนได้ดังนี้ let a = some proimes; let promise = a; promise = promise .then( function first() { ... do something ... return some promise; }); if (condition) { promise = promise .then( function conditionIsTrue() { ... do something ... return some promise; }); } else { promise = promise .then( function conditionIsFalse() { ... do something ... return some promise; }); } promise .then( function last() { ... do something ... }); สิ่งที่เราเพิ่มขึ้นมาเพื่อการแยกการเชื่อม ก็คือการยัดค่าใส่ตัวแปร ชื่อว่า promise ตัวแปรนี้ช่วยให้เราสามารถเชื่อม promise ต่อจากจุดเก่าได้ ดังตัวอย่างด้านบน first() จะถูกเรียกเสมอและเป็นอันดับแรก ต่อมาด้วย conditionIsTrue() ถ้า condition เป็นจริง และ conditionIsFalse() ถ้า condition ไม่เป็นจริง แล้วจบด้วย last() เสมอ จบแล้วเรื่อง promise ตอนนี้ทุกคนน่าจะรู้จักวิธีการใช้งานของมันแล้ว ต่อไปผมจะเริ่มพูดถึงวิธีการใช้ promise กับ Angular ของเรา ซึ่งส่วนสำคัญที่สุดคือเราจะพยายาม “ใช้งานข้อมูลเหมือนตัวแปรที่อยู่ local ให้มากที่สุด” คือเราพยายาามใส่ abstraction บางอย่างเพื่อให้เราสามารถเรียกใช้งานตัวแปรได้ราวกับว่ามันก็คือตัวแปรธรรมดา ๆ ตัวนึง วิธีนี้จะทำให้โค้ดอ่านง่ายกว่าการเรียกเพื่อเอาค่า (resolve) ตัวแปร ณ​ เวลาที่ต้องใช้ได้อย่างมาก หมายเหตุ: ตัวอย่างต่อไปนี้ผมจะใช้ร่วมกับ Angular UI Router และใช้การแนวทางการเขียนแบบ gocardless สมมติว่าเราต้องการสร้าง controller สำหรับหน้า dashboard ซึ่งจะแสดงข้อมูลส่วนตัวของผู้ใช้ไว้ในหน้านี้ และผูกไว้กับ url: /dashboard หลักการคือเราต้องการใช้ดึกข้อมูลผู้ใช้มา และนำเอาไปใช้ใน controller ราวกับว่าเป็นตัวแปรธรรมดา ๆ ตัวหนึ่ง เราสามารถทำได้ด้วยการใช้งาน resolve ของ angular ui router ซึ่งคาดหวังว่าเราจะ return เป็น promise อยู่แล้ว ดังต่อไปนี้ ไฟล์ : dashboard.route.js เราจะระบุการ routing ของ ส่วนนี้ไว้ที่นี่ ประกอบกับข้อมูลที่จำเป็นต้องได้ก่อนที่จะเข้าสู่ state นั้น ๆ ได้ import angular from `angular&#39;; import &#39;angular-ui-router&#39;; import {backendServiceModule} from &#39;./backend.service&#39;; import {dashboardControllerModule} from &#39;./dashboard.controller&#39;; let partial = angular.module(&#39;dashboardRouteModule&#39;, [ &#39;ui.router&#39;, backendServiceModule.name, dashboardControllerModule.name, ]); partial.config( ($stateProvider) =&gt; { $stateProvider .state({ url: &#39;/dashboard&#39;, controller: &#39;dashboardController&#39;, resolve: { userInfo: (Backend) =&gt; { return Backend.getUserInfo(); } } }); }); export var dashboardRouteModule = partial; ไฟล์ : backend.service.js ซึ่งเราจะเขียน abstraction สำหรับการเรียก request ไปยัง server ไว้ที่นี่ import angular from &#39;angular&#39;; class Backend { constructor($http) { this.$http = $http; } getUserInfo() { return this.$http.get(&#39;...get user info...&#39;); } } let partial = angular.module(&#39;backendServiceModule&#39;, []); partial.service(&#39;Backend&#39;, Backend); export var backendServiceModule = partial; method getUserInfo() นั้น return เป็น promise เนื่องจาก $http.get() ของ Angular return เป็น promise อยู่แล้ว ไฟล์ : dashboard.controller.js ซึ่งเราจะเขียน controller และใช้งานข้อมูลของผู้ใช้ที่เราได้ดึงมาจาก backend ที่นี่ import angular from &#39;angular&#39;; let partial = angular.module(&#39;dashboardControllerModule&#39;, []); partial.controller(&#39;dashboardController&#39;, (userInfo) =&gt; { ... now we can use userInfo like we have it locally ... }); export var dashboardControllerModule = partial; ตอนนี้เราสามารถใช้ข้อมูลจาก backend ราวกับว่ามันอยู่ที่ local ของ frontend ผ่านตัวแปรชื่อ userInfo โดยที่ controller ไม่ต้องรู้เลยว่าตัวแปรนี้มาได้ยังไง รู้แค่ว่ามันมีความหมายว่าอะไรก็พอ (แต่เรารู้ชัดว่ามันมาจากไหนเนื่องจากเรารู้ว่ามันไม่ใช่ serverices แสดงว่ามันมาจาก resolve ของ route แน่ ๆ ตรงนี้ทำให้เราแก้ปัญหาได้ง่ายหากเกิดอะไรขึ้น)" />
+<meta property="og:description" content="ที่จริงคอนเซ็ปต์เรื่อง promise ไม่ใช่เรื่องใหม่ (อ่านเพิ่มเติมเรื่อง promise) และ Angular เองก็ได้รับเอาคอนเซ็ปต์นี้เข้ามาเป็นส่วนหนึ่งของ framework ซึ่งเราจะเรียกใช้งานได้จากการ inject $q (วิธีการใช้ $q) โดยผมพบด้วยตัวผมเองว่าการใช้ promise ทำให้ผมสามารถทำงานกับ Angular ได้อย่างมีความสุขขึ้นอย่างมาก โค้ดที่เขียนออกมานั้นอ่านและเข้าใจได้ง่ายกว่าเดิมมาก จากเดิมต้องเขียนด้วยการใช้ callback ซึ่งก็เข้าใจยากด้วยตัวเองอยู่แล้ว ยังยากต่อการอ่านให้รู้เรื่องด้วยเนื่องจากการเขียน callback ไม่ได้ถูกออกแบบมาให้อ่านด้วยมนุษย์ได้ง่าย ๆ แต่สำหรับคนที่ไม่เคยได้ยินคำว่า promise มาก่อน ผมจะอธิบยไว้ตรงนี้เสียหน่อยว่ามันก็เหมือนกับ “สัญญา” ดังความหมายของมันนั่นแหละ มันคือสิ่งที่จะมี “ค่า” ในอนาคต แม้ว่ายังไม่ใช่ตอนนี้ ลักษณะการใช้งานทั่ว ๆ ไปที่เราจะเห็นได้ก็เช่น let a = some promise; a.then( function afterA(promisedValue) { ... do something here ... }); จากตัวอย่างนี้ … ฟังก์ชัน afterA จะถูกเรียกเมื่อ “สัญญา” ได้กลายเป็นความจริงแล้ว (ไม่เกิดขั้นทันที) และจะถูกส่งค่าที่ได้สัญญาเอาไว้ใส่ไปใน promisedValue ด้วย ถ้าดูตรงนี้แค่นี้ก็อาจจะคิดว่ามันก็ไม่ได้ต่างกับ callback หนิ แค่มีตัวอักษร .then ซึ่งก็จริง เพราะว่า .then เองก็ยังต้องใช้ callback เลย แต่เชื่อหรือไม่ว่าแค่มี .then ก็ทำให้อ่านโค้ดได้ง่ายขึ้นเป็นโขแล้ว อีกหนึ่งตัวอย่างที่แสดงว่า promise มันน่าจะดีกว่า callback แน่ ๆ ก็เช่น let a = some promise; a .then( function afterA(promisedValue) { ... do something here ... let b = some promise; return b; }) .then( function afterB(promisedValue) { ... do something else here ... }); ตอนนี้เรามีสองฟังก์ชัยคือ afterA กับ afterB โดย afterA จะถูกเรียกก่อน ก็คือตอนที่ “สัญญา” ถูกทำให้เป็นจริงแล้ว และถ้า afterA ยัง return เป็น “สัญญา” ใหม่ เราก็จะสามารถ “เชื่อม” (chain) สำหรับ .then ตัวถัดไปได้ อย่างในตัวอย่างด้านบน afterA ทำงานหลังจาก สัญญา a เสร็จสิ้น และ afterB ก็จะทำงานเมื่อ สัญญาที่ return มาจาก afterA นั่นคือสัญญา b ทำงานเสร็จสิ้นนั่นเอง จะเห็นว่า afterB จะทำงานหลังจาก afterA ซึ่งหากเราต้องการให้ มีการทำงานของทั้งสัญญา a และ b พร้อม ๆ แบบไม่ต้องรอกัน แต่เราต้องการดูเพียงว่า ทั้งสองทำงานเสร็จแล้วจึงเรียกอะไรบางอย่างมาทำงาน เราจะเขียนได้แบบนี้ let a = some promise; let b = some other promise; Promise .all([a, b]) .then( function afterAB(values) { let promisedValueFromA = values[0]; let promisedValueFromB = values[1]; ... do something after a, b are finished ... }); การเชื่อมโดยใช้ .then() ต่อ ๆ กันไปเรื่อย ๆ ก็น่าสนใจดี แต่ว่าบางครั้ง เราต้องการเชื่อมอย่างมีเงื่อนไข เช่นว่าถ้าในเงื่อนไขแบบหนึ่งเราก็จะเชื่อมแบบหนึ่ง หากภายใต้เงื่อนไขอีกแบบหนึ่งเราอจจะเชื่อมอีกแบบ สามารถเขียนได้ดังนี้ let a = some proimes; let promise = a; promise = promise .then( function first() { ... do something ... return some promise; }); if (condition) { promise = promise .then( function conditionIsTrue() { ... do something ... return some promise; }); } else { promise = promise .then( function conditionIsFalse() { ... do something ... return some promise; }); } promise .then( function last() { ... do something ... }); สิ่งที่เราเพิ่มขึ้นมาเพื่อการแยกการเชื่อม ก็คือการยัดค่าใส่ตัวแปร ชื่อว่า promise ตัวแปรนี้ช่วยให้เราสามารถเชื่อม promise ต่อจากจุดเก่าได้ ดังตัวอย่างด้านบน first() จะถูกเรียกเสมอและเป็นอันดับแรก ต่อมาด้วย conditionIsTrue() ถ้า condition เป็นจริง และ conditionIsFalse() ถ้า condition ไม่เป็นจริง แล้วจบด้วย last() เสมอ จบแล้วเรื่อง promise ตอนนี้ทุกคนน่าจะรู้จักวิธีการใช้งานของมันแล้ว ต่อไปผมจะเริ่มพูดถึงวิธีการใช้ promise กับ Angular ของเรา ซึ่งส่วนสำคัญที่สุดคือเราจะพยายาม “ใช้งานข้อมูลเหมือนตัวแปรที่อยู่ local ให้มากที่สุด” คือเราพยายาามใส่ abstraction บางอย่างเพื่อให้เราสามารถเรียกใช้งานตัวแปรได้ราวกับว่ามันก็คือตัวแปรธรรมดา ๆ ตัวนึง วิธีนี้จะทำให้โค้ดอ่านง่ายกว่าการเรียกเพื่อเอาค่า (resolve) ตัวแปร ณ​ เวลาที่ต้องใช้ได้อย่างมาก หมายเหตุ: ตัวอย่างต่อไปนี้ผมจะใช้ร่วมกับ Angular UI Router และใช้การแนวทางการเขียนแบบ gocardless สมมติว่าเราต้องการสร้าง controller สำหรับหน้า dashboard ซึ่งจะแสดงข้อมูลส่วนตัวของผู้ใช้ไว้ในหน้านี้ และผูกไว้กับ url: /dashboard หลักการคือเราต้องการใช้ดึกข้อมูลผู้ใช้มา และนำเอาไปใช้ใน controller ราวกับว่าเป็นตัวแปรธรรมดา ๆ ตัวหนึ่ง เราสามารถทำได้ด้วยการใช้งาน resolve ของ angular ui router ซึ่งคาดหวังว่าเราจะ return เป็น promise อยู่แล้ว ดังต่อไปนี้ ไฟล์ : dashboard.route.js เราจะระบุการ routing ของ ส่วนนี้ไว้ที่นี่ ประกอบกับข้อมูลที่จำเป็นต้องได้ก่อนที่จะเข้าสู่ state นั้น ๆ ได้ import angular from `angular&#39;; import &#39;angular-ui-router&#39;; import {backendServiceModule} from &#39;./backend.service&#39;; import {dashboardControllerModule} from &#39;./dashboard.controller&#39;; let partial = angular.module(&#39;dashboardRouteModule&#39;, [ &#39;ui.router&#39;, backendServiceModule.name, dashboardControllerModule.name, ]); partial.config( ($stateProvider) =&gt; { $stateProvider .state({ url: &#39;/dashboard&#39;, controller: &#39;dashboardController&#39;, resolve: { userInfo: (Backend) =&gt; { return Backend.getUserInfo(); } } }); }); export var dashboardRouteModule = partial; ไฟล์ : backend.service.js ซึ่งเราจะเขียน abstraction สำหรับการเรียก request ไปยัง server ไว้ที่นี่ import angular from &#39;angular&#39;; class Backend { constructor($http) { this.$http = $http; } getUserInfo() { return this.$http.get(&#39;...get user info...&#39;); } } let partial = angular.module(&#39;backendServiceModule&#39;, []); partial.service(&#39;Backend&#39;, Backend); export var backendServiceModule = partial; method getUserInfo() นั้น return เป็น promise เนื่องจาก $http.get() ของ Angular return เป็น promise อยู่แล้ว ไฟล์ : dashboard.controller.js ซึ่งเราจะเขียน controller และใช้งานข้อมูลของผู้ใช้ที่เราได้ดึงมาจาก backend ที่นี่ import angular from &#39;angular&#39;; let partial = angular.module(&#39;dashboardControllerModule&#39;, []); partial.controller(&#39;dashboardController&#39;, (userInfo) =&gt; { ... now we can use userInfo like we have it locally ... }); export var dashboardControllerModule = partial; ตอนนี้เราสามารถใช้ข้อมูลจาก backend ราวกับว่ามันอยู่ที่ local ของ frontend ผ่านตัวแปรชื่อ userInfo โดยที่ controller ไม่ต้องรู้เลยว่าตัวแปรนี้มาได้ยังไง รู้แค่ว่ามันมีความหมายว่าอะไรก็พอ (แต่เรารู้ชัดว่ามันมาจากไหนเนื่องจากเรารู้ว่ามันไม่ใช่ serverices แสดงว่ามันมาจาก resolve ของ route แน่ ๆ ตรงนี้ทำให้เราแก้ปัญหาได้ง่ายหากเกิดอะไรขึ้น)" />
+<link rel="canonical" href="/dev/2015/09/18/using-es6-promises-in-angular-apps.html" />
+<meta property="og:url" content="/dev/2015/09/18/using-es6-promises-in-angular-apps.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-09-18T16:21:00+07:00" />
+<script type="application/ld+json">
+{"description":"ที่จริงคอนเซ็ปต์เรื่อง promise ไม่ใช่เรื่องใหม่ (อ่านเพิ่มเติมเรื่อง promise) และ Angular เองก็ได้รับเอาคอนเซ็ปต์นี้เข้ามาเป็นส่วนหนึ่งของ framework ซึ่งเราจะเรียกใช้งานได้จากการ inject $q (วิธีการใช้ $q) โดยผมพบด้วยตัวผมเองว่าการใช้ promise ทำให้ผมสามารถทำงานกับ Angular ได้อย่างมีความสุขขึ้นอย่างมาก โค้ดที่เขียนออกมานั้นอ่านและเข้าใจได้ง่ายกว่าเดิมมาก จากเดิมต้องเขียนด้วยการใช้ callback ซึ่งก็เข้าใจยากด้วยตัวเองอยู่แล้ว ยังยากต่อการอ่านให้รู้เรื่องด้วยเนื่องจากการเขียน callback ไม่ได้ถูกออกแบบมาให้อ่านด้วยมนุษย์ได้ง่าย ๆ แต่สำหรับคนที่ไม่เคยได้ยินคำว่า promise มาก่อน ผมจะอธิบยไว้ตรงนี้เสียหน่อยว่ามันก็เหมือนกับ “สัญญา” ดังความหมายของมันนั่นแหละ มันคือสิ่งที่จะมี “ค่า” ในอนาคต แม้ว่ายังไม่ใช่ตอนนี้ ลักษณะการใช้งานทั่ว ๆ ไปที่เราจะเห็นได้ก็เช่น let a = some promise; a.then( function afterA(promisedValue) { ... do something here ... }); จากตัวอย่างนี้ … ฟังก์ชัน afterA จะถูกเรียกเมื่อ “สัญญา” ได้กลายเป็นความจริงแล้ว (ไม่เกิดขั้นทันที) และจะถูกส่งค่าที่ได้สัญญาเอาไว้ใส่ไปใน promisedValue ด้วย ถ้าดูตรงนี้แค่นี้ก็อาจจะคิดว่ามันก็ไม่ได้ต่างกับ callback หนิ แค่มีตัวอักษร .then ซึ่งก็จริง เพราะว่า .then เองก็ยังต้องใช้ callback เลย แต่เชื่อหรือไม่ว่าแค่มี .then ก็ทำให้อ่านโค้ดได้ง่ายขึ้นเป็นโขแล้ว อีกหนึ่งตัวอย่างที่แสดงว่า promise มันน่าจะดีกว่า callback แน่ ๆ ก็เช่น let a = some promise; a .then( function afterA(promisedValue) { ... do something here ... let b = some promise; return b; }) .then( function afterB(promisedValue) { ... do something else here ... }); ตอนนี้เรามีสองฟังก์ชัยคือ afterA กับ afterB โดย afterA จะถูกเรียกก่อน ก็คือตอนที่ “สัญญา” ถูกทำให้เป็นจริงแล้ว และถ้า afterA ยัง return เป็น “สัญญา” ใหม่ เราก็จะสามารถ “เชื่อม” (chain) สำหรับ .then ตัวถัดไปได้ อย่างในตัวอย่างด้านบน afterA ทำงานหลังจาก สัญญา a เสร็จสิ้น และ afterB ก็จะทำงานเมื่อ สัญญาที่ return มาจาก afterA นั่นคือสัญญา b ทำงานเสร็จสิ้นนั่นเอง จะเห็นว่า afterB จะทำงานหลังจาก afterA ซึ่งหากเราต้องการให้ มีการทำงานของทั้งสัญญา a และ b พร้อม ๆ แบบไม่ต้องรอกัน แต่เราต้องการดูเพียงว่า ทั้งสองทำงานเสร็จแล้วจึงเรียกอะไรบางอย่างมาทำงาน เราจะเขียนได้แบบนี้ let a = some promise; let b = some other promise; Promise .all([a, b]) .then( function afterAB(values) { let promisedValueFromA = values[0]; let promisedValueFromB = values[1]; ... do something after a, b are finished ... }); การเชื่อมโดยใช้ .then() ต่อ ๆ กันไปเรื่อย ๆ ก็น่าสนใจดี แต่ว่าบางครั้ง เราต้องการเชื่อมอย่างมีเงื่อนไข เช่นว่าถ้าในเงื่อนไขแบบหนึ่งเราก็จะเชื่อมแบบหนึ่ง หากภายใต้เงื่อนไขอีกแบบหนึ่งเราอจจะเชื่อมอีกแบบ สามารถเขียนได้ดังนี้ let a = some proimes; let promise = a; promise = promise .then( function first() { ... do something ... return some promise; }); if (condition) { promise = promise .then( function conditionIsTrue() { ... do something ... return some promise; }); } else { promise = promise .then( function conditionIsFalse() { ... do something ... return some promise; }); } promise .then( function last() { ... do something ... }); สิ่งที่เราเพิ่มขึ้นมาเพื่อการแยกการเชื่อม ก็คือการยัดค่าใส่ตัวแปร ชื่อว่า promise ตัวแปรนี้ช่วยให้เราสามารถเชื่อม promise ต่อจากจุดเก่าได้ ดังตัวอย่างด้านบน first() จะถูกเรียกเสมอและเป็นอันดับแรก ต่อมาด้วย conditionIsTrue() ถ้า condition เป็นจริง และ conditionIsFalse() ถ้า condition ไม่เป็นจริง แล้วจบด้วย last() เสมอ จบแล้วเรื่อง promise ตอนนี้ทุกคนน่าจะรู้จักวิธีการใช้งานของมันแล้ว ต่อไปผมจะเริ่มพูดถึงวิธีการใช้ promise กับ Angular ของเรา ซึ่งส่วนสำคัญที่สุดคือเราจะพยายาม “ใช้งานข้อมูลเหมือนตัวแปรที่อยู่ local ให้มากที่สุด” คือเราพยายาามใส่ abstraction บางอย่างเพื่อให้เราสามารถเรียกใช้งานตัวแปรได้ราวกับว่ามันก็คือตัวแปรธรรมดา ๆ ตัวนึง วิธีนี้จะทำให้โค้ดอ่านง่ายกว่าการเรียกเพื่อเอาค่า (resolve) ตัวแปร ณ​ เวลาที่ต้องใช้ได้อย่างมาก หมายเหตุ: ตัวอย่างต่อไปนี้ผมจะใช้ร่วมกับ Angular UI Router และใช้การแนวทางการเขียนแบบ gocardless สมมติว่าเราต้องการสร้าง controller สำหรับหน้า dashboard ซึ่งจะแสดงข้อมูลส่วนตัวของผู้ใช้ไว้ในหน้านี้ และผูกไว้กับ url: /dashboard หลักการคือเราต้องการใช้ดึกข้อมูลผู้ใช้มา และนำเอาไปใช้ใน controller ราวกับว่าเป็นตัวแปรธรรมดา ๆ ตัวหนึ่ง เราสามารถทำได้ด้วยการใช้งาน resolve ของ angular ui router ซึ่งคาดหวังว่าเราจะ return เป็น promise อยู่แล้ว ดังต่อไปนี้ ไฟล์ : dashboard.route.js เราจะระบุการ routing ของ ส่วนนี้ไว้ที่นี่ ประกอบกับข้อมูลที่จำเป็นต้องได้ก่อนที่จะเข้าสู่ state นั้น ๆ ได้ import angular from `angular&#39;; import &#39;angular-ui-router&#39;; import {backendServiceModule} from &#39;./backend.service&#39;; import {dashboardControllerModule} from &#39;./dashboard.controller&#39;; let partial = angular.module(&#39;dashboardRouteModule&#39;, [ &#39;ui.router&#39;, backendServiceModule.name, dashboardControllerModule.name, ]); partial.config( ($stateProvider) =&gt; { $stateProvider .state({ url: &#39;/dashboard&#39;, controller: &#39;dashboardController&#39;, resolve: { userInfo: (Backend) =&gt; { return Backend.getUserInfo(); } } }); }); export var dashboardRouteModule = partial; ไฟล์ : backend.service.js ซึ่งเราจะเขียน abstraction สำหรับการเรียก request ไปยัง server ไว้ที่นี่ import angular from &#39;angular&#39;; class Backend { constructor($http) { this.$http = $http; } getUserInfo() { return this.$http.get(&#39;...get user info...&#39;); } } let partial = angular.module(&#39;backendServiceModule&#39;, []); partial.service(&#39;Backend&#39;, Backend); export var backendServiceModule = partial; method getUserInfo() นั้น return เป็น promise เนื่องจาก $http.get() ของ Angular return เป็น promise อยู่แล้ว ไฟล์ : dashboard.controller.js ซึ่งเราจะเขียน controller และใช้งานข้อมูลของผู้ใช้ที่เราได้ดึงมาจาก backend ที่นี่ import angular from &#39;angular&#39;; let partial = angular.module(&#39;dashboardControllerModule&#39;, []); partial.controller(&#39;dashboardController&#39;, (userInfo) =&gt; { ... now we can use userInfo like we have it locally ... }); export var dashboardControllerModule = partial; ตอนนี้เราสามารถใช้ข้อมูลจาก backend ราวกับว่ามันอยู่ที่ local ของ frontend ผ่านตัวแปรชื่อ userInfo โดยที่ controller ไม่ต้องรู้เลยว่าตัวแปรนี้มาได้ยังไง รู้แค่ว่ามันมีความหมายว่าอะไรก็พอ (แต่เรารู้ชัดว่ามันมาจากไหนเนื่องจากเรารู้ว่ามันไม่ใช่ serverices แสดงว่ามันมาจาก resolve ของ route แน่ ๆ ตรงนี้ทำให้เราแก้ปัญหาได้ง่ายหากเกิดอะไรขึ้น)","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2015/09/18/using-es6-promises-in-angular-apps.html","headline":"Using ES6 Promises in Angular Apps","dateModified":"2015-09-18T16:21:00+07:00","datePublished":"2015-09-18T16:21:00+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2015/09/18/using-es6-promises-in-angular-apps.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Using ES6 Promises in Angular Apps</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2015-09-18T16:21:00+07:00" itemprop="datePublished">Sep 18, 2015
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>ที่จริงคอนเซ็ปต์เรื่อง promise ไม่ใช่เรื่องใหม่ (<a href="http://www.2ality.com/2014/09/es6-promises-foundations.html">อ่านเพิ่มเติม</a>เรื่อง promise) และ Angular เองก็ได้รับเอาคอนเซ็ปต์นี้เข้ามาเป็นส่วนหนึ่งของ framework ซึ่งเราจะเรียกใช้งานได้จากการ inject $q (วิธีการใช้ <a href="https://docs.angularjs.org/api/ng/service/$q">$q</a>) โดยผมพบด้วยตัวผมเองว่าการใช้ promise ทำให้ผมสามารถทำงานกับ Angular ได้อย่างมีความสุขขึ้นอย่างมาก โค้ดที่เขียนออกมานั้นอ่านและเข้าใจได้ง่ายกว่าเดิมมาก จากเดิมต้องเขียนด้วยการใช้ callback ซึ่งก็เข้าใจยากด้วยตัวเองอยู่แล้ว ยังยากต่อการอ่านให้รู้เรื่องด้วยเนื่องจากการเขียน callback ไม่ได้ถูกออกแบบมาให้อ่านด้วยมนุษย์ได้ง่าย ๆ</p>
+
+<p>แต่สำหรับคนที่ไม่เคยได้ยินคำว่า promise มาก่อน ผมจะอธิบยไว้ตรงนี้เสียหน่อยว่ามันก็เหมือนกับ “สัญญา” ดังความหมายของมันนั่นแหละ มันคือสิ่งที่จะมี “ค่า” ในอนาคต แม้ว่ายังไม่ใช่ตอนนี้ ลักษณะการใช้งานทั่ว ๆ ไปที่เราจะเห็นได้ก็เช่น</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let a = some promise;
+a.then(
+	function afterA(promisedValue) {
+		... do something here ...
+	});
+</code></pre></div></div>
+
+<p>จากตัวอย่างนี้ … ฟังก์ชัน afterA จะถูกเรียกเมื่อ “สัญญา” ได้กลายเป็นความจริงแล้ว (ไม่เกิดขั้นทันที) และจะถูกส่งค่าที่ได้สัญญาเอาไว้ใส่ไปใน promisedValue ด้วย ถ้าดูตรงนี้แค่นี้ก็อาจจะคิดว่ามันก็ไม่ได้ต่างกับ callback หนิ แค่มีตัวอักษร .then ซึ่งก็จริง เพราะว่า .then เองก็ยังต้องใช้ callback เลย แต่เชื่อหรือไม่ว่าแค่มี .then ก็ทำให้อ่านโค้ดได้ง่ายขึ้นเป็นโขแล้ว</p>
+
+<p>อีกหนึ่งตัวอย่างที่แสดงว่า promise มันน่าจะดีกว่า callback แน่ ๆ ก็เช่น</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let a = some promise;
+a
+.then(
+	function afterA(promisedValue) {
+		... do something here ...
+		let b = some promise;
+		return b;
+	})
+.then(
+	function afterB(promisedValue) {
+		... do something else here ...
+	});
+</code></pre></div></div>
+
+<p>ตอนนี้เรามีสองฟังก์ชัยคือ afterA กับ afterB โดย afterA จะถูกเรียกก่อน ก็คือตอนที่ “สัญญา” ถูกทำให้เป็นจริงแล้ว และถ้า afterA ยัง return เป็น <strong>“สัญญา”</strong> ใหม่ เราก็จะสามารถ <strong>“เชื่อม”</strong> (chain) สำหรับ .then ตัวถัดไปได้ อย่างในตัวอย่างด้านบน afterA ทำงานหลังจาก <strong>สัญญา a</strong> เสร็จสิ้น และ afterB ก็จะทำงานเมื่อ <strong>สัญญาที่ return มาจาก afterA นั่นคือสัญญา b</strong> ทำงานเสร็จสิ้นนั่นเอง</p>
+
+<p>จะเห็นว่า afterB จะทำงานหลังจาก afterA ซึ่งหากเราต้องการให้ มีการทำงานของทั้งสัญญา a และ b พร้อม ๆ แบบไม่ต้องรอกัน แต่เราต้องการดูเพียงว่า ทั้งสองทำงานเสร็จแล้วจึงเรียกอะไรบางอย่างมาทำงาน เราจะเขียนได้แบบนี้</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let a = some promise;
+let b = some other promise;
+Promise
+.all([a, b])
+.then(
+	function afterAB(values) {
+		let promisedValueFromA = values[0];
+		let promisedValueFromB = values[1];
+		... do something after a, b are finished ...
+	});
+</code></pre></div></div>
+
+<p>การเชื่อมโดยใช้ .then() ต่อ ๆ กันไปเรื่อย ๆ ก็น่าสนใจดี แต่ว่าบางครั้ง เราต้องการเชื่อมอย่างมีเงื่อนไข  เช่นว่าถ้าในเงื่อนไขแบบหนึ่งเราก็จะเชื่อมแบบหนึ่ง หากภายใต้เงื่อนไขอีกแบบหนึ่งเราอจจะเชื่อมอีกแบบ สามารถเขียนได้ดังนี้</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let a = some proimes;
+let promise = a;
+
+promise = promise
+	.then(
+		function first() {
+			... do something ...
+			return some promise;
+		});
+		
+if (condition) {
+	promise = promise
+		.then(
+			function conditionIsTrue() {
+				... do something ...
+				return some promise;
+			});
+} else {
+	promise = promise
+		.then(
+			function conditionIsFalse() {
+				... do something ...
+				return some promise;
+			});
+}
+
+promise
+.then(
+	function last() {
+		... do something ...
+	});
+</code></pre></div></div>
+
+<p>สิ่งที่เราเพิ่มขึ้นมาเพื่อการแยกการเชื่อม ก็คือการยัดค่าใส่ตัวแปร ชื่อว่า <code class="highlighter-rouge">promise</code> ตัวแปรนี้ช่วยให้เราสามารถเชื่อม promise ต่อจากจุดเก่าได้ ดังตัวอย่างด้านบน first() จะถูกเรียกเสมอและเป็นอันดับแรก ต่อมาด้วย conditionIsTrue() ถ้า condition เป็นจริง และ conditionIsFalse() ถ้า condition ไม่เป็นจริง แล้วจบด้วย last() เสมอ</p>
+
+<p>จบแล้วเรื่อง promise ตอนนี้ทุกคนน่าจะรู้จักวิธีการใช้งานของมันแล้ว ต่อไปผมจะเริ่มพูดถึงวิธีการใช้ promise กับ Angular ของเรา ซึ่งส่วนสำคัญที่สุดคือเราจะพยายาม <strong>“ใช้งานข้อมูลเหมือนตัวแปรที่อยู่ local ให้มากที่สุด”</strong> คือเราพยายาามใส่ abstraction บางอย่างเพื่อให้เราสามารถเรียกใช้งานตัวแปรได้ราวกับว่ามันก็คือตัวแปรธรรมดา ๆ ตัวนึง วิธีนี้จะทำให้โค้ดอ่านง่ายกว่าการเรียกเพื่อเอาค่า (resolve) ตัวแปร ณ​ เวลาที่ต้องใช้ได้อย่างมาก</p>
+
+<p>หมายเหตุ: ตัวอย่างต่อไปนี้ผมจะใช้ร่วมกับ Angular UI Router และใช้การแนวทางการเขียนแบบ <a href="https://github.com/gocardless/angularjs-style-guide">gocardless</a>
+สมมติว่าเราต้องการสร้าง controller สำหรับหน้า dashboard ซึ่งจะแสดงข้อมูลส่วนตัวของผู้ใช้ไว้ในหน้านี้ และผูกไว้กับ <code class="highlighter-rouge">url: /dashboard</code></p>
+
+<p>หลักการคือเราต้องการใช้ดึกข้อมูลผู้ใช้มา และนำเอาไปใช้ใน controller ราวกับว่าเป็นตัวแปรธรรมดา ๆ ตัวหนึ่ง เราสามารถทำได้ด้วยการใช้งาน <code class="highlighter-rouge">resolve</code> ของ angular ui router ซึ่งคาดหวังว่าเราจะ return เป็น promise อยู่แล้ว ดังต่อไปนี้</p>
+
+<p><strong>ไฟล์ : dashboard.route.js</strong>
+เราจะระบุการ routing ของ ส่วนนี้ไว้ที่นี่ ประกอบกับข้อมูลที่จำเป็นต้องได้ก่อนที่จะเข้าสู่ state นั้น ๆ ได้</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import angular from `angular';
+import 'angular-ui-router';
+
+import {backendServiceModule} from './backend.service';
+import {dashboardControllerModule} from './dashboard.controller';
+
+let partial = angular.module('dashboardRouteModule', 
+	[
+		'ui.router',
+		backendServiceModule.name,
+		dashboardControllerModule.name,
+	]);
+
+partial.config(
+	($stateProvider) =&gt; {
+		$stateProvider
+			.state({
+				url: '/dashboard',
+				controller: 'dashboardController',
+				resolve: {
+					userInfo: (Backend) =&gt; {
+						return Backend.getUserInfo();
+					}
+				}
+			});
+	});
+
+export var dashboardRouteModule = partial;
+</code></pre></div></div>
+
+<p><strong>ไฟล์ : backend.service.js</strong>
+ซึ่งเราจะเขียน abstraction สำหรับการเรียก request ไปยัง server ไว้ที่นี่</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import angular from 'angular';
+
+class Backend {
+	constructor($http) {
+		this.$http = $http;
+	}
+	
+	getUserInfo() {
+		return this.$http.get('...get user info...');
+	}
+}
+
+let partial = angular.module('backendServiceModule', []);
+
+partial.service('Backend', Backend);
+
+export var backendServiceModule = partial;
+</code></pre></div></div>
+
+<p>method getUserInfo() นั้น return เป็น promise เนื่องจาก $http.get() ของ Angular return เป็น promise อยู่แล้ว</p>
+
+<p><strong>ไฟล์ : dashboard.controller.js</strong>
+ซึ่งเราจะเขียน controller และใช้งานข้อมูลของผู้ใช้ที่เราได้ดึงมาจาก backend ที่นี่</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import angular from 'angular';
+
+let partial = angular.module('dashboardControllerModule', []);
+
+partial.controller('dashboardController', 
+	(userInfo) =&gt; {
+		... now we can use userInfo like we have it locally ...
+	});
+	
+export var dashboardControllerModule = partial;
+</code></pre></div></div>
+
+<p>ตอนนี้เราสามารถใช้ข้อมูลจาก backend ราวกับว่ามันอยู่ที่ local ของ frontend ผ่านตัวแปรชื่อ userInfo โดยที่ controller ไม่ต้องรู้เลยว่าตัวแปรนี้มาได้ยังไง รู้แค่ว่ามันมีความหมายว่าอะไรก็พอ (แต่เรารู้ชัดว่ามันมาจากไหนเนื่องจากเรารู้ว่ามันไม่ใช่ serverices แสดงว่ามันมาจาก resolve ของ route แน่ ๆ ตรงนี้ทำให้เราแก้ปัญหาได้ง่ายหากเกิดอะไรขึ้น)</p>
+
+
+    <small>
+      
+      <a href="/tags/js/">js</a>
+      
+      <a href="/tags/angular/">angular</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2015/09/18/using-es6-promises-in-angular-apps.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

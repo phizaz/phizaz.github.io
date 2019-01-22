@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Ubuntu 16.04 Init (with Docker) | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Ubuntu 16.04 Init (with Docker)" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This should be a bunch of commands, handy just for my use. Create User adduser user # add to sudo group usermod -aG sudo user # from your station ssh-copy-id user@ip Or # manually # from your station cat ~/.ssh/id_rsa.pub # copy it # to your remote (user) mkdir ~/.ssh chmod 500 ~/.ssh vim ~/.ssh/authorized_keys # paste it, save, quit chmod 600 ~/.ssh/authorized_keys Swapfile (thread: https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04) Allocate sudo fallocate -l 1G /swapfile Enable sudo chmod 600 /swapfile sudo mkswap /swapfile sudo swapon /swapfile # see the result sudo swapon --show Make Swap Permanent # back up old setting sudo cp /etc/fstab /etc/fstab.bak echo &#39;/swapfile none swap sw 0 0&#39; | sudo tee -a /etc/fstab Docker (thread: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04) sudo apt-get update sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D sudo apt-add-repository &#39;deb https://apt.dockerproject.org/repo ubuntu-xenial main&#39; sudo apt-get update apt-cache policy docker-engine Should see: docker-engine: Installed: (none) Candidate: 1.11.1-0~xenial categories: dev Version table: 1.11.1-0~xenial 500 500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages 1.11.0-0~xenial 500 500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages sudo apt-get install -y docker-engine sudo systemctl status docker Should see: ● docker.service - Docker Application Container Engine Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled) Active: active (running) since Sun 2016-05-01 06:53:52 CDT; 1 weeks 3 days ago Docs: https://docs.docker.com Main PID: 749 (docker) Make it run without sudo: sudo usermod -aG docker $(whoami) # relogin docker info Docker Compose (thread: https://docs.docker.com/compose/install/) You might be tempted to install it from apt-get but you will get an old version. sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose sudo chmod +x /usr/local/bin/docker-compose docker-compose --help" />
+<meta property="og:description" content="This should be a bunch of commands, handy just for my use. Create User adduser user # add to sudo group usermod -aG sudo user # from your station ssh-copy-id user@ip Or # manually # from your station cat ~/.ssh/id_rsa.pub # copy it # to your remote (user) mkdir ~/.ssh chmod 500 ~/.ssh vim ~/.ssh/authorized_keys # paste it, save, quit chmod 600 ~/.ssh/authorized_keys Swapfile (thread: https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04) Allocate sudo fallocate -l 1G /swapfile Enable sudo chmod 600 /swapfile sudo mkswap /swapfile sudo swapon /swapfile # see the result sudo swapon --show Make Swap Permanent # back up old setting sudo cp /etc/fstab /etc/fstab.bak echo &#39;/swapfile none swap sw 0 0&#39; | sudo tee -a /etc/fstab Docker (thread: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04) sudo apt-get update sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D sudo apt-add-repository &#39;deb https://apt.dockerproject.org/repo ubuntu-xenial main&#39; sudo apt-get update apt-cache policy docker-engine Should see: docker-engine: Installed: (none) Candidate: 1.11.1-0~xenial categories: dev Version table: 1.11.1-0~xenial 500 500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages 1.11.0-0~xenial 500 500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages sudo apt-get install -y docker-engine sudo systemctl status docker Should see: ● docker.service - Docker Application Container Engine Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled) Active: active (running) since Sun 2016-05-01 06:53:52 CDT; 1 weeks 3 days ago Docs: https://docs.docker.com Main PID: 749 (docker) Make it run without sudo: sudo usermod -aG docker $(whoami) # relogin docker info Docker Compose (thread: https://docs.docker.com/compose/install/) You might be tempted to install it from apt-get but you will get an old version. sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose sudo chmod +x /usr/local/bin/docker-compose docker-compose --help" />
+<link rel="canonical" href="/dev/2017/02/13/ubuntu-16-04-init.html" />
+<meta property="og:url" content="/dev/2017/02/13/ubuntu-16-04-init.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-02-13T18:34:18+07:00" />
+<script type="application/ld+json">
+{"description":"This should be a bunch of commands, handy just for my use. Create User adduser user # add to sudo group usermod -aG sudo user # from your station ssh-copy-id user@ip Or # manually # from your station cat ~/.ssh/id_rsa.pub # copy it # to your remote (user) mkdir ~/.ssh chmod 500 ~/.ssh vim ~/.ssh/authorized_keys # paste it, save, quit chmod 600 ~/.ssh/authorized_keys Swapfile (thread: https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04) Allocate sudo fallocate -l 1G /swapfile Enable sudo chmod 600 /swapfile sudo mkswap /swapfile sudo swapon /swapfile # see the result sudo swapon --show Make Swap Permanent # back up old setting sudo cp /etc/fstab /etc/fstab.bak echo &#39;/swapfile none swap sw 0 0&#39; | sudo tee -a /etc/fstab Docker (thread: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04) sudo apt-get update sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D sudo apt-add-repository &#39;deb https://apt.dockerproject.org/repo ubuntu-xenial main&#39; sudo apt-get update apt-cache policy docker-engine Should see: docker-engine: Installed: (none) Candidate: 1.11.1-0~xenial categories: dev Version table: 1.11.1-0~xenial 500 500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages 1.11.0-0~xenial 500 500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages sudo apt-get install -y docker-engine sudo systemctl status docker Should see: ● docker.service - Docker Application Container Engine Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled) Active: active (running) since Sun 2016-05-01 06:53:52 CDT; 1 weeks 3 days ago Docs: https://docs.docker.com Main PID: 749 (docker) Make it run without sudo: sudo usermod -aG docker $(whoami) # relogin docker info Docker Compose (thread: https://docs.docker.com/compose/install/) You might be tempted to install it from apt-get but you will get an old version. sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose sudo chmod +x /usr/local/bin/docker-compose docker-compose --help","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2017/02/13/ubuntu-16-04-init.html","headline":"Ubuntu 16.04 Init (with Docker)","dateModified":"2017-02-13T18:34:18+07:00","datePublished":"2017-02-13T18:34:18+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2017/02/13/ubuntu-16-04-init.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Ubuntu 16.04 Init (with Docker)</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-02-13T18:34:18+07:00" itemprop="datePublished">Feb 13, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>This should be a bunch of commands, handy just for my use.</p>
+
+<h3 id="create-user">Create User</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>adduser user
+# add to sudo group
+usermod -aG sudo user
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># from your station
+ssh-copy-id user@ip
+</code></pre></div></div>
+
+<p>Or</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># manually
+# from your station
+cat ~/.ssh/id_rsa.pub
+# copy it
+# to your remote (user)
+mkdir ~/.ssh
+chmod 500 ~/.ssh
+vim ~/.ssh/authorized_keys
+# paste it, save, quit
+chmod 600 ~/.ssh/authorized_keys
+</code></pre></div></div>
+
+<h3 id="swapfile">Swapfile</h3>
+
+<p>(thread: https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04)</p>
+
+<p>Allocate</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo fallocate -l 1G /swapfile
+</code></pre></div></div>
+
+<p>Enable</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+# see the result
+sudo swapon --show
+</code></pre></div></div>
+
+<p>Make Swap Permanent</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># back up old setting
+sudo cp /etc/fstab /etc/fstab.bak
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+</code></pre></div></div>
+
+<h3 id="docker">Docker</h3>
+
+<p>(thread: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get update
+sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+sudo apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
+sudo apt-get update
+apt-cache policy docker-engine
+</code></pre></div></div>
+
+<p>Should see:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-engine:
+  Installed: (none)
+  Candidate: 1.11.1-0~xenial
+categories: dev
+  Version table:
+     1.11.1-0~xenial 500
+        500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages
+     1.11.0-0~xenial 500
+        500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install -y docker-engine
+sudo systemctl status docker
+</code></pre></div></div>
+
+<p>Should see:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>● docker.service - Docker Application Container Engine
+   Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+   Active: active (running) since Sun 2016-05-01 06:53:52 CDT; 1 weeks 3 days ago
+     Docs: https://docs.docker.com
+ Main PID: 749 (docker)
+</code></pre></div></div>
+
+<p>Make it run without sudo:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo usermod -aG docker $(whoami)
+# relogin
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker info
+</code></pre></div></div>
+
+<h4 id="docker-compose">Docker Compose</h4>
+<p>(thread: https://docs.docker.com/compose/install/)</p>
+
+<p>You might be tempted to install it from <code class="highlighter-rouge">apt-get</code> but you will get an old version.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo curl -L "https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-compose --help
+</code></pre></div></div>
+
+
+    <small>
+      
+      <a href="/tags/ubuntu/">ubuntu</a>
+      
+      <a href="/tags/docker/">docker</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2017/02/13/ubuntu-16-04-init.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

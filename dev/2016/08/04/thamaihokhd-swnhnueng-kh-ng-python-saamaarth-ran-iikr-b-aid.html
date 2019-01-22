@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>ทำให้โค้ด “ส่วนหนึ่ง” ของ Python สามารถ “รันอีกรอบ” ได้ | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="ทำให้โค้ด “ส่วนหนึ่ง” ของ Python สามารถ “รันอีกรอบ” ได้" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="มันมีหลาย ๆ กรณีเช่นหากโค้ดส่วนหนึ่งของเราเจอปัญหา อาจจะเกิด error ขึ้นแล้ว exception handler ของเราจับได้ หากว่าปัญหานี้สามารถแก้ได้ด้วยการ “ลองอีกครั้ง”​ เราก็อาจจะต้องแก้ปัญหาด้วยวิธีการวน loop ครอบไว้ส่วนของโค้ดนี้ เช่น while True: try: ... do stuff ... break except Exception: continue ซึ่งก็จะทำงานได้ตามปรกติ … แต่สำหรับผมแล้วผมมองว่ามันอ่านเข้าใจได้ยาก เพราะการใช้ while loop นั่นเอง .. มันไม่ได้บอกเราตรง ๆ ว่าเรากำลังจะทำอะไร คนอ่านจะต้อง “อ่านโค้ดให้หมด”​ จึงจะเข้าใจสิ่งที่เราทำ แล้วเราก็อาจจะพลาดการใส่ break ตอนสุดท้ายของโค้ดไปได้ง่าย ๆ … ซึ่งไม่ดีเลย ผมเลยลองหาวิธีใหม่ที่น่าจะงดงามกว่านี้ ควรจะอ่านเป็นภาษาอังกฤษแล้วเข้าใจได้เลย แล้วก็ทนทานต่อปัญหาหยุมหยิบแบบนี้มากกว่านี้ (ก็ไม่รู้เหมือนกันว่าวิธีที่เสอนนี่จะดีขนาดไหน) ซึ่งก็จะได้เป็น function decorator แบบนี้ครับ def autorun(fn): def rerun(): wrapper(rerun) def wrapper(rerun): fn(rerun) wrapper(rerun) return wrapper decorator นี้ชื่อว่า autorun ซึ่งต้องการ function ที่รับ parameter 1 ตัว ซึ่งก็คือ function สำหรับรันตัวเองอีกครั้ง ลองดูวิธีการใช้งานเลยดีกว่า shared = {&#39;a&#39;: 0} @autorun def _(retry): print(&#39;rerun&#39;) shared[&#39;a&#39;] += 1 if shared[&#39;a&#39;] &lt; 10: retry() assert shared[&#39;a&#39;] == 10 ผมได้ลองสร้างฟังก์ชันไร้นาม _ ขึ้นมาหนึ่งตัวแล้วก็ใส่ decorator ให้มันเสีย ซึ่งจะเห็นจากโค้ดได้ว่าฟังก์ชัน _ ถูกรันเองเลยเราไม่ต้องไปสั่งให้มันทำงานตรง ๆ แต่อย่างใด ถ้าเขียนเป็นโค้ดโดยทั่วไปก็จะเป็นแบบนี้ @autorun def _(retry): try: ... do stuff ... except Exception: retry() หวังว่านี่น่าจะงดงามขึ้นกว่าอันเดิมที่ใช้ while loop นะครับ ๕๕๕" />
+<meta property="og:description" content="มันมีหลาย ๆ กรณีเช่นหากโค้ดส่วนหนึ่งของเราเจอปัญหา อาจจะเกิด error ขึ้นแล้ว exception handler ของเราจับได้ หากว่าปัญหานี้สามารถแก้ได้ด้วยการ “ลองอีกครั้ง”​ เราก็อาจจะต้องแก้ปัญหาด้วยวิธีการวน loop ครอบไว้ส่วนของโค้ดนี้ เช่น while True: try: ... do stuff ... break except Exception: continue ซึ่งก็จะทำงานได้ตามปรกติ … แต่สำหรับผมแล้วผมมองว่ามันอ่านเข้าใจได้ยาก เพราะการใช้ while loop นั่นเอง .. มันไม่ได้บอกเราตรง ๆ ว่าเรากำลังจะทำอะไร คนอ่านจะต้อง “อ่านโค้ดให้หมด”​ จึงจะเข้าใจสิ่งที่เราทำ แล้วเราก็อาจจะพลาดการใส่ break ตอนสุดท้ายของโค้ดไปได้ง่าย ๆ … ซึ่งไม่ดีเลย ผมเลยลองหาวิธีใหม่ที่น่าจะงดงามกว่านี้ ควรจะอ่านเป็นภาษาอังกฤษแล้วเข้าใจได้เลย แล้วก็ทนทานต่อปัญหาหยุมหยิบแบบนี้มากกว่านี้ (ก็ไม่รู้เหมือนกันว่าวิธีที่เสอนนี่จะดีขนาดไหน) ซึ่งก็จะได้เป็น function decorator แบบนี้ครับ def autorun(fn): def rerun(): wrapper(rerun) def wrapper(rerun): fn(rerun) wrapper(rerun) return wrapper decorator นี้ชื่อว่า autorun ซึ่งต้องการ function ที่รับ parameter 1 ตัว ซึ่งก็คือ function สำหรับรันตัวเองอีกครั้ง ลองดูวิธีการใช้งานเลยดีกว่า shared = {&#39;a&#39;: 0} @autorun def _(retry): print(&#39;rerun&#39;) shared[&#39;a&#39;] += 1 if shared[&#39;a&#39;] &lt; 10: retry() assert shared[&#39;a&#39;] == 10 ผมได้ลองสร้างฟังก์ชันไร้นาม _ ขึ้นมาหนึ่งตัวแล้วก็ใส่ decorator ให้มันเสีย ซึ่งจะเห็นจากโค้ดได้ว่าฟังก์ชัน _ ถูกรันเองเลยเราไม่ต้องไปสั่งให้มันทำงานตรง ๆ แต่อย่างใด ถ้าเขียนเป็นโค้ดโดยทั่วไปก็จะเป็นแบบนี้ @autorun def _(retry): try: ... do stuff ... except Exception: retry() หวังว่านี่น่าจะงดงามขึ้นกว่าอันเดิมที่ใช้ while loop นะครับ ๕๕๕" />
+<link rel="canonical" href="/dev/2016/08/04/thamaihokhd-swnhnueng-kh-ng-python-saamaarth-ran-iikr-b-aid.html" />
+<meta property="og:url" content="/dev/2016/08/04/thamaihokhd-swnhnueng-kh-ng-python-saamaarth-ran-iikr-b-aid.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-08-04T15:44:21+07:00" />
+<script type="application/ld+json">
+{"description":"มันมีหลาย ๆ กรณีเช่นหากโค้ดส่วนหนึ่งของเราเจอปัญหา อาจจะเกิด error ขึ้นแล้ว exception handler ของเราจับได้ หากว่าปัญหานี้สามารถแก้ได้ด้วยการ “ลองอีกครั้ง”​ เราก็อาจจะต้องแก้ปัญหาด้วยวิธีการวน loop ครอบไว้ส่วนของโค้ดนี้ เช่น while True: try: ... do stuff ... break except Exception: continue ซึ่งก็จะทำงานได้ตามปรกติ … แต่สำหรับผมแล้วผมมองว่ามันอ่านเข้าใจได้ยาก เพราะการใช้ while loop นั่นเอง .. มันไม่ได้บอกเราตรง ๆ ว่าเรากำลังจะทำอะไร คนอ่านจะต้อง “อ่านโค้ดให้หมด”​ จึงจะเข้าใจสิ่งที่เราทำ แล้วเราก็อาจจะพลาดการใส่ break ตอนสุดท้ายของโค้ดไปได้ง่าย ๆ … ซึ่งไม่ดีเลย ผมเลยลองหาวิธีใหม่ที่น่าจะงดงามกว่านี้ ควรจะอ่านเป็นภาษาอังกฤษแล้วเข้าใจได้เลย แล้วก็ทนทานต่อปัญหาหยุมหยิบแบบนี้มากกว่านี้ (ก็ไม่รู้เหมือนกันว่าวิธีที่เสอนนี่จะดีขนาดไหน) ซึ่งก็จะได้เป็น function decorator แบบนี้ครับ def autorun(fn): def rerun(): wrapper(rerun) def wrapper(rerun): fn(rerun) wrapper(rerun) return wrapper decorator นี้ชื่อว่า autorun ซึ่งต้องการ function ที่รับ parameter 1 ตัว ซึ่งก็คือ function สำหรับรันตัวเองอีกครั้ง ลองดูวิธีการใช้งานเลยดีกว่า shared = {&#39;a&#39;: 0} @autorun def _(retry): print(&#39;rerun&#39;) shared[&#39;a&#39;] += 1 if shared[&#39;a&#39;] &lt; 10: retry() assert shared[&#39;a&#39;] == 10 ผมได้ลองสร้างฟังก์ชันไร้นาม _ ขึ้นมาหนึ่งตัวแล้วก็ใส่ decorator ให้มันเสีย ซึ่งจะเห็นจากโค้ดได้ว่าฟังก์ชัน _ ถูกรันเองเลยเราไม่ต้องไปสั่งให้มันทำงานตรง ๆ แต่อย่างใด ถ้าเขียนเป็นโค้ดโดยทั่วไปก็จะเป็นแบบนี้ @autorun def _(retry): try: ... do stuff ... except Exception: retry() หวังว่านี่น่าจะงดงามขึ้นกว่าอันเดิมที่ใช้ while loop นะครับ ๕๕๕","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2016/08/04/thamaihokhd-swnhnueng-kh-ng-python-saamaarth-ran-iikr-b-aid.html","headline":"ทำให้โค้ด “ส่วนหนึ่ง” ของ Python สามารถ “รันอีกรอบ” ได้","dateModified":"2016-08-04T15:44:21+07:00","datePublished":"2016-08-04T15:44:21+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2016/08/04/thamaihokhd-swnhnueng-kh-ng-python-saamaarth-ran-iikr-b-aid.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">ทำให้โค้ด &quot;ส่วนหนึ่ง&quot; ของ Python สามารถ &quot;รันอีกรอบ&quot; ได้</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2016-08-04T15:44:21+07:00" itemprop="datePublished">Aug 4, 2016
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>มันมีหลาย ๆ กรณีเช่นหากโค้ดส่วนหนึ่งของเราเจอปัญหา อาจจะเกิด error ขึ้นแล้ว exception handler ของเราจับได้ หากว่าปัญหานี้สามารถแก้ได้ด้วยการ “ลองอีกครั้ง”​ เราก็อาจจะต้องแก้ปัญหาด้วยวิธีการวน loop ครอบไว้ส่วนของโค้ดนี้ เช่น</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="o">...</span> <span class="n">do</span> <span class="n">stuff</span> <span class="o">...</span>
+        <span class="k">break</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">:</span>
+        <span class="k">continue</span>
+</code></pre></div></div>
+
+<p>ซึ่งก็จะทำงานได้ตามปรกติ … แต่สำหรับผมแล้วผมมองว่ามันอ่านเข้าใจได้ยาก เพราะการใช้ while loop นั่นเอง .. มันไม่ได้บอกเราตรง ๆ ว่าเรากำลังจะทำอะไร คนอ่านจะต้อง “อ่านโค้ดให้หมด”​ จึงจะเข้าใจสิ่งที่เราทำ แล้วเราก็อาจจะพลาดการใส่ break ตอนสุดท้ายของโค้ดไปได้ง่าย ๆ … ซึ่งไม่ดีเลย</p>
+
+<p>ผมเลยลองหาวิธีใหม่ที่น่าจะงดงามกว่านี้ ควรจะอ่านเป็นภาษาอังกฤษแล้วเข้าใจได้เลย แล้วก็ทนทานต่อปัญหาหยุมหยิบแบบนี้มากกว่านี้ (ก็ไม่รู้เหมือนกันว่าวิธีที่เสอนนี่จะดีขนาดไหน) ซึ่งก็จะได้เป็น function decorator แบบนี้ครับ</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">autorun</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">rerun</span><span class="p">():</span>
+        <span class="n">wrapper</span><span class="p">(</span><span class="n">rerun</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">rerun</span><span class="p">):</span>
+        <span class="n">fn</span><span class="p">(</span><span class="n">rerun</span><span class="p">)</span>
+
+    <span class="n">wrapper</span><span class="p">(</span><span class="n">rerun</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div></div>
+
+<p>decorator นี้ชื่อว่า <code class="highlighter-rouge">autorun</code> ซึ่งต้องการ function ที่รับ parameter 1 ตัว ซึ่งก็คือ function สำหรับรันตัวเองอีกครั้ง ลองดูวิธีการใช้งานเลยดีกว่า</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">shared</span> <span class="o">=</span> <span class="p">{</span><span class="s">'a'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="o">@</span><span class="n">autorun</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">retry</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'rerun'</span><span class="p">)</span>
+    <span class="n">shared</span><span class="p">[</span><span class="s">'a'</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">shared</span><span class="p">[</span><span class="s">'a'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">retry</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="n">shared</span><span class="p">[</span><span class="s">'a'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">10</span>
+</code></pre></div></div>
+
+<p>ผมได้ลองสร้างฟังก์ชันไร้นาม <code class="highlighter-rouge">_</code> ขึ้นมาหนึ่งตัวแล้วก็ใส่ decorator ให้มันเสีย ซึ่งจะเห็นจากโค้ดได้ว่าฟังก์ชัน <code class="highlighter-rouge">_</code> ถูกรันเองเลยเราไม่ต้องไปสั่งให้มันทำงานตรง ๆ แต่อย่างใด</p>
+
+<p>ถ้าเขียนเป็นโค้ดโดยทั่วไปก็จะเป็นแบบนี้</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">@</span><span class="n">autorun</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">retry</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="o">...</span> <span class="n">do</span> <span class="n">stuff</span> <span class="o">...</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">:</span>
+        <span class="n">retry</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><strong>หวังว่านี่น่าจะงดงามขึ้นกว่าอันเดิมที่ใช้ while loop นะครับ ๕๕๕</strong></p>
+
+
+    <small>
+      
+      <a href="/tags/python/">python</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2016/08/04/thamaihokhd-swnhnueng-kh-ng-python-saamaarth-ran-iikr-b-aid.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

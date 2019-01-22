@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Tracking Angular.js Apps with Google Analytics | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Tracking Angular.js Apps with Google Analytics" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Google Analytics is a great service. It provides us, web developers, variety of insights about our users. Obviously, the more we understand our clients the more we can push our websites to the better stage for them. Usually, to put a Gogole Analytics service onto normal “refreshy” websites is not a hard work at all becasue Google has managed to create a very simple way to install it, just copy and paste the provided tracking code that’s all. However, that tracking code will be run only once per refresh. This works properly considering when we click on a hyperlink, the web page refreshes, then, of course, the tracking code is triggered and notices that you have got into a new page. A problem arises when it comes to the world of “refreshless” or single-page websites (e.g. AngularJS) where the tracking code will be run only once at the load time. According to this, the tracking code will not be able to collect proper information about the user as before. Now, it is our duty to come up with solution to “live” with it. So far, the cleanest solution I found has been provided with an answer to this very problem posted on Stackoverflow.com The code snippet is as follows: (Note: I use Angular UI router instead of the native router) rootScope.$on &#39;$stateChangeSuccess&#39;, () -&gt; $window.ga &#39;send&#39;, &#39;pageview&#39;, { page: $location.url() } Put this snippet to where you can make sure that this snippet will be run only once right after the page loads. Don’t forget to inject $window and $location The above snippet will listen to every route change and call the Google Analytics service to acknowledge and log that action. And also put your tracking code (get it from Google Analytics website) on the main page of your website let’s say index.html (function(i,s,o,g,r,a,m){i[&#39;GoogleAnalyticsObject&#39;]=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,&#39;script&#39;,&#39;//www.google-analytics.com/analytics.js&#39;,&#39;ga&#39;); ga(&#39;create&#39;, &#39;...&#39;, &#39;auto&#39;); // we comment this because it has been included // with the code snippet above // ga(&#39;send&#39;, &#39;pageview&#39;); Now, everything is all set. You should get the same experience of using Google Analytics as the “refreshy” ones." />
+<meta property="og:description" content="Google Analytics is a great service. It provides us, web developers, variety of insights about our users. Obviously, the more we understand our clients the more we can push our websites to the better stage for them. Usually, to put a Gogole Analytics service onto normal “refreshy” websites is not a hard work at all becasue Google has managed to create a very simple way to install it, just copy and paste the provided tracking code that’s all. However, that tracking code will be run only once per refresh. This works properly considering when we click on a hyperlink, the web page refreshes, then, of course, the tracking code is triggered and notices that you have got into a new page. A problem arises when it comes to the world of “refreshless” or single-page websites (e.g. AngularJS) where the tracking code will be run only once at the load time. According to this, the tracking code will not be able to collect proper information about the user as before. Now, it is our duty to come up with solution to “live” with it. So far, the cleanest solution I found has been provided with an answer to this very problem posted on Stackoverflow.com The code snippet is as follows: (Note: I use Angular UI router instead of the native router) rootScope.$on &#39;$stateChangeSuccess&#39;, () -&gt; $window.ga &#39;send&#39;, &#39;pageview&#39;, { page: $location.url() } Put this snippet to where you can make sure that this snippet will be run only once right after the page loads. Don’t forget to inject $window and $location The above snippet will listen to every route change and call the Google Analytics service to acknowledge and log that action. And also put your tracking code (get it from Google Analytics website) on the main page of your website let’s say index.html (function(i,s,o,g,r,a,m){i[&#39;GoogleAnalyticsObject&#39;]=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,&#39;script&#39;,&#39;//www.google-analytics.com/analytics.js&#39;,&#39;ga&#39;); ga(&#39;create&#39;, &#39;...&#39;, &#39;auto&#39;); // we comment this because it has been included // with the code snippet above // ga(&#39;send&#39;, &#39;pageview&#39;); Now, everything is all set. You should get the same experience of using Google Analytics as the “refreshy” ones." />
+<link rel="canonical" href="/dev/2015/06/10/tracking-angular-js-apps-with-google-analytics.html" />
+<meta property="og:url" content="/dev/2015/06/10/tracking-angular-js-apps-with-google-analytics.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-06-10T09:48:00+07:00" />
+<script type="application/ld+json">
+{"description":"Google Analytics is a great service. It provides us, web developers, variety of insights about our users. Obviously, the more we understand our clients the more we can push our websites to the better stage for them. Usually, to put a Gogole Analytics service onto normal “refreshy” websites is not a hard work at all becasue Google has managed to create a very simple way to install it, just copy and paste the provided tracking code that’s all. However, that tracking code will be run only once per refresh. This works properly considering when we click on a hyperlink, the web page refreshes, then, of course, the tracking code is triggered and notices that you have got into a new page. A problem arises when it comes to the world of “refreshless” or single-page websites (e.g. AngularJS) where the tracking code will be run only once at the load time. According to this, the tracking code will not be able to collect proper information about the user as before. Now, it is our duty to come up with solution to “live” with it. So far, the cleanest solution I found has been provided with an answer to this very problem posted on Stackoverflow.com The code snippet is as follows: (Note: I use Angular UI router instead of the native router) rootScope.$on &#39;$stateChangeSuccess&#39;, () -&gt; $window.ga &#39;send&#39;, &#39;pageview&#39;, { page: $location.url() } Put this snippet to where you can make sure that this snippet will be run only once right after the page loads. Don’t forget to inject $window and $location The above snippet will listen to every route change and call the Google Analytics service to acknowledge and log that action. And also put your tracking code (get it from Google Analytics website) on the main page of your website let’s say index.html (function(i,s,o,g,r,a,m){i[&#39;GoogleAnalyticsObject&#39;]=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,&#39;script&#39;,&#39;//www.google-analytics.com/analytics.js&#39;,&#39;ga&#39;); ga(&#39;create&#39;, &#39;...&#39;, &#39;auto&#39;); // we comment this because it has been included // with the code snippet above // ga(&#39;send&#39;, &#39;pageview&#39;); Now, everything is all set. You should get the same experience of using Google Analytics as the “refreshy” ones.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"/dev/2015/06/10/tracking-angular-js-apps-with-google-analytics.html","headline":"Tracking Angular.js Apps with Google Analytics","dateModified":"2015-06-10T09:48:00+07:00","datePublished":"2015-06-10T09:48:00+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2015/06/10/tracking-angular-js-apps-with-google-analytics.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Konpat's Record of Struggles" /></head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All Posts</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Development</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Tracking Angular.js Apps with Google Analytics</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2015-06-10T09:48:00+07:00" itemprop="datePublished">Jun 10, 2015
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Google Analytics is a great service. It provides us, web developers, variety of insights about our users. Obviously, the more we understand our clients the more we can push our websites to the better stage for them.</p>
+
+<p>Usually, to put a Gogole Analytics service onto normal <em>“refreshy”</em> websites is not a hard work at all becasue Google has managed to create a very simple way to install it, just copy and paste the provided tracking code that’s all.</p>
+
+<p>However, that tracking code will be run only <strong>once</strong> per refresh. This works properly considering when we click on a hyperlink, the web page refreshes, then, of course, the tracking code is triggered and notices that you have got into a new page.</p>
+
+<p>A problem arises when it comes to the world of <em>“refreshless”</em> or single-page websites (e.g. AngularJS) where the tracking code will be run only once at the load time. According to this, the tracking code will not be able to collect proper information about the user as before. Now, it is our duty to come up with solution to “live” with it.</p>
+
+<!--more-->
+
+<p>So far, the cleanest solution I found has been provided with an answer to this very problem posted on <a href="http://stackoverflow.com/questions/10713708/tracking-google-analytics-page-views-with-angular-js">Stackoverflow.com</a></p>
+
+<p>The code snippet is as follows:<br />
+(Note: I use <em>Angular UI router</em> instead of the native router)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rootScope.$on '$stateChangeSuccess', () -&gt;
+	$window.ga 'send', 'pageview', { page: $location.url() }
+</code></pre></div></div>
+
+<p>Put this snippet to where you can make sure that this snippet will be run only <strong>once right after</strong> the page loads.</p>
+
+<p><em>Don’t forget to inject $window and $location</em></p>
+
+<p>The above snippet will listen to every route change and call the Google Analytics service to acknowledge and log that action.</p>
+
+<p>And also put your tracking code (get it from Google Analytics website) on the main page of your website let’s say <code class="highlighter-rouge">index.html</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', '...', 'auto');
+// we comment this because it has been included 
+// with the code snippet above
+// ga('send', 'pageview');
+</code></pre></div></div>
+
+<p>Now, everything is all set. You should get the same experience of using Google Analytics as the “refreshy” ones.</p>
+
+
+    <small>
+      
+      <a href="/tags/web/">web</a>
+      
+    </small>
+  </div><a class="u-url" href="/dev/2015/06/10/tracking-angular-js-apps-with-google-analytics.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
