@@ -63,7 +63,11 @@
             
           
             
-            <a class="page-link" href="/all/index.html">All Posts</a>
+            <a class="page-link" href="/academic/index.html">Academic</a>
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All</a>
             
           
             
@@ -87,9 +91,7 @@
             
           
             
-            <a class="page-link" href="/dev/index.html">Development</a>
-            
-          
+            <a class="page-link" href="/dev/index.html">Dev</a>
             
           
             
@@ -143,17 +145,17 @@
 
 <p>Second thing, you need a working driver for your nvidia pascal graphic card, which means GTX1060, 70, 80 and Titan. You will need a nvidia graphic driver better than 367.44 (the first version of the base line graphic driver to support Pascals), or if you to test on more recent drivers you can go to 370 line which is less stable.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># if you don't have the 'add-apt-repository'
-apt-get install software-properties-common
-# begin !!
-sudo add-apt-repository ppa:graphics-drivers/ppa
-sudo apt update
-# list all your choices
-sudo apt search nvidia
-# install driver 367.44 (at the time of writing)
-sudo apt install nvidia-367
-# install driver 370.23 (at the time of writing)
-sudo apt install nvidia-370
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># if you don't have the 'add-apt-repository'</span>
+apt-get <span class="nb">install </span>software-properties-common
+<span class="c"># begin !!</span>
+<span class="nb">sudo </span>add-apt-repository ppa:graphics-drivers/ppa
+<span class="nb">sudo </span>apt update
+<span class="c"># list all your choices</span>
+<span class="nb">sudo </span>apt search nvidia
+<span class="c"># install driver 367.44 (at the time of writing)</span>
+<span class="nb">sudo </span>apt <span class="nb">install </span>nvidia-367
+<span class="c"># install driver 370.23 (at the time of writing)</span>
+<span class="nb">sudo </span>apt <span class="nb">install </span>nvidia-370
 </code></pre></div></div>
 
 <p>It’s important to mention CUDA driver and CUDA toolkit are packed inside the <code class="highlighter-rouge">nvidia/cuda</code> docker’s image, so we not need to install it as prerequisites. That simple means you have no whatsoever to download the CUDA Toolkit, which is 1.5 GB large, from the nvidia website, it’s already packed inside the image.</p>
@@ -170,7 +172,7 @@ NVIDIA drivers &gt;= 340.29 with binary nvidia-modprobe
 
 <p>And whenever you want to run a docker, run <code class="highlighter-rouge">nvidia-docker</code> instead:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nvidia-docker run --rm nvidia/cuda nvidia-smi
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nvidia-docker run <span class="nt">--rm</span> nvidia/cuda nvidia-smi
 </code></pre></div></div>
 
 

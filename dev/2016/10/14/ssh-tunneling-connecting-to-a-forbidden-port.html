@@ -63,7 +63,11 @@
             
           
             
-            <a class="page-link" href="/all/index.html">All Posts</a>
+            <a class="page-link" href="/academic/index.html">Academic</a>
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All</a>
             
           
             
@@ -87,9 +91,7 @@
             
           
             
-            <a class="page-link" href="/dev/index.html">Development</a>
-            
-          
+            <a class="page-link" href="/dev/index.html">Dev</a>
             
           
             
@@ -134,17 +136,17 @@ http://blog.trackets.com/2014/05/17/ssh-tunnel-local-and-remote-port-forwarding-
 
 <p>We can do SSH tunneling to get through the firewall via port 22 (which is not blocked here) and use a pivotal server to connect to the port 6666 relaying all the data back to us behind the firewall.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -L &lt;local_port&gt;:&lt;target_host&gt;:&lt;target_port&gt; &lt;pivotal_host&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-L</span> &lt;local_port&gt;:&lt;target_host&gt;:&lt;target_port&gt; &lt;pivotal_host&gt;
 </code></pre></div></div>
 
 <p>In this case, it might be:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -L 22:targethost.com:6666 me@pivotalhost.com
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-L</span> 22:targethost.com:6666 me@pivotalhost.com
 </code></pre></div></div>
 
 <p>Then, you can ssh, via the pivotalhost.com, to the targethost.com using</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh me@localhost [-p 22]
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh me@localhost <span class="o">[</span><span class="nt">-p</span> 22]
 </code></pre></div></div>
 
 <p>Note : use <code class="highlighter-rouge">localhost</code> here because ssh has bound the port 22 on this machine.</p>
