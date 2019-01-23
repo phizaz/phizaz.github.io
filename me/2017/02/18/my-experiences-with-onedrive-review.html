@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>My Experiences with OneDrive (Review) | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="My Experiences with OneDrive (Review)" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I have been using OneDrive for 2 months already, here I like to review my experiences with OneDrive a bit. In short, it’s sluggish, memory hungry, and not FAULT tolerant. It’s Sluggish and memory hungry Maybe, I exaggerated on this because the demand I put on it is quite extraorditary. I actually put 300k files (small ones by many) into the OneDrive system. It becomes processing changes forever. It took days (2 days + or -, if I counted correctly) to finish. And yet most of the time, not the internet bandwidth that it consumes, it rather the CPU itself that always spiked, with the memory usage of about 1 GB all the time. Even I use the latest CPU from intel, admittedly it’s ultralow voltage series, but hey its the latest Kaby Lake ! I expected much more from it rather than be totally consumed by the simple process of syncing! Work harder Microsoft! It’s not fault tolerant First thing first, if you’re moving from the unix-world filesystems like ext4 or hfs+. You would very likely encounter the path too long problem in NTFS. NTFS supports only a puny fraction of maximum path length of those filesystems. Syncing these files to the Windows machine is a disaster! You might have to resolve it by hand, moving folders after folderes to the shorter paths. It was just a pain, but not necessarily contributed to the OneDrive, but anyways I will put it here! It’s not the end, there are many more scenarios in which I encounter problems. When I changing the contents in the drives in SOME WAYS it made the OneDrive process crashed. I reckon the moment to be when I used the program rsync to sync files from a remote host to my machine, it crashed severely and cannot be easily solved by just restarting the program. I have to make sure than everything rsync done to the folder has been undone. And relink the account back, of course waiting all the initial file checkings again, many days have to be spent. So, why bother using it ? In short, it’s the cheapest, you will be amazed by how cheap it is compared to the competitors (with 1TB of drive space). You have to take into the account that with OneDrive subscriptions also come with the Office 2016 subscription. Subtracting the already cheap subscription of the OneDrive, this makes it even cheaper. But, at the end of the day, if you’re looking for better syncing technologies, don’t even bother with OneDrive, just not yet. Dropbox is much a better choice, I did try, I can say that by faaaaaar. Google Drive is not much better than OneDrive if it is at all. Amazon Drive don’t bother with it, it doesn’t work, its syncing feature just came the last version do not expect it to be ready to use yet." />
+<meta property="og:description" content="I have been using OneDrive for 2 months already, here I like to review my experiences with OneDrive a bit. In short, it’s sluggish, memory hungry, and not FAULT tolerant. It’s Sluggish and memory hungry Maybe, I exaggerated on this because the demand I put on it is quite extraorditary. I actually put 300k files (small ones by many) into the OneDrive system. It becomes processing changes forever. It took days (2 days + or -, if I counted correctly) to finish. And yet most of the time, not the internet bandwidth that it consumes, it rather the CPU itself that always spiked, with the memory usage of about 1 GB all the time. Even I use the latest CPU from intel, admittedly it’s ultralow voltage series, but hey its the latest Kaby Lake ! I expected much more from it rather than be totally consumed by the simple process of syncing! Work harder Microsoft! It’s not fault tolerant First thing first, if you’re moving from the unix-world filesystems like ext4 or hfs+. You would very likely encounter the path too long problem in NTFS. NTFS supports only a puny fraction of maximum path length of those filesystems. Syncing these files to the Windows machine is a disaster! You might have to resolve it by hand, moving folders after folderes to the shorter paths. It was just a pain, but not necessarily contributed to the OneDrive, but anyways I will put it here! It’s not the end, there are many more scenarios in which I encounter problems. When I changing the contents in the drives in SOME WAYS it made the OneDrive process crashed. I reckon the moment to be when I used the program rsync to sync files from a remote host to my machine, it crashed severely and cannot be easily solved by just restarting the program. I have to make sure than everything rsync done to the folder has been undone. And relink the account back, of course waiting all the initial file checkings again, many days have to be spent. So, why bother using it ? In short, it’s the cheapest, you will be amazed by how cheap it is compared to the competitors (with 1TB of drive space). You have to take into the account that with OneDrive subscriptions also come with the Office 2016 subscription. Subtracting the already cheap subscription of the OneDrive, this makes it even cheaper. But, at the end of the day, if you’re looking for better syncing technologies, don’t even bother with OneDrive, just not yet. Dropbox is much a better choice, I did try, I can say that by faaaaaar. Google Drive is not much better than OneDrive if it is at all. Amazon Drive don’t bother with it, it doesn’t work, its syncing feature just came the last version do not expect it to be ready to use yet." />
+<link rel="canonical" href="https://blog.konpat.me/me/2017/02/18/my-experiences-with-onedrive-review.html" />
+<meta property="og:url" content="https://blog.konpat.me/me/2017/02/18/my-experiences-with-onedrive-review.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-02-18T09:45:55+07:00" />
+<script type="application/ld+json">
+{"description":"I have been using OneDrive for 2 months already, here I like to review my experiences with OneDrive a bit. In short, it’s sluggish, memory hungry, and not FAULT tolerant. It’s Sluggish and memory hungry Maybe, I exaggerated on this because the demand I put on it is quite extraorditary. I actually put 300k files (small ones by many) into the OneDrive system. It becomes processing changes forever. It took days (2 days + or -, if I counted correctly) to finish. And yet most of the time, not the internet bandwidth that it consumes, it rather the CPU itself that always spiked, with the memory usage of about 1 GB all the time. Even I use the latest CPU from intel, admittedly it’s ultralow voltage series, but hey its the latest Kaby Lake ! I expected much more from it rather than be totally consumed by the simple process of syncing! Work harder Microsoft! It’s not fault tolerant First thing first, if you’re moving from the unix-world filesystems like ext4 or hfs+. You would very likely encounter the path too long problem in NTFS. NTFS supports only a puny fraction of maximum path length of those filesystems. Syncing these files to the Windows machine is a disaster! You might have to resolve it by hand, moving folders after folderes to the shorter paths. It was just a pain, but not necessarily contributed to the OneDrive, but anyways I will put it here! It’s not the end, there are many more scenarios in which I encounter problems. When I changing the contents in the drives in SOME WAYS it made the OneDrive process crashed. I reckon the moment to be when I used the program rsync to sync files from a remote host to my machine, it crashed severely and cannot be easily solved by just restarting the program. I have to make sure than everything rsync done to the folder has been undone. And relink the account back, of course waiting all the initial file checkings again, many days have to be spent. So, why bother using it ? In short, it’s the cheapest, you will be amazed by how cheap it is compared to the competitors (with 1TB of drive space). You have to take into the account that with OneDrive subscriptions also come with the Office 2016 subscription. Subtracting the already cheap subscription of the OneDrive, this makes it even cheaper. But, at the end of the day, if you’re looking for better syncing technologies, don’t even bother with OneDrive, just not yet. Dropbox is much a better choice, I did try, I can say that by faaaaaar. Google Drive is not much better than OneDrive if it is at all. Amazon Drive don’t bother with it, it doesn’t work, its syncing feature just came the last version do not expect it to be ready to use yet.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/me/2017/02/18/my-experiences-with-onedrive-review.html","headline":"My Experiences with OneDrive (Review)","dateModified":"2017-02-18T09:45:55+07:00","datePublished":"2017-02-18T09:45:55+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/me/2017/02/18/my-experiences-with-onedrive-review.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/academic/index.html">Academic</a>
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Dev</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">My Experiences with OneDrive (Review)</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-02-18T09:45:55+07:00" itemprop="datePublished">Feb 18, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>I have been using OneDrive for 2 months already, here I like to review my experiences with <strong>OneDrive</strong> a bit. In short, it’s <strong>sluggish, memory hungry, and not FAULT tolerant.</strong></p>
+
+<h4 id="its-sluggish-and-memory-hungry">It’s Sluggish and memory hungry</h4>
+
+<p>Maybe, I exaggerated on this because the demand I put on it is quite extraorditary. I actually put <strong>300k files</strong> (small ones by many) into the OneDrive system. It becomes <strong>processing changes</strong> forever. It took <strong>days</strong> (2 days + or -, if I counted correctly) to finish. And yet most of the time, not the internet bandwidth that it consumes, it rather the CPU itself that always spiked, with the memory usage of about <strong>1 GB</strong> all the time.</p>
+
+<p>Even I use the latest CPU from intel, admittedly it’s ultralow voltage series, but hey its the latest Kaby Lake ! I expected much more from it rather than be totally consumed by the simple process of syncing!</p>
+
+<p><strong><em>Work harder Microsoft!</em></strong></p>
+
+<h4 id="its-not-fault-tolerant">It’s not fault tolerant</h4>
+
+<p>First thing first, if you’re moving from the unix-world filesystems like <code class="highlighter-rouge">ext4</code> or <code class="highlighter-rouge">hfs+</code>. You would very likely encounter the <strong>path too long</strong> problem in <code class="highlighter-rouge">NTFS</code>. <strong>NTFS</strong> supports only a puny fraction of maximum path length of those filesystems. Syncing these files to the Windows machine is a disaster! You might have to resolve it by hand, moving folders after folderes to the shorter paths. It was just a pain, but not necessarily contributed to the OneDrive, but anyways I will put it here!</p>
+
+<p>It’s not the end, there are many more scenarios in which I encounter problems. When I changing the contents in the drives in SOME WAYS it made the <strong>OneDrive</strong> process crashed. I reckon the moment to be when I used the program <code class="highlighter-rouge">rsync</code> to sync files from a remote host to my machine, it crashed severely and cannot be easily solved by just restarting the program. I have to make sure than everything <code class="highlighter-rouge">rsync</code> done to the folder has been undone. And <strong>relink</strong> the account back, of course waiting all the initial file checkings again, many days have to be spent.</p>
+
+<h4 id="so-why-bother-using-it-">So, why bother using it ?</h4>
+
+<p>In short, <strong>it’s the cheapest</strong>, you will be amazed by how cheap it is compared to the competitors (with 1TB of drive space). You have to take into the account that with OneDrive subscriptions <strong>also come with the Office 2016 subscription</strong>. Subtracting the already cheap subscription of the OneDrive, this makes it even cheaper.</p>
+
+<p>But, at the end of the day, if you’re looking for better syncing technologies, don’t even bother with OneDrive, just not yet. <strong>Dropbox</strong> is much a better choice, I did try, I can say that by <em>faaaaaar</em>. <strong>Google Drive</strong> is not much better than <strong>OneDrive</strong> if it is at all. <strong>Amazon Drive</strong> don’t bother with it, it doesn’t work, its syncing feature just came the last version do not expect it to be ready to use yet.</p>
+
+
+    <small>
+      
+      <a href="/tags/#cloud">cloud</a>
+      
+    </small>
+  </div><a class="u-url" href="/me/2017/02/18/my-experiences-with-onedrive-review.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
