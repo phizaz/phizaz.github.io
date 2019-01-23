@@ -131,17 +131,17 @@
 
 <p>เราจะเริ่มจาก listener ปกติใน AngularJs ซึ่งสามารถใช้งานได้ดังนี้ (สมมติว่าผูกไว้กับ rootScope)</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$rootScope.$on 'message-name', (event, value) -&gt;
-	 ... do something interesting here ...
+<div class="language-coffeescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$rootScope</span><span class="p">.</span><span class="na">$on</span> <span class="s">'message-name'</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="o">-&gt;</span>
+	 <span class="p">...</span> <span class="na">do</span> <span class="nx">something</span> <span class="nx">interesting</span> <span class="nx">here</span> <span class="p">...</span>
 </code></pre></div></div>
 
 <p>listener ตัวนี้จะ “ฟัง” message ทุก ๆ ชิ้นที่ผ่านเข้ามาในสายตามัน และเลือกเฉพาะตัวที่เป็นชนิด “message-name” แล้วหยิบมาโยนใส่ call-back function ที่เรากำหนดไปใน .$on</p>
 
 <p>แต่ในบางครั้งเราต้องการให้มันทำงานเพียงแค่ครั้งเดียว กล่าวคือหากมีการเรียก call-back function นั้นแล้วก็ให้ ถือว่า listener นี้ไม่มีตัวตนอีกต่อไป ใน AngularJS เราสามารถทำได้ดังนี้</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>deregister = $rootScope.$on '&lt;message&gt;', (event, value) -&gt;
-	 deregister()
-	 ... do something interesting here ...
+<div class="language-coffeescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">deregister</span> <span class="o">=</span> <span class="nx">$rootScope</span><span class="p">.</span><span class="na">$on</span> <span class="s">'&lt;message&gt;'</span><span class="p">,</span> <span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="o">-&gt;</span>
+	 <span class="nx">deregister</span><span class="p">()</span>
+	 <span class="p">...</span> <span class="na">do</span> <span class="nx">something</span> <span class="nx">interesting</span> <span class="nx">here</span> <span class="p">...</span>
 </code></pre></div></div>
 
 <p>เนื่องจาก .$on คืนค่าเป็น function ที่เมื่อถูกเรียกแล้วจะ deregister listener นั้นออกจากระบบ ทำให้ listener นี้ทำงานเพียงครั้งเดียว</p>
@@ -149,9 +149,9 @@
 
     <small>
       
-      <a href="/tags/angular/">angular</a>
+      <a href="/tags/#angular">angular</a>
       
-      <a href="/tags/web/">web</a>
+      <a href="/tags/#web">web</a>
       
     </small>
   </div><a class="u-url" href="/dev/2015/04/07/single-use-angular-listener-2.html" hidden></a>

@@ -139,78 +139,78 @@
 
 <h2 id="ตัวอย่างการใช้งาน">ตัวอย่างการใช้งาน</h2>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import angular from 'angular';
-//importing directive.js
-import Directive from './directive';
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">angular</span> <span class="k">from</span> <span class="s1">'angular'</span><span class="p">;</span>
+<span class="c1">//importing directive.js</span>
+<span class="k">import</span> <span class="nx">Directive</span> <span class="k">from</span> <span class="s1">'./directive'</span><span class="p">;</span>
 
-angular
-  .module('TestDirectiveModule', [])
-  .directive('Test',
-    () =&gt; {
+<span class="nx">angular</span>
+  <span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'TestDirectiveModule'</span><span class="p">,</span> <span class="p">[])</span>
+  <span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">'Test'</span><span class="p">,</span>
+    <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
 
-      return Directive.new({
+      <span class="k">return</span> <span class="nx">Directive</span><span class="p">.</span><span class="k">new</span><span class="p">({</span>
 
-        controllerAs: 'my',
-        template: '&lt;test&gt;&lt;/test&gt;',
+        <span class="na">controllerAs</span><span class="p">:</span> <span class="s1">'my'</span><span class="p">,</span>
+        <span class="na">template</span><span class="p">:</span> <span class="s1">'&lt;test&gt;&lt;/test&gt;'</span><span class="p">,</span>
 
-        // this replaces the normal 'scope'
-        // I personally think 'interfaces' is a better word
-        interfaces: {
-          // public is a special interface that let outsider to peek inside into props and methods freely!
-          // like...
-          // &lt;test name="abc"&gt;&lt;/test&gt;
-          // $scope.abc.x =&gt; 0
-          public: '=name',
-        },
+        <span class="c1">// this replaces the normal 'scope'</span>
+        <span class="c1">// I personally think 'interfaces' is a better word</span>
+        <span class="na">interfaces</span><span class="p">:</span> <span class="p">{</span>
+          <span class="c1">// public is a special interface that let outsider to peek inside into props and methods freely!</span>
+          <span class="c1">// like...</span>
+          <span class="c1">// &lt;test name="abc"&gt;&lt;/test&gt;</span>
+          <span class="c1">// $scope.abc.x =&gt; 0</span>
+          <span class="na">public</span><span class="p">:</span> <span class="s1">'=name'</span><span class="p">,</span>
+        <span class="p">},</span>
 
-        // all the properties are here!
-        props: {
-          x: 0,
-          y: 0,
-          // element and attrs (from link) are automatically included here as well
-          // be advised: link is invoked after the controller, then element and attrs
-          // will not be available at the starter() and watcher() time
-        },
+        <span class="c1">// all the properties are here!</span>
+        <span class="na">props</span><span class="p">:</span> <span class="p">{</span>
+          <span class="na">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+          <span class="na">y</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+          <span class="c1">// element and attrs (from link) are automatically included here as well</span>
+          <span class="c1">// be advised: link is invoked after the controller, then element and attrs</span>
+          <span class="c1">// will not be available at the starter() and watcher() time</span>
+        <span class="p">},</span>
 
-        // all the $watch code should all be put here!
-        // you shall write the watch destroyer here as well
-        watcher($scope) {
-          $scope.$watch('my.x', (x) =&gt; {
-            console.log('x has changed! to:', x);
-          });
-        },
+        <span class="c1">// all the $watch code should all be put here!</span>
+        <span class="c1">// you shall write the watch destroyer here as well</span>
+        <span class="nx">watcher</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">$scope</span><span class="p">.</span><span class="nx">$watch</span><span class="p">(</span><span class="s1">'my.x'</span><span class="p">,</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'x has changed! to:'</span><span class="p">,</span> <span class="nx">x</span><span class="p">);</span>
+          <span class="p">});</span>
+        <span class="p">},</span>
 
-        // this block of code will be invoked first!
-        // starter -&gt; watcher; link is invoked normally according to angular's directive
-        // if you like to use the scope, it is provided.
-        starter($scope) {
-          this.moveDiagonal();
-        },
+        <span class="c1">// this block of code will be invoked first!</span>
+        <span class="c1">// starter -&gt; watcher; link is invoked normally according to angular's directive</span>
+        <span class="c1">// if you like to use the scope, it is provided.</span>
+        <span class="nx">starter</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">this</span><span class="p">.</span><span class="nx">moveDiagonal</span><span class="p">();</span>
+        <span class="p">},</span>
 
-        // just the conventional link
-        link($scope, element, attrs) {
-          element.fadeIn(200);
-        },
+        <span class="c1">// just the conventional link</span>
+        <span class="nx">link</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">attrs</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">fadeIn</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+        <span class="p">},</span>
 
-        // list all the methods
-        methods: {
+        <span class="c1">// list all the methods</span>
+        <span class="na">methods</span><span class="p">:</span> <span class="p">{</span>
 
-          moveDiagonal() {
-            this.x += 10;
-            this.y += 10;
-          }
+          <span class="nx">moveDiagonal</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">x</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">y</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
+          <span class="p">}</span>
 
-        }
+        <span class="p">}</span>
 
-      });
+      <span class="p">});</span>
 
-    });
+    <span class="p">});</span>
 </code></pre></div></div>
 
 
     <small>
       
-      <a href="/tags/angular/">angular</a>
+      <a href="/tags/#angular">angular</a>
       
     </small>
   </div><a class="u-url" href="/dev/2015/12/03/angulars-directive-wrapper-es6.html" hidden></a>

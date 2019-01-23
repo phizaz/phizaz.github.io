@@ -142,8 +142,8 @@
 <p>The code snippet is as follows:<br />
 (Note: I use <em>Angular UI router</em> instead of the native router)</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rootScope.$on '$stateChangeSuccess', () -&gt;
-	$window.ga 'send', 'pageview', { page: $location.url() }
+<div class="language-coffeescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">rootScope</span><span class="p">.</span><span class="na">$on</span> <span class="s">'$stateChangeSuccess'</span><span class="p">,</span> <span class="p">()</span> <span class="o">-&gt;</span>
+	<span class="nx">$window</span><span class="p">.</span><span class="na">ga</span> <span class="s">'send'</span><span class="p">,</span> <span class="s">'pageview'</span><span class="p">,</span> <span class="p">{</span> <span class="na">page</span><span class="o">:</span> <span class="nx">$location</span><span class="p">.</span><span class="na">url</span><span class="p">()</span> <span class="p">}</span>
 </code></pre></div></div>
 
 <p>Put this snippet to where you can make sure that this snippet will be run only <strong>once right after</strong> the page loads.</p>
@@ -154,15 +154,15 @@
 
 <p>And also put your tracking code (get it from Google Analytics website) on the main page of your website let’s say <code class="highlighter-rouge">index.html</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<div class="language-coffeescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nx">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">s</span><span class="p">,</span><span class="nx">o</span><span class="p">,</span><span class="nx">g</span><span class="p">,</span><span class="nx">r</span><span class="p">,</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">){</span><span class="nx">i</span><span class="p">[</span><span class="s">'GoogleAnalyticsObject'</span><span class="p">]</span><span class="o">=</span><span class="nx">r</span><span class="p">;</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">||</span><span class="nx">function</span><span class="p">(){</span>
+<span class="p">(</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="na">q</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="na">q</span><span class="o">||</span><span class="p">[]).</span><span class="na">push</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)},</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="na">l</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="k">new</span> <span class="nb">Date</span><span class="p">();</span><span class="nx">a</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="na">createElement</span><span class="p">(</span><span class="nx">o</span><span class="p">),</span>
+<span class="nx">m</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="na">getElementsByTagName</span><span class="p">(</span><span class="nx">o</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span><span class="nx">a</span><span class="p">.</span><span class="na">async</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="nx">a</span><span class="p">.</span><span class="na">src</span><span class="o">=</span><span class="nx">g</span><span class="p">;</span><span class="nx">m</span><span class="p">.</span><span class="na">parentNode</span><span class="p">.</span><span class="na">insertBefore</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">)</span>
+<span class="p">})(</span><span class="nb">window</span><span class="p">,</span><span class="nb">document</span><span class="p">,</span><span class="s">'script'</span><span class="p">,</span><span class="s">'//www.google-analytics.com/analytics.js'</span><span class="p">,</span><span class="s">'ga'</span><span class="p">);</span>
 
-ga('create', '...', 'auto');
-// we comment this because it has been included 
-// with the code snippet above
-// ga('send', 'pageview');
+<span class="nx">ga</span><span class="p">(</span><span class="s">'create'</span><span class="p">,</span> <span class="s">'...'</span><span class="p">,</span> <span class="s">'auto'</span><span class="p">);</span>
+<span class="err">//</span> <span class="nx">we</span> <span class="nx">comment</span> <span class="k">this</span> <span class="nx">because</span> <span class="nx">it</span> <span class="nx">has</span> <span class="nx">been</span> <span class="nx">included</span> 
+<span class="err">//</span> <span class="nx">with</span> <span class="nx">the</span> <span class="nx">code</span> <span class="nx">snippet</span> <span class="nx">above</span>
+<span class="err">//</span> <span class="nx">ga</span><span class="p">(</span><span class="s">'send'</span><span class="p">,</span> <span class="s">'pageview'</span><span class="p">);</span>
 </code></pre></div></div>
 
 <p>Now, everything is all set. You should get the same experience of using Google Analytics as the “refreshy” ones.</p>
@@ -170,7 +170,7 @@ ga('create', '...', 'auto');
 
     <small>
       
-      <a href="/tags/web/">web</a>
+      <a href="/tags/#web">web</a>
       
     </small>
   </div><a class="u-url" href="/dev/2015/06/10/tracking-angular-js-apps-with-google-analytics.html" hidden></a>
