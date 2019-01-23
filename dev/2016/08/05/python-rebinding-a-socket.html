@@ -129,19 +129,19 @@
   <div class="post-content e-content" itemprop="articleBody">
     <p>For <code class="highlighter-rouge">socket</code>, use:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import socket
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">socket</span>
 
-sock = socket.socket()
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sock.bind(('', 5555))
-sock.close()
+<span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s">''</span><span class="p">,</span> <span class="mi">5555</span><span class="p">))</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>For <code class="highlighter-rouge">socketserver</code>, use:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import socketserver
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">socketserver</span>
 
-socketserver.TCPServer.allow_reuse_address = True
-... do stuff ...
+<span class="n">socketserver</span><span class="o">.</span><span class="n">TCPServer</span><span class="o">.</span><span class="n">allow_reuse_address</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="o">...</span> <span class="n">do</span> <span class="n">stuff</span> <span class="o">...</span>
 </code></pre></div></div>
 
 

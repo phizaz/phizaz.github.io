@@ -132,7 +132,7 @@
 <p>But, if you’re using Nvidia’s Pascal cards, you’re better off using CUDA 8.0 not 7.5 as of the above’s Dockerfile says.</p>
 
 <p>So the new Dockerfile should be begin with:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FROM nvidia/cuda:8.0-devel-ubuntu14.04
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> nvidia/cuda:8.0-devel-ubuntu14.04</span>
 </code></pre></div></div>
 
 <p>But, if you rush to building it now, if you like me, you will find some errors during <code class="highlighter-rouge">cmake</code>, here is one of them :</p>
@@ -152,8 +152,8 @@
 
 <p>Here, I will change the course of the Dockerfile a bit, so that we can do the change :</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/Genoil/cpp-ethereum.git
-cd cpp-ethereum/libethash-cuda
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/Genoil/cpp-ethereum.git
+<span class="nb">cd </span>cpp-ethereum/libethash-cuda
 vim CMakeLists.txt
 </code></pre></div></div>
 
@@ -165,20 +165,20 @@ vim CMakeLists.txt
 </code></pre></div></div>
 
 <p>Now, to the Dockerfile, instead of cloning we will be copying instead:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>COPY cpp-ethereum /cpp-ethereum
-RUN cd cpp-ethereum \
-    &amp;&amp; mkdir build \
-    &amp;&amp; cd build \
-    &amp;&amp; cmake -DBUNDLE=cudaminer -DCOMPUTE=61 .. \
-    &amp;&amp; make -j8 \
-    &amp;&amp; mkdir /data
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">COPY</span><span class="s"> cpp-ethereum /cpp-ethereum</span>
+<span class="k">RUN </span><span class="nb">cd </span>cpp-ethereum <span class="se">\
+</span>    <span class="o">&amp;&amp;</span> <span class="nb">mkdir </span>build <span class="se">\
+</span>    <span class="o">&amp;&amp;</span> <span class="nb">cd </span>build <span class="se">\
+</span>    <span class="o">&amp;&amp;</span> cmake <span class="nt">-DBUNDLE</span><span class="o">=</span>cudaminer <span class="nt">-DCOMPUTE</span><span class="o">=</span>61 .. <span class="se">\
+</span>    <span class="o">&amp;&amp;</span> make <span class="nt">-j8</span> <span class="se">\
+</span>    <span class="o">&amp;&amp;</span> <span class="nb">mkdir</span> /data
 </code></pre></div></div>
 <p>Note : I added <code class="highlighter-rouge">-DCOMPUTE=61</code> flag because I use GTX 1060, this should be optional, but it feels better being explicit.</p>
 
 <p><strong>It should work now!</strong></p>
 
 <p>Try :</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nvidia-docker run -it --rm &lt;yourimage&gt; /cpp-ethereum/build/ethminer/ethminer -U --benchmark
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nvidia-docker run <span class="nt">-it</span> <span class="nt">--rm</span> &lt;yourimage&gt; /cpp-ethereum/build/ethminer/ethminer <span class="nt">-U</span> <span class="nt">--benchmark</span>
 </code></pre></div></div>
 <p>Note : use <code class="highlighter-rouge">-U</code> not <code class="highlighter-rouge">-G</code>; since <code class="highlighter-rouge">-G</code> = opencl, <code class="highlighter-rouge">-U</code> = cuda</p>
 
@@ -221,7 +221,7 @@ inner mean: 6407964 H/s
 
     <small>
       
-      <a href="/tags/#cuda,">cuda,</a>
+      <a href="/tags/#cuda">cuda</a>
       
       <a href="/tags/#crypto">crypto</a>
       

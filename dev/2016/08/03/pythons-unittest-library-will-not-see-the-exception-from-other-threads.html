@@ -138,64 +138,64 @@
 <p>The implementation <strong>I found over the internet</strong> was kinda <em>hack</em>, yet using with cautions it worked!</p>
 
 <p>It goes…</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class GlobalExceptionWatcher(object):
-    import threading
-    import os
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">GlobalExceptionWatcher</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">threading</span>
+    <span class="kn">import</span> <span class="nn">os</span>
 
-    '''
+    <span class="s">'''
     NOTE: It changes the behavior of 'threading' module, which should be use in only limited area on a limited run
-    '''
+    '''</span>
 
-    def _store_excepthook(self):
-        '''
+    <span class="k">def</span> <span class="nf">_store_excepthook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''
         Uses as an exception handlers which stores any uncaught exceptions.
-        '''
-        formated_exc = self.__org_hook()
-        self._exceptions.append(formated_exc)
-        return formated_exc
+        '''</span>
+        <span class="n">formated_exc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__org_hook</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formated_exc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">formated_exc</span>
 
-    def start(self):
-        '''
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''
         Register us to the hook.
-        '''
-        self._exceptions = []
-        self.__org_hook = self.threading._format_exc
-        self.threading._format_exc = self._store_excepthook
+        '''</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exceptions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__org_hook</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">_format_exc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">_format_exc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_excepthook</span>
 
-    def stop(self):
-        '''
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''
         Remove us from the hook, assure no exception were thrown.
-        '''
-        self.threading._format_exc = self.__org_hook
-        if len(self._exceptions) != 0:
-            tracebacks = self.os.linesep.join(self._exceptions)
-            raise Exception('Exceptions in other threads: %s' % tracebacks)
+        '''</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="o">.</span><span class="n">_format_exc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__org_hook</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exceptions</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">tracebacks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exceptions</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">'Exceptions in other threads: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">tracebacks</span><span class="p">)</span>
 
-    def __enter__(self):
-        self.start()
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-    def __exit__(self, type, value, traceback):
-        self.stop()
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>You can now use:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class ExceptionOnThreadTest(unittest.TestCase):
-    def test_exception_on_thread(self):
-        import threading
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ExceptionOnThreadTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_exception_on_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">threading</span>
 
-        def run():
-            import time
-            time.sleep(0.1)
-            raise Exception('just an exception')
+        <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+            <span class="kn">import</span> <span class="nn">time</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">'just an exception'</span><span class="p">)</span>
 
-        def watcher():
-            with GlobalExceptionWatcher():
-                t = threading.Thread(target=run)
-                t.start()
-                t.join()
+        <span class="k">def</span> <span class="nf">watcher</span><span class="p">():</span>
+            <span class="k">with</span> <span class="n">GlobalExceptionWatcher</span><span class="p">():</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">run</span><span class="p">)</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-        self.assertRaises(Exception, watcher)
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="nb">Exception</span><span class="p">,</span> <span class="n">watcher</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>And it turned <em>red</em> beautifully…</p>

@@ -135,18 +135,18 @@
 
 <h3 id="build">Build</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip install wheel
-python setup.py sdist bdist_wheel # building wheel
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install </span>wheel
+python setup.py sdist bdist_wheel <span class="c"># building wheel</span>
 </code></pre></div></div>
 
 <h3 id="register-if-needed-not-needed-for-pypiio">Register (if needed; not needed for pypi.io)</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>twine register dist/...
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>twine register dist/...
 </code></pre></div></div>
 
 <h3 id="upload">Upload</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>twine upload dist/...&lt;file .whl&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>twine upload dist/...&lt;file .whl&gt;
 </code></pre></div></div>
 
 

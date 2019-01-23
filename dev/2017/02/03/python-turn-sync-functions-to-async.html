@@ -131,37 +131,37 @@
 
 <p>I will try using threading interfaces to do the job, in the end I will <code class="highlighter-rouge">force_async</code> on a synchronous function and turn it into async one.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">def</span> <span class="nx">force_async</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span><span class="o">:</span>
-    <span class="s1">'''
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">force_async</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="s">'''
     turns a sync function to async function using threads
     :param sync function:
     :return async funciton:
     '''</span>
-    <span class="nx">from</span> <span class="nx">concurrent</span><span class="o">.</span><span class="nx">futures</span> <span class="nx">import</span> <span class="nx">ThreadPoolExecutor</span>
-    <span class="nx">import</span> <span class="nx">asyncio</span>
-    <span class="nx">pool</span> <span class="o">=</span> <span class="nx">ThreadPoolExecutor</span><span class="p">()</span>
+    <span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
+    <span class="kn">import</span> <span class="nn">asyncio</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="n">ThreadPoolExecutor</span><span class="p">()</span>
 
-    <span class="nx">def</span> <span class="nx">wrapper</span><span class="p">(</span><span class="o">*</span><span class="nx">args</span><span class="p">,</span> <span class="o">**</span><span class="nx">kwargs</span><span class="p">)</span><span class="o">:</span>
-        <span class="nx">future</span> <span class="o">=</span> <span class="nx">pool</span><span class="o">.</span><span class="nx">submit</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="o">*</span><span class="nx">args</span><span class="p">,</span> <span class="o">**</span><span class="nx">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nx">asyncio</span><span class="o">.</span><span class="nx">wrap_future</span><span class="p">(</span><span class="nx">future</span><span class="p">)</span>  <span class="c1"># make it awaitable</span>
-
-    <span class="k">return</span> <span class="nx">wrapper</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wrap_future</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>  <span class="c1"># make it awaitable
+</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
 </code></pre></div></div>
 
 <p>Usage:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@force_async
-def long_blocking_function():
-    import time
-    time.sleep(10)
-    return True
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">@</span><span class="n">force_async</span>
+<span class="k">def</span> <span class="nf">long_blocking_function</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">True</span>
 
-import asyncio
-async def run():
-    a = long_blocking_function()
-    b = long_blocking_function()
-    return await asyncio.gather(a, b) # [True, True] in 10 seconds
-</code></pre></div></div>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">long_blocking_function</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">long_blocking_function</span><span class="p">()</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="c1"># [True, True] in 10 seconds
+</span></code></pre></div></div>
 
 <p>The main idea of the trick is to run a sync task in a thread (returning a future object, <code class="highlighter-rouge">coroutine.Future</code>) and then turn this future object into a <code class="highlighter-rouge">asyncio.Future</code> object. Obivously, this future object will be resolve when the sync function is done, and also is <strong>awaitable</strong>.</p>
 

@@ -186,11 +186,11 @@
 
 <p>As a matter of fact, Windows’ process is quite slow to start, this greatly reduces the viability of python’s <code class="highlighter-rouge">multiprocessing.Pool</code>. If spawning a new process is slow, then should we spawn less processes and distribute a larger bit of work for each process instead ? This is exactly what <code class="highlighter-rouge">chunksize</code> parameter in <code class="highlighter-rouge">pool.imap</code> does.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from multiprocessing import Pool
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
 
-with Pool() as pool:
-    for result in pool.imap(fn, jobs, chunksize=16):
-       ....
+<span class="k">with</span> <span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">jobs</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">16</span><span class="p">):</span>
+       <span class="o">....</span>
 </code></pre></div></div>
 
 <p>So, in short, you should set <code class="highlighter-rouge">chunksize</code> somewhat larger than 1 and see if the problem mitigates.</p>

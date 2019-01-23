@@ -131,35 +131,35 @@
 
 <p>I have come to a policy of mine. When dealing with big vars about which we really want to minimize the memory footprint, deallocate the memory as soon as it’s not being used any more in a context.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A = big var
-... use A ...
-A = None
-import gc
-gc.collect()
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">A</span> <span class="o">=</span> <span class="n">big</span> <span class="n">var</span>
+<span class="o">...</span> <span class="n">use</span> <span class="n">A</span> <span class="o">...</span>
+<span class="n">A</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="kn">import</span> <span class="nn">gc</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>Mainly, do the above ! But does it really make sense ? It sure does! Considering this case:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def get_a_big_val():
-    return something big
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">get_a_big_val</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">something</span> <span class="n">big</span>
 
-A = get_a_big_val()
-... use A ...
-A = get_a_big_val()
-... use A ...
+<span class="n">A</span> <span class="o">=</span> <span class="n">get_a_big_val</span><span class="p">()</span>
+<span class="o">...</span> <span class="n">use</span> <span class="n">A</span> <span class="o">...</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">get_a_big_val</span><span class="p">()</span>
+<span class="o">...</span> <span class="n">use</span> <span class="n">A</span> <span class="o">...</span>
 </code></pre></div></div>
 
 <p>How much memory do we need in this case ? Actually, it’s more like 2 * A, since only one A is big enough we should avoid this.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import gc
-A = get_a_big_val()
-... use A ...
-A = None
-gc.collect()
-A = get_a_big_val()
-... use A ...
-A = None
-gc.collect()
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">gc</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">get_a_big_val</span><span class="p">()</span>
+<span class="o">...</span> <span class="n">use</span> <span class="n">A</span> <span class="o">...</span>
+<span class="n">A</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">get_a_big_val</span><span class="p">()</span>
+<span class="o">...</span> <span class="n">use</span> <span class="n">A</span> <span class="o">...</span>
+<span class="n">A</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>Better memory foot print now.</p>

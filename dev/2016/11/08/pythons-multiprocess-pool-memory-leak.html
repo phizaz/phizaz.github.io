@@ -134,25 +134,25 @@ categories: dev</p>
 
 <p>The situation can be described here:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># no globals
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># no globals
+</span>
+<span class="k">def</span> <span class="err">...
 
-def ...
+</span><span class="nf">def</span> <span class="o">...</span>
 
-def ...
+<span class="k">def</span> <span class="err">...
 
-def ...
+</span><span class="nf">def</span> <span class="n">trigger</span><span class="p">():</span>
+	<span class="o">...</span>
+	<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">()</span>
+	<span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="n">memory_consuming_fn</span><span class="p">,</span> <span class="n">some_list</span><span class="p">):</span>
+		<span class="o">...</span>
+	<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+	<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+	<span class="o">...</span>
 
-def trigger():
-	...
-	pool = Pool()
-	for each in pool.imap_unordered(memory_consuming_fn, some_list):
-		...
-	pool.close()
-	pool.join()
-	...
-
-# run the trigger() function many times
-</code></pre></div></div>
+<span class="c1"># run the trigger() function many times
+</span></code></pre></div></div>
 
 <p>Note : In my case the <code class="highlighter-rouge">memory_cosuming_fn</code> involves opening many large files, this could be the case (but I personally don’t think so because the running context is separated from the main process, and is essentially freed up every time without fail).</p>
 
@@ -160,8 +160,8 @@ def trigger():
 
 <p>The point is to run <code class="highlighter-rouge">trigger()</code> many times, may be in this fashion:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for i in range(10):
-	trigger()
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+	<span class="n">trigger</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>After each run, not all memory are freed, more or less, so, I assume that memory leakage is encountered.</p>
@@ -179,17 +179,17 @@ def trigger():
 <p>And, here are some working experiments:</p>
 
 <p>A. Declaring an initializer:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def pool_init():
-	import gc
-	gc.collect()
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">pool_init</span><span class="p">():</span>
+	<span class="kn">import</span> <span class="nn">gc</span>
+	<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 
-pool = Pool(initializer=pool_init)
+<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">initializer</span><span class="o">=</span><span class="n">pool_init</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>B. Put <code class="highlighter-rouge">gc.collect()</code> before declaring pool:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import gc
-gc.collect()
-pool = Pool()
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">gc</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>Note: both are not the same thing !</p>

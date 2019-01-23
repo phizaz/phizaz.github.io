@@ -130,11 +130,12 @@
     <p>You can use <code class="highlighter-rouge">subprocess.check_output</code> which will redirect <code class="highlighter-rouge">stdout</code> to the function call’s return value</p>
 
 <p>Something like:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import subprocess
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">subprocess</span>
 
-output = subprocess.check_output(['which', 'python'])
-print(output)
+<span class="n">output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s">'which'</span><span class="p">,</span> <span class="s">'python'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 </code></pre></div></div>
+
 
 
     <small>

@@ -130,7 +130,7 @@
     <p>Create a bash script as a proxy:</p>
 
 <p>Filename <code class="highlighter-rouge">wpython</code> save it some where in your <code class="highlighter-rouge">$PATH</code></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="nv">path</span><span class="o">=</span><span class="nv">$1</span>
 <span class="c"># remove the first argument</span>
 <span class="nb">shift
@@ -139,7 +139,7 @@
 
 <p>Now, we can use this shebang:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#! /usr/bin/env wpython
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#! /usr/bin/env wpython</span>
 </code></pre></div></div>
 
 <p>The code will convert Cygwin path back to Windows path, and thus compatible with Windows Python.</p>
