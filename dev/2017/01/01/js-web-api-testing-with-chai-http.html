@@ -18,7 +18,16 @@
 <script type="application/ld+json">
 {"description":"We’re going to test a web api using GET, POST using chai-http by actual http request. chai is not a test runner, it’s just a javascript testing framework (aka. asserter). If you are looking for a test runner go see mocha Note: You should install mocha globally (npm install -g mocha) and install chai locally. To get started, install chai and chai-http: npm install --save-dev chai chai-http You should have your destination web server in place because I will show only the test part, here it is: const chai = require(&#39;chai&#39;) const chaiHttp = require(&#39;chai-http&#39;) chai.use(chaiHttp) describe(&#39;web server test&#39;, () =&gt; { it(&#39;test post request with file upload&#39;, (done) =&gt; { chai.request(&#39;http://....:...&#39;) .post(&#39;/api/post/test&#39;) .attach(&#39;image_field&#39;, img, &#39;upload.png&#39;) .end((err, res) =&gt; { if (err) { console.error(err) } else { const body = res.text chai.expect(body).to.be.equal(....) done() } }) }) }) To not underestimate my reader’s ability, I feel like there is no need to explain it in details. There is so much more to discover, yet beginning from reading body response from the request, I think, is a good start !","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2017/01/01/js-web-api-testing-with-chai-http.html","headline":"JS: Web Server Testing with “chai-http”","dateModified":"2017-01-01T06:13:11+07:00","datePublished":"2017-01-01T06:13:11+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2017/01/01/js-web-api-testing-with-chai-http.html"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /></head>
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+</head>
 <body><header class="site-header">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">

@@ -18,7 +18,16 @@
 <script type="application/ld+json">
 {"description":"Here is a listener on process object: process.on(&#39;unhandledRejection&#39;, (err) =&gt; { console.error(err) }) And, a way to remove the listener is: process.removeListenter(&lt;name&gt;, &lt;function&gt;) Note that, you have to specify both its name and function because for each name there can be many functions that listen. So, inpractice, I think it is much easier to manage listeners if we use it this way: function listen(obj, name, func) { const on = obj[&#39;on&#39;] const removeListener = obj[&#39;removeListener&#39;] if (typeof on !== &#39;function&#39; || typeof removeListener !== &#39;function&#39;) { throw new Error(&#39;object is not listenable&#39;) } on(name, func) return () =&gt; { removeListener(name, func) } } Usage: const remover = litsen(process, &#39;unhandledRejection&#39;, (err) =&gt; console.error(err)) # to stop listening remover()","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2017/02/18/properly-stop-node-listener.html","headline":"Properly Stop Node Listener","dateModified":"2017-02-18T08:17:42+07:00","datePublished":"2017-02-18T08:17:42+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2017/02/18/properly-stop-node-listener.html"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /></head>
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+</head>
 <body><header class="site-header">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">

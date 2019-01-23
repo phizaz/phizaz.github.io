@@ -18,7 +18,16 @@
 <script type="application/ld+json">
 {"description":"Not all platforms are supported with native clients, even the simple tasks of downloand and uploading (not even syncing) … I have gone so far as buliding my own download and upload client with the cloud drive of choice, but to make it reliable one must be very resourceful to do so. I have found rclone (rsync for cloud drive; link) app just recently, it worked just like I always wanted to do, simple upload and download a lot of files. Just download, you might put it at /usr/local/bin rclone config Now, to upload rclone copy &lt;local_path&gt; &lt;remote_name&gt;:&lt;remote_path&gt; If you want to upload to the root at remote, you can just leave the blank. To download, you simple swap the two rclone copy &lt;remote_name&gt;:&lt;remote_path&gt; &lt;local_path&gt; It will try to skip making changes to the existing files, mostly by the file size.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2017/03/12/mass-upload-and-download-client-for-all-your-cloud-drives.html","headline":"Mass upload and download client for all your cloud drives","dateModified":"2017-03-12T07:31:14+07:00","datePublished":"2017-03-12T07:31:14+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2017/03/12/mass-upload-and-download-client-for-all-your-cloud-drives.html"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /></head>
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+</head>
 <body><header class="site-header">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">

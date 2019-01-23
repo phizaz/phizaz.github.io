@@ -18,7 +18,16 @@
 <script type="application/ld+json">
 {"description":"A rule of thumb is: if you install windows in UEFI mode (which Windows 10 is almost always be), you will need to install Ubuntu in UEFI mode as well. If you missed that out prepare to have problems with booting. This kind of problem won’t be fixed with ANY tools regrading the booting problems, maybe any is an overstatement, but I did try the boot-repair (https://help.ubuntu.com/community/Boot-Repair), all it’s saying was boot it with UEFI mode. So, how to install Ubuntu with UEFI mode then ? As the link suggests, you can make sure that you do it right if you create an only UEFI bootable usb. This way you can guarantee that if it works it’s gonna work right. The process of creating a UEFI bootable usb is in the link, but I will recap it here: Insert USB. Format it to FAT32, flag it with boot and lsb, you might use the Gparted to do this. Mount the USB. Copy all files from the .iso file, to the USB, including all hidden files (ctrl + h, in nautilus to see the hidden files) But, I prefer this way better, 7z x &lt;.iso_file&gt; -o&lt;usb_mount_path_with_trailing_slash&gt; That’s all. Tried to boot it, you might have to set your bios to enable UEFI mode or even prefer it first. If you already have problem You still can make it boot up, but only with the help of Super Grub2 Disk (http://www.supergrubdisk.org/super-grub2-disk/), it will automatically detect all installed bootable OSes in all your drives, you can select one of the option and boot into your os. It’s not permanent at least you can boot into. If you want to reinstall grub2, you can try sudo grub-install /dev/&lt;yourdrive&gt;, you must state the device name not the partition name. In my case, it didn’t work because I installed the Ubuntu in legacy mode, and trying to boot it alongside with UEFI Windows 10, it just won’t work.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2017/03/12/a-rule-of-thumb-to-install-ubuntu-alongside-with-windows-2.html","headline":"A Rule of thumb to Install Ubuntu Alongside with Windows","dateModified":"2017-03-12T07:09:36+07:00","datePublished":"2017-03-12T07:09:36+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2017/03/12/a-rule-of-thumb-to-install-ubuntu-alongside-with-windows-2.html"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /></head>
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+</head>
 <body><header class="site-header">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">

@@ -18,7 +18,16 @@
 <script type="application/ld+json">
 {"description":"File: slash.cmd @echo off setlocal ENABLEDELAYEDEXPANSION set str=%* set str=!str:\\=/! REM run the parsed command %str% It will execute the command while replace all the \\ to /. Like, docker run -it -v %HOME%\\test\\dir:/workdir debian bash to be docker run -it -v %HOME%/test/dir:/workdir. Since, the Windows command prompt will only auto-complete the path using \\ which doesn’t work with Docker (linux) paths.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2017/02/18/make-backslash-and-slash-interchangeable-in-windows-command-line.html","headline":"Make \\ (backslash) and / (slash) interchangeable in Windows command line","dateModified":"2017-02-18T09:16:37+07:00","datePublished":"2017-02-18T09:16:37+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2017/02/18/make-backslash-and-slash-interchangeable-in-windows-command-line.html"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /></head>
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+</head>
 <body><header class="site-header">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">

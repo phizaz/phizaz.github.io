@@ -18,7 +18,16 @@
 <script type="application/ld+json">
 {"description":"docker run --user ${UID} ... To run commands in a container by using the same user as whoami. It’s not perfect though, it has the very limitation that the container won’t know the actual user name of the user ${UID} which, in many cases, is not acceptable. If you want to make it more realistic, make the container really aware of this user and its username, I’m afraid that you might have to mount the /etc/passwd to the container which is in most ways not favorable. docker run --user ${UID} -v /etc/passwd:/etc/passwd:ro ... But, it managed to work quite well. Another way that might serve you well is to run the container with root just like always, but run specific commands with hand-curated specific users like: In Dockerfile: # run with user id RUN sudo -u &quot;#&lt;userid&gt;&quot; &lt;command&gt; # run with username RUN sudo -u &quot;&lt;username&gt;&quot; &lt;command&gt; Note: you have to apt-get install sudo to do this. You still need to mount the /etc/passwd.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2017/03/12/run-commands-in-docker-by-preserving-rights-and-ownerships.html","headline":"Run Commands in Docker by Preserving Rights and Ownerships","dateModified":"2017-03-12T07:30:02+07:00","datePublished":"2017-03-12T07:30:02+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2017/03/12/run-commands-in-docker-by-preserving-rights-and-ownerships.html"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /></head>
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+</head>
 <body><header class="site-header">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">

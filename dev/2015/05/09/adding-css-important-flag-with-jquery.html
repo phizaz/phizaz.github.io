@@ -18,7 +18,16 @@
 <script type="application/ld+json">
 {"description":"แน่นอนว่าในบางทีเราอาจจะต้องการกำหนดค่าบางอย่างแบบ dynamic ด้วย jQuery เช่นความสูงของหน้า ๆ หนึ่ง ซึ่งอาจจะไม่เท่ากันในแต่ละสถานการณ์การทำทุกอย่างด้วย CSS อาจจะซับซ้อนเกินไป หรืออาจจะทำไม่ได้ แต่ก็ติดที่ว่าหากมีการกำหนด !important flag ในกฎ CSS แล้วแน่นอนว่าก็ต้องใช้ !important ด้วยกันมาหักล้าง ปัญหาคือ jQuery ไม่สามารถใส่ flag นี้เข้าไปในการกำหนดค่าต่าง ๆ ของ CSS ได้ เราไม่สามารถ $(somthing).css(&#39;height&#39;, &#39;100px !important&#39;); แล้วให้ผลลัพธ์ที่ถูกต้องได้ (อย่างน้อยก็ในช่วงเวลาที่ผมเขียนอยู่…) เราจึงต้องใช้วิธีอื่น … ซึ่งก็มีคนเสนอหลายวิธี ผมพบว่าวิธีที่ผมชอบที่สุด (แน่นอนว่าต้องเขียนง่ายมาก่อน ฮ่ะ ๆ) ก็คือนี่ … var elem = $(&quot;#elem&quot;); elem[0].style.removeAttribute(&#39;height&#39;); elem[0].style.setProperty(&#39;height&#39;, &#39;100px&#39;, &#39;important&#39;); หยิบมาจาก stackoverflow.com จากคำตอบของคุณ BettaSplendens","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2015/05/09/adding-css-important-flag-with-jquery.html","headline":"Adding CSS !important flag with jQuery","dateModified":"2015-05-09T14:19:00+07:00","datePublished":"2015-05-09T14:19:00+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2015/05/09/adding-css-important-flag-with-jquery.html"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /></head>
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+</head>
 <body><header class="site-header">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
