@@ -197,8 +197,6 @@
 
 <p>เราจะเริ่มจากกรณีของ on-policy prediction ซึ่งก็คือการ sample <script type="math/tex">r</script> จำนวนมากจาก <script type="math/tex">\pi</script> คราวนี้เราต้องเปลี่ยนเป็น sample จาก <script type="math/tex">b</script> แทน</p>
 
-<script type="math/tex; mode=display">\mathrm{E}_{r_{t+1}, r_{t+2}, ... \sim \pi} \left[ r_{t+1} + r_{t+2} + ... \right] = v_\pi</script>
-
 <p>แต่มันอาจจะง่ายกว่าถ้าเราลองมองแค่ reward เดียวก่อน</p>
 
 <p>การจะ sample reward แต่ละอันสิ่งที่เราต้องทำก็คือ</p>
@@ -225,12 +223,12 @@
 
 <script type="math/tex; mode=display">r_{t+2} \sim b(a_t|s_t) p(s_{t+1}|s_t, a_t) b(a_{t+1}|s_{t+1}) p(r_{t+2}|s_{t+1}, a_{t+1})</script>
 
-<p>ถ้าเรามองเฉพาะ reward แรก <script type="math/tex">r_{t+1}​</script> เราจะเห็นว่า</p>
+<p>ถ้าเรามองเฉพาะ reward แรก <script type="math/tex">r_{t+1}</script> แล้วลองเปรียบเทียบกับ กรณี <script type="math/tex">f(x), p(x), g(x)</script> เราจะเห็นว่า:</p>
 
 <ul>
-  <li><script type="math/tex">\pi(a_t \vert s_t) p(r_{t+1} \vert s_t, a_t)​</script> ราวกับเป็น <script type="math/tex">p(x)​</script> แต่เดิม และ</li>
-  <li><script type="math/tex">b(a_t \vert s_t) p(r_{t+1} \vert s_t, a_t)</script> ก็คือ <script type="math/tex">g(x)</script> อันใหม่</li>
-  <li><script type="math/tex">r_{t+1}​</script> ก็คือ <script type="math/tex">f(x)​</script> ของเรานั่นเอง</li>
+  <li><script type="math/tex">\pi(a_t \vert s_t) p(r_{t+1} \vert s_t, a_t)</script> ราวกับเป็น <script type="math/tex">p(x)</script> แต่เดิม และ</li>
+  <li><script type="math/tex">b(a_t \vert s_t) p(r_{t+1} \vert s_t, a_t)</script> ก็คือ <script type="math/tex">g(x)​</script> อันใหม่</li>
+  <li><script type="math/tex">r_{t+1}</script> ก็คือ <script type="math/tex">f(x)</script> ของเรานั่นเอง</li>
 </ul>
 
 <p>เมื่อเห็นฉะนี้เราก็สามาถรเขียนได้ว่า Importance sampling ratio ระหว่าง <script type="math/tex">\pi</script> กับ <script type="math/tex">b</script> สำหรับ reward <script type="math/tex">r_{t+1}</script> ก็คือ</p>
@@ -305,15 +303,16 @@ v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|
 
 <script type="math/tex; mode=display">G_t = r_{t+1} + r_{t+2} + r_{t+3} + \dots \quad \sim \pi</script>
 
-<p>โดยเราจะหาความน่าจะเป็นที่จะ sample ได้ค่า <script type="math/tex">r_{t+1}, r_{t+2}, \dots</script> พร้อมกันทั้งหมดแทน ซึ่งก็สามารถทำได้ในลักษณะเดียวกัน โดยจะยกตัวอย่างกรณีเฉพาะ reward สองตัวแรกดังนี้</p>
+<p>โดยเราจะหาความน่าจะเป็นที่จะ sample ได้ค่า <script type="math/tex">r_{t+1}, r_{t+2}, \dots</script> พร้อมกันทั้งหมดแทน ซึ่งก็สามารถทำได้ในลักษณะเดียวกัน โดยตรงนี้จะแสดงให้เห็นกรณี reward 2 ตัวแรก</p>
 
 <script type="math/tex; mode=display">r_{t+1}, r_{t+2} \sim \pi(a_t|s_t) p(r_{t+1}|s_t, a_t) p(s_{t+1}|s_t, a_t) \pi(a_{t+1}|s_{t+1}) p(r_{t+2}|s_{t+1}, a_{t+1})</script>
 
-<p>สำหรับกรณีทั่วไปตั้งแต่ <script type="math/tex">t+1</script> ถึง <script type="math/tex">T</script> จะสามารถเขียนได้ดังนี้</p>
+<p>หลังจากนั้นเราสามารถเขียนสำหรับกรณีทั่วไปได้ดังนี้</p>
 
-<script type="math/tex; mode=display">r_{t+1}, r_{t+2}, \dots \sim \prod_{k=t}^{T-1} \pi(a_k|s_k) p(r_{k+1}|s_k, a_k) p(s_{k+1}|s_k, a_k)</script>
+<script type="math/tex; mode=display">r_{t+1}, r_{t+2}, \dots, r_{T} \sim \prod_{k=t}^{T-1} \pi(a_k|s_k) p(r_{k+1}|s_k, a_k) p(s_{k+1}|s_k, a_k)
+\label{eq:pG}</script>
 
-<p>แต่ตอนนี้เราสามารถหาค่า Importance sampling ratio ระหว่าง <script type="math/tex">\pi​</script> กับ <script type="math/tex">b​</script> สำหรับ <script type="math/tex">G_t​</script> ได้ดังต่อไปนี้</p>
+<p>จากสมการ <script type="math/tex">\eqref{eq:pG}</script> เราสามารถหาค่า Importance sampling ratio ระหว่าง <script type="math/tex">\pi</script> กับ <script type="math/tex">b</script> สำหรับ <script type="math/tex">G_t</script> ได้ดังต่อไปนี้</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 \begin{equation}
@@ -367,7 +366,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
 
 <ul>
   <li>เราอาศัยความจริงที่ว่า <script type="math/tex">\mathrm{E}[\rho] = 1​</script></li>
-  <li>และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ <script type="math/tex">\vert \tau(s) \vert</script> มีขนาดเข้าใกล้อนันต์</li>
+  <li>และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ <script type="math/tex">\tau(s)</script> มีขนาดอนันต์</li>
 </ul>
 
 <script type="math/tex; mode=display">\begin{equation}
@@ -375,7 +374,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
 \label{eq:expect_rho_tau}
 \end{equation}</script>
 
-<p>สมการ <script type="math/tex">\eqref{eq:expect_rho_tau}​</script> จะเป็นจริงก็ด้วย <a href="http://www.incompleteideas.net/book/ebook/node46.html">Law of large numbers</a> เท่านั้น ดังนั้นหาก <script type="math/tex">\left \vert  \tau(s) \right \vert ​</script> ไม่ได้เยอะเข้าใกล้ <script type="math/tex">\infty​</script> แล้วก็พูดอย่างนั้นไม่ได้</p>
+<p>สมการ <script type="math/tex">\eqref{eq:expect_rho_tau}</script> จะเป็นจริงก็ด้วย <a href="http://www.incompleteideas.net/book/ebook/node46.html">Law of large numbers</a> เท่านั้น ดังนั้นหาก <script type="math/tex">\left \vert  \tau(s) \right \vert</script> ไม่ได้เยอะเข้าใกล้ <script type="math/tex">\infty</script> แล้วก็พูดอย่างนั้นไม่ได้</p>
 
 <script type="math/tex; mode=display">\begin{equation} 
 \left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right| = \sum_{t \in \tau(s)} \rho_{t:T-1}
