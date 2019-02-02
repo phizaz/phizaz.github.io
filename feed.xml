@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-02-02T23:31:12+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Off-policy Importance Sampling</title><link href="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" rel="alternate" type="text/html" title="Off-policy Importance Sampling" /><published>2019-02-02T00:00:00+07:00</published><updated>2019-02-02T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html">&lt;p&gt;ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า &lt;strong&gt;prediction&lt;/strong&gt; ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; และหรือ &lt;script type=&quot;math/tex&quot;&gt;q_\pi​&lt;/script&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-02-03T01:19:02+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Off-policy Importance Sampling</title><link href="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" rel="alternate" type="text/html" title="Off-policy Importance Sampling" /><published>2019-02-02T00:00:00+07:00</published><updated>2019-02-02T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html">&lt;p&gt;ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า &lt;strong&gt;prediction&lt;/strong&gt; ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; และหรือ &lt;script type=&quot;math/tex&quot;&gt;q_\pi​&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;อีกส่วนหนึ่งก็คือส่วนที่เรียกว่า &lt;strong&gt;control&lt;/strong&gt; ถ้าเรามีข้อมูลเหล่านี้ (&lt;script type=&quot;math/tex&quot;&gt;v_\pi, q_\pi&lt;/script&gt;) หรือไม่มี จะสามารถหา policy ที่ดีได้อย่างไร ในกรณีของ &lt;a href=&quot;http://www.incompleteideas.net/book/ebook/node46.html&quot;&gt;GPI (Generalized Policy Iteration)&lt;/a&gt; นั้น control (การหา policy ที่ดี) นั้นอาศัยการ prediction ที่ดีมาก่อนด้วย นั่นทำให้ในหลาย ๆ ครั้งเราถือว่า prediction กับ control เหมือนกับสองส่วนที่ขาดจากกันไม่ได้&lt;/p&gt;
 
@@ -132,10 +132,11 @@
 
 &lt;p&gt;ในกรณีของ off-policy เราจะต้องคูณ &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; ของแต่ละ reward ให้ถูกต้อง หน้าแต่ละ reward เพื่อทำให้ได้ค่าเหมือนเดิม&lt;/p&gt;
 
-&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim b} \left[ \rho_{t:t}r_{t+1} + \rho_{t:t+1}r_{t+2} + \dots \right] = v_\pi&lt;/script&gt;
-จะเห็นว่าเราต้องใช้ แต่ละ &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; สำหรับแต่ละ reward วิธีการนี้จึงมีชื่อว่า &lt;strong&gt;Per-decision Importance Sampling&lt;/strong&gt; ก็เพราะว่าเราสร้าง importance sampling สำหรับแต่ละ decision (แต่ละ action แต่ละ reward) เลย&lt;/p&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim b} \left[ \rho_{t:t}r_{t+1} + \rho_{t:t+1}r_{t+2} + \dots \right] = v_\pi&lt;/script&gt;
 
-&lt;p&gt;ในการ Implement จริง ๆ เราจะต้องเขียนได้ว่า &lt;script type=&quot;math/tex&quot;&gt;v(s)&lt;/script&gt; นั้นหามาจากไหน เราจะเขียนได้ว่า&lt;/p&gt;
+&lt;p&gt;จะเห็นว่าเราต้องใช้ แต่ละ &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; สำหรับแต่ละ reward วิธีการนี้จึงมีชื่อว่า &lt;strong&gt;Per-decision Importance Sampling&lt;/strong&gt; ก็เพราะว่าเราสร้าง importance sampling สำหรับแต่ละ decision (แต่ละ action แต่ละ reward) เลย&lt;/p&gt;
+
+&lt;p&gt;ในการ Implement จริง ๆ เราจะต้องเขียนได้ว่า &lt;script type=&quot;math/tex&quot;&gt;v(s)​&lt;/script&gt; นั้นหามาจากไหน เราจะเขียนได้ว่า&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation}
 v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|}
@@ -148,7 +149,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|
   &lt;li&gt;ส่วนที่เหลือก็คือการหาค่า “เฉลี่ย” จากหลาย ๆ ครั้งนั่นเอง (เพราะว่าค่าคาดหวังก็คือค่าเฉลี่ย)&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;การหาค่าเฉลี่ยในที่นี้ใช้เครื่องหมาย &lt;script type=&quot;math/tex&quot;&gt;\tau(s)​&lt;/script&gt; ช่วย โดยเราจำหนดขึ้นมาที่นี้ว่า &lt;script type=&quot;math/tex&quot;&gt;\tau(s)​&lt;/script&gt; เป็น set ของทุก ๆ timestep ที่ state “ผ่าน” state &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt; พอดิบพอดี ดังนั้นการหาค่าเฉลี่ยของทุก ๆ ครั้งที่เราวิ่งผ่าน &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt; ก็คือการหา “ค่าเฉลี่ยของผลรวม reward ทุก ๆ ครั้งที่เริ่มจาก &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt;” นั่นเอง&lt;/p&gt;
+&lt;p&gt;การหาค่าเฉลี่ยในที่นี้ใช้เครื่องหมาย &lt;script type=&quot;math/tex&quot;&gt;\tau(s)​&lt;/script&gt; ช่วย โดยเรากำหนดขึ้นมาที่นี้ว่า &lt;script type=&quot;math/tex&quot;&gt;\tau(s)​&lt;/script&gt; เป็น set ของทุก ๆ timestep ที่ state “ผ่าน” state &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt; พอดิบพอดี ดังนั้นการหาค่าเฉลี่ยของทุก ๆ ครั้งที่เราวิ่งผ่าน &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt; ก็คือการหา “ค่าเฉลี่ยของผลรวม reward ทุก ๆ ครั้งที่เริ่มจาก &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt;” นั่นเอง&lt;/p&gt;
 
 &lt;p&gt;เพิ่มเติม: การกำหนด &lt;script type=&quot;math/tex&quot;&gt;\tau(s)&lt;/script&gt; ว่าเป็น set ของทุก ๆ timestep ที่ผ่าน state &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; เรียกว่า &lt;strong&gt;every-visit Monte Carlo&lt;/strong&gt; อีกวิธีหนึ่งที่เราทำได้ ก็คือ “สนใจเฉพาะ &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; แรกของแต่ละ episode เท่านั้น” เราก็จะแก้ความหมาย &lt;script type=&quot;math/tex&quot;&gt;\tau(s)&lt;/script&gt; เล็กน้อย แล้วเรียกว่า &lt;strong&gt;first-visit Monte Carlo&lt;/strong&gt; ความต่างของทั้งสองก็คือ every-visit นั้น implement ง่ายกว่า เพราะเราไม่ต้องจำว่าเราผ่าน state นี้ครั้งแรกหรือเปล่า แต่ว่าอาจจะให้ค่าที่แปลก ๆ เพราะหากเราผ่าน state &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; หลายครั้งในหนึ่ง episode ค่า &lt;script type=&quot;math/tex&quot;&gt;v(s)​&lt;/script&gt; จะเป็นค่าเฉลี่ยจากทุกครั้งที่เราผ่าน ต่างกับกรณี first-visit ที่จะสนใจเฉพาะค่าแรกเท่านั้น&lt;/p&gt;
 
@@ -217,43 +218,51 @@ v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
 
 &lt;p&gt;สิ่งที่เราเห็นต่อมาก็คือ อยู่ดี ๆ เราจะแก้ตามอำเภอใจแบบนี้ไม่ได้สิ คำตอบแบบสั้น ๆ ก็คือ เรายอม “ผิด” เพราะว่าสมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:weighted_is}&lt;/script&gt; นั้น bias ไม่ได้ให้ค่าที่ถูกต้องโดยเฉลี่ยเหมือนกับ importance sampling ทั่วไป แต่เราก็ยอมจ่ายเพราะว่ามันช่วยให้เราทำงานกับมันได้ง่ายมากขึ้น&lt;/p&gt;
 
-&lt;p&gt;คำถามต่อมาก็คือ แล้วมัน bias ไปขนาดไหนล่ะ? เพราะว่าถ้ามัน bias แบบไม่เห็นเค้าเดิมเลยมันก็ไม่น่าจะดีอยู่แล้ว จริงอย่างว่า เพราะว่า สมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:weighted_is}&lt;/script&gt; นั้นมี bias ก็จริง แต่ว่าขนาดของ bias นั้น “น้อยลง” เรื่อย ๆ หากเราเฉลี่ยด้วยจำนวนที่มากขึ้น และมัน “เข้าใกล้” ค่าจริงเมื่อเราเฉลี่ยด้วยจำนวนอนันต์ แต่แน่นอนว่าเราไม่ได้เฉลี่ยด้วยจำนวนอนันต์จึงต้องยอมรับว่า มันก็ยัง bias อยู่ดี&lt;/p&gt;
+&lt;p&gt;คำถามต่อมาก็คือ แล้วมัน bias ไปขนาดไหนล่ะ? เพราะว่าถ้ามัน bias แบบไม่เห็นเค้าเดิมเลยมันก็ไม่น่าจะดีอยู่แล้ว จริงอย่างว่า เพราะว่า สมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:weighted_is}​&lt;/script&gt; นั้นมี bias ก็จริง แต่ว่าขนาดของ bias นั้น “น้อยลง” เรื่อย ๆ หากเราเฉลี่ยด้วยจำนวนที่มากขึ้น และมัน “เข้าใกล้” ค่าจริงเมื่อเราเฉลี่ยด้วยจำนวนอนันต์ แต่แน่นอนว่าเราไม่ได้เฉลี่ยด้วยจำนวนอนันต์จึงต้องยอมรับว่า มันก็ยัง bias อยู่ดี&lt;/p&gt;
 
 &lt;p&gt;การแสดงว่ามันเข้าใกล้ค่าจริง เมื่อเฉลี่ยด้วยจำนวนอนันต์สามารถทำได้ดังนี้&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;เราอาศัยความจริงที่ว่า &lt;script type=&quot;math/tex&quot;&gt;\mathrm{E}[\rho] = 1​&lt;/script&gt;&lt;/li&gt;
-  &lt;li&gt;และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ &lt;script type=&quot;math/tex&quot;&gt;\tau(s)&lt;/script&gt; มีขนาดอนันต์&lt;/li&gt;
+  &lt;li&gt;และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ &lt;script type=&quot;math/tex&quot;&gt;\tau(s)​&lt;/script&gt; มีขนาดอนันต์&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation}
-\mathrm{E}_b \left[ \rho_{t:T-1} \right] = 1 = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1}}{\left| \tau(s) \right|}
+\frac{\sum_{t \in \tau(s)} \rho_{t:T-1}}{\left| \tau(s) \right|} = \mathrm{E}_b \left[ \rho_{t:T-1} \right] = 1
 \label{eq:expect_rho_tau}
 \end{equation}&lt;/script&gt;
 
 &lt;p&gt;สมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:expect_rho_tau}&lt;/script&gt; จะเป็นจริงก็ด้วย &lt;a href=&quot;http://www.incompleteideas.net/book/ebook/node46.html&quot;&gt;Law of large numbers&lt;/a&gt; เท่านั้น ดังนั้นหาก &lt;script type=&quot;math/tex&quot;&gt;\left \vert  \tau(s) \right \vert&lt;/script&gt; ไม่ได้เยอะเข้าใกล้ &lt;script type=&quot;math/tex&quot;&gt;\infty&lt;/script&gt; แล้วก็พูดอย่างนั้นไม่ได้&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation} 
-\left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right| = \sum_{t \in \tau(s)} \rho_{t:T-1}
-\end{equation}&lt;/script&gt;
+&lt;p&gt;หลังจากนั้นเราก็ทำการย้ายข้างเล็กน้อยดังนี้
+&lt;script type=&quot;math/tex&quot;&gt;\begin{equation} 
+\sum_{t \in \tau(s)} \rho_{t:T-1} = \left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right|
+\end{equation}&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;จึงได้ว่า&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;นำค่าที่ได้ไปแทนในสมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:weighted_is}​&lt;/script&gt; จะได้ว่า
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{equation}
 \begin{split}
 v(s) &amp;= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \rho_{t:T-1}} \\
 &amp;= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\left|\tau(s)\right|} \\ 
 \end{split}
-\end{equation} %]]&gt;&lt;/script&gt;
+\end{equation} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;นั่นก็คือเมื่อขนาด &lt;script type=&quot;math/tex&quot;&gt;\left \vert  \tau(s) \right \vert&lt;/script&gt; เยอะขึ้นก็จะช่วยให้ bias ของ weighted importance sampling เล็กลงนั่นเอง&lt;/p&gt;
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;เราจะเห็นว่าจริง ๆ แล้ว weighted importance sampling กับ importance sampling ธรรมดานั้นมีค่าเท่ากันเมื่อ $$&lt;/td&gt;
+      &lt;td&gt;\tau(s)&lt;/td&gt;
+      &lt;td&gt;​$$ เป็นอนันต์ (ใหญ่พอ)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
-&lt;p&gt;หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า &lt;a href=&quot;https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1079&amp;amp;context=cs_faculty_pubs&quot;&gt;Eligibility Traces for Off-Policy Policy Evaluation (2000)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า &lt;script type=&quot;math/tex&quot;&gt;\rho​&lt;/script&gt; ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า &lt;a href=&quot;https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1079&amp;amp;context=cs_faculty_pubs&quot;&gt;Eligibility Traces for Off-Policy Policy Evaluation (2000)&lt;/a&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;แสดงว่า-mathrmerho--1&quot;&gt;แสดงว่า $\mathrm{E}[\rho] = 1$&lt;/h4&gt;
 
-&lt;p&gt;เพื่อให้เห็นภาพจะแสดงให้ดูในกรณีของ &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}, r_{t+2}&lt;/script&gt; อย่างละเอียดเพื่อให้เห็นภาพชัดเจน&lt;/p&gt;
+&lt;p&gt;เพื่อให้เห็นภาพจะแสดงให้ดูในกรณีของ &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}, r_{t+2}​&lt;/script&gt; อย่างละเอียดเพื่อให้เห็นภาพชัดเจน&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\rho_{t:t+1} = \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})}&lt;/script&gt;
 

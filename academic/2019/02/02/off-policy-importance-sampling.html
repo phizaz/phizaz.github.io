@@ -275,10 +275,11 @@
 
 <p>ในกรณีของ off-policy เราจะต้องคูณ <script type="math/tex">\rho</script> ของแต่ละ reward ให้ถูกต้อง หน้าแต่ละ reward เพื่อทำให้ได้ค่าเหมือนเดิม</p>
 
-<p><script type="math/tex">\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim b} \left[ \rho_{t:t}r_{t+1} + \rho_{t:t+1}r_{t+2} + \dots \right] = v_\pi</script>
-จะเห็นว่าเราต้องใช้ แต่ละ <script type="math/tex">\rho</script> สำหรับแต่ละ reward วิธีการนี้จึงมีชื่อว่า <strong>Per-decision Importance Sampling</strong> ก็เพราะว่าเราสร้าง importance sampling สำหรับแต่ละ decision (แต่ละ action แต่ละ reward) เลย</p>
+<script type="math/tex; mode=display">\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim b} \left[ \rho_{t:t}r_{t+1} + \rho_{t:t+1}r_{t+2} + \dots \right] = v_\pi</script>
 
-<p>ในการ Implement จริง ๆ เราจะต้องเขียนได้ว่า <script type="math/tex">v(s)</script> นั้นหามาจากไหน เราจะเขียนได้ว่า</p>
+<p>จะเห็นว่าเราต้องใช้ แต่ละ <script type="math/tex">\rho</script> สำหรับแต่ละ reward วิธีการนี้จึงมีชื่อว่า <strong>Per-decision Importance Sampling</strong> ก็เพราะว่าเราสร้าง importance sampling สำหรับแต่ละ decision (แต่ละ action แต่ละ reward) เลย</p>
+
+<p>ในการ Implement จริง ๆ เราจะต้องเขียนได้ว่า <script type="math/tex">v(s)​</script> นั้นหามาจากไหน เราจะเขียนได้ว่า</p>
 
 <script type="math/tex; mode=display">\begin{equation}
 v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|}
@@ -291,7 +292,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|
   <li>ส่วนที่เหลือก็คือการหาค่า “เฉลี่ย” จากหลาย ๆ ครั้งนั่นเอง (เพราะว่าค่าคาดหวังก็คือค่าเฉลี่ย)</li>
 </ul>
 
-<p>การหาค่าเฉลี่ยในที่นี้ใช้เครื่องหมาย <script type="math/tex">\tau(s)​</script> ช่วย โดยเราจำหนดขึ้นมาที่นี้ว่า <script type="math/tex">\tau(s)​</script> เป็น set ของทุก ๆ timestep ที่ state “ผ่าน” state <script type="math/tex">s​</script> พอดิบพอดี ดังนั้นการหาค่าเฉลี่ยของทุก ๆ ครั้งที่เราวิ่งผ่าน <script type="math/tex">s​</script> ก็คือการหา “ค่าเฉลี่ยของผลรวม reward ทุก ๆ ครั้งที่เริ่มจาก <script type="math/tex">s​</script>” นั่นเอง</p>
+<p>การหาค่าเฉลี่ยในที่นี้ใช้เครื่องหมาย <script type="math/tex">\tau(s)​</script> ช่วย โดยเรากำหนดขึ้นมาที่นี้ว่า <script type="math/tex">\tau(s)​</script> เป็น set ของทุก ๆ timestep ที่ state “ผ่าน” state <script type="math/tex">s​</script> พอดิบพอดี ดังนั้นการหาค่าเฉลี่ยของทุก ๆ ครั้งที่เราวิ่งผ่าน <script type="math/tex">s​</script> ก็คือการหา “ค่าเฉลี่ยของผลรวม reward ทุก ๆ ครั้งที่เริ่มจาก <script type="math/tex">s​</script>” นั่นเอง</p>
 
 <p>เพิ่มเติม: การกำหนด <script type="math/tex">\tau(s)</script> ว่าเป็น set ของทุก ๆ timestep ที่ผ่าน state <script type="math/tex">s</script> เรียกว่า <strong>every-visit Monte Carlo</strong> อีกวิธีหนึ่งที่เราทำได้ ก็คือ “สนใจเฉพาะ <script type="math/tex">s</script> แรกของแต่ละ episode เท่านั้น” เราก็จะแก้ความหมาย <script type="math/tex">\tau(s)</script> เล็กน้อย แล้วเรียกว่า <strong>first-visit Monte Carlo</strong> ความต่างของทั้งสองก็คือ every-visit นั้น implement ง่ายกว่า เพราะเราไม่ต้องจำว่าเราผ่าน state นี้ครั้งแรกหรือเปล่า แต่ว่าอาจจะให้ค่าที่แปลก ๆ เพราะหากเราผ่าน state <script type="math/tex">s</script> หลายครั้งในหนึ่ง episode ค่า <script type="math/tex">v(s)​</script> จะเป็นค่าเฉลี่ยจากทุกครั้งที่เราผ่าน ต่างกับกรณี first-visit ที่จะสนใจเฉพาะค่าแรกเท่านั้น</p>
 
@@ -360,43 +361,51 @@ v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
 
 <p>สิ่งที่เราเห็นต่อมาก็คือ อยู่ดี ๆ เราจะแก้ตามอำเภอใจแบบนี้ไม่ได้สิ คำตอบแบบสั้น ๆ ก็คือ เรายอม “ผิด” เพราะว่าสมการ <script type="math/tex">\eqref{eq:weighted_is}</script> นั้น bias ไม่ได้ให้ค่าที่ถูกต้องโดยเฉลี่ยเหมือนกับ importance sampling ทั่วไป แต่เราก็ยอมจ่ายเพราะว่ามันช่วยให้เราทำงานกับมันได้ง่ายมากขึ้น</p>
 
-<p>คำถามต่อมาก็คือ แล้วมัน bias ไปขนาดไหนล่ะ? เพราะว่าถ้ามัน bias แบบไม่เห็นเค้าเดิมเลยมันก็ไม่น่าจะดีอยู่แล้ว จริงอย่างว่า เพราะว่า สมการ <script type="math/tex">\eqref{eq:weighted_is}</script> นั้นมี bias ก็จริง แต่ว่าขนาดของ bias นั้น “น้อยลง” เรื่อย ๆ หากเราเฉลี่ยด้วยจำนวนที่มากขึ้น และมัน “เข้าใกล้” ค่าจริงเมื่อเราเฉลี่ยด้วยจำนวนอนันต์ แต่แน่นอนว่าเราไม่ได้เฉลี่ยด้วยจำนวนอนันต์จึงต้องยอมรับว่า มันก็ยัง bias อยู่ดี</p>
+<p>คำถามต่อมาก็คือ แล้วมัน bias ไปขนาดไหนล่ะ? เพราะว่าถ้ามัน bias แบบไม่เห็นเค้าเดิมเลยมันก็ไม่น่าจะดีอยู่แล้ว จริงอย่างว่า เพราะว่า สมการ <script type="math/tex">\eqref{eq:weighted_is}​</script> นั้นมี bias ก็จริง แต่ว่าขนาดของ bias นั้น “น้อยลง” เรื่อย ๆ หากเราเฉลี่ยด้วยจำนวนที่มากขึ้น และมัน “เข้าใกล้” ค่าจริงเมื่อเราเฉลี่ยด้วยจำนวนอนันต์ แต่แน่นอนว่าเราไม่ได้เฉลี่ยด้วยจำนวนอนันต์จึงต้องยอมรับว่า มันก็ยัง bias อยู่ดี</p>
 
 <p>การแสดงว่ามันเข้าใกล้ค่าจริง เมื่อเฉลี่ยด้วยจำนวนอนันต์สามารถทำได้ดังนี้</p>
 
 <ul>
   <li>เราอาศัยความจริงที่ว่า <script type="math/tex">\mathrm{E}[\rho] = 1​</script></li>
-  <li>และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ <script type="math/tex">\tau(s)</script> มีขนาดอนันต์</li>
+  <li>และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ <script type="math/tex">\tau(s)​</script> มีขนาดอนันต์</li>
 </ul>
 
 <script type="math/tex; mode=display">\begin{equation}
-\mathrm{E}_b \left[ \rho_{t:T-1} \right] = 1 = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1}}{\left| \tau(s) \right|}
+\frac{\sum_{t \in \tau(s)} \rho_{t:T-1}}{\left| \tau(s) \right|} = \mathrm{E}_b \left[ \rho_{t:T-1} \right] = 1
 \label{eq:expect_rho_tau}
 \end{equation}</script>
 
 <p>สมการ <script type="math/tex">\eqref{eq:expect_rho_tau}</script> จะเป็นจริงก็ด้วย <a href="http://www.incompleteideas.net/book/ebook/node46.html">Law of large numbers</a> เท่านั้น ดังนั้นหาก <script type="math/tex">\left \vert  \tau(s) \right \vert</script> ไม่ได้เยอะเข้าใกล้ <script type="math/tex">\infty</script> แล้วก็พูดอย่างนั้นไม่ได้</p>
 
-<script type="math/tex; mode=display">\begin{equation} 
-\left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right| = \sum_{t \in \tau(s)} \rho_{t:T-1}
-\end{equation}</script>
+<p>หลังจากนั้นเราก็ทำการย้ายข้างเล็กน้อยดังนี้
+<script type="math/tex">\begin{equation} 
+\sum_{t \in \tau(s)} \rho_{t:T-1} = \left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right|
+\end{equation}</script></p>
 
-<p>จึงได้ว่า</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
+<p>นำค่าที่ได้ไปแทนในสมการ <script type="math/tex">\eqref{eq:weighted_is}​</script> จะได้ว่า
+<script type="math/tex">% <![CDATA[
 \begin{equation}
 \begin{split}
 v(s) &= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \rho_{t:T-1}} \\
 &= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\left|\tau(s)\right|} \\ 
 \end{split}
-\end{equation} %]]></script>
+\end{equation} %]]></script></p>
 
-<p>นั่นก็คือเมื่อขนาด <script type="math/tex">\left \vert  \tau(s) \right \vert</script> เยอะขึ้นก็จะช่วยให้ bias ของ weighted importance sampling เล็กลงนั่นเอง</p>
+<table>
+  <tbody>
+    <tr>
+      <td>เราจะเห็นว่าจริง ๆ แล้ว weighted importance sampling กับ importance sampling ธรรมดานั้นมีค่าเท่ากันเมื่อ $$</td>
+      <td>\tau(s)</td>
+      <td>​$$ เป็นอนันต์ (ใหญ่พอ)</td>
+    </tr>
+  </tbody>
+</table>
 
-<p>หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า <script type="math/tex">\rho</script> ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า <a href="https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1079&amp;context=cs_faculty_pubs">Eligibility Traces for Off-Policy Policy Evaluation (2000)</a></p>
+<p>หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า <script type="math/tex">\rho​</script> ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า <a href="https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1079&amp;context=cs_faculty_pubs">Eligibility Traces for Off-Policy Policy Evaluation (2000)</a></p>
 
 <h4 id="แสดงว่า-mathrmerho--1">แสดงว่า $\mathrm{E}[\rho] = 1$</h4>
 
-<p>เพื่อให้เห็นภาพจะแสดงให้ดูในกรณีของ <script type="math/tex">r_{t+1}, r_{t+2}</script> อย่างละเอียดเพื่อให้เห็นภาพชัดเจน</p>
+<p>เพื่อให้เห็นภาพจะแสดงให้ดูในกรณีของ <script type="math/tex">r_{t+1}, r_{t+2}​</script> อย่างละเอียดเพื่อให้เห็นภาพชัดเจน</p>
 
 <script type="math/tex; mode=display">\rho_{t:t+1} = \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})}</script>
 
