@@ -151,7 +151,7 @@
 
 <p>โจทย์นี้มีชื่ออย่างเป็นทางการว่า <strong>Off-policy prediction</strong> ก็เพราะว่าประสบการณ์ที่เรามีมัน off ไปจาก policy <script type="math/tex">\pi</script></p>
 
-<p>ก่อนที่จะไปต่อ กล่าวก่อนว่า off-policy prediction นั้นก็ไม่ได้มีสูตรสำเร็จ แต่ละวิธีก็อาจจะมีจุดแข็งจุดอ่อนของตัวเอง (เหมือนกับทุกอย่างใน RL) แต่เนื่องจาก off-policy prediction นั้นยากกว่า on-policy prediction (กรณีที่ไม่มี <script type="math/tex">b</script>) มาก ดังนั้นงานวิจัยในด้านนี้ก็ยังไม่เจริญเท่า</p>
+<p>ก่อนที่จะไปต่อ กล่าวก่อนว่า off-policy prediction นั้นก็ไม่ได้มีสูตรสำเร็จ แต่ละวิธีก็อาจจะมีจุดแข็งจุดอ่อนของตัวเอง (เหมือนกับทุกอย่างใน RL) แต่เนื่องจาก off-policy prediction นั้นยากกว่า on-policy prediction (กรณีที่ไม่มี <script type="math/tex">b​</script>) มาก ดังนั้นงานวิจัยในด้านนี้ก็ยังไม่เจริญเท่า</p>
 
 <p>เพราะฉะนั้นในบทความนี้เราก็อาจจะพูดแบบเกริ่น ๆ วิธีที่มีมานานแล้วของการทำ off-policy prediction ไปก่อนซึ่งในที่นี้เราจะเสนอไอเดียที่เรียกว่า Importance Sampling ซึ่งเป็นเทคนิคทางสถิติ ซึ่งเข้าใจได้ง่ายแม้จะไม่ได้เข้าใจ RL มากเท่าไหร่</p>
 
@@ -373,7 +373,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
 \label{eq:expect_rho_tau}
 \end{equation}</script>
 
-<p>สมการ <script type="math/tex">\eqref{eq:expect_rho_tau}</script> จะเป็นจริงก็ด้วย Law of large numbers เท่านั้น ดังนั้นหาก <script type="math/tex">\left \vert  \tau(s) \right \vert</script> ไม่ได้เยอะเข้าใกล้ <script type="math/tex">\infty</script> แล้วก็พูดอย่างนั้นไม่ได้</p>
+<p>สมการ <script type="math/tex">\eqref{eq:expect_rho_tau}</script> จะเป็นจริงก็ด้วย <a href="http://www.incompleteideas.net/book/ebook/node46.html">Law of large numbers</a> เท่านั้น ดังนั้นหาก <script type="math/tex">\left \vert  \tau(s) \right \vert</script> ไม่ได้เยอะเข้าใกล้ <script type="math/tex">\infty</script> แล้วก็พูดอย่างนั้นไม่ได้</p>
 
 <script type="math/tex; mode=display">\begin{equation} 
 \left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right| = \sum_{t \in \tau(s)} \rho_{t:T-1}
@@ -391,7 +391,7 @@ v(s) &= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \rho_{
 
 <p>นั่นก็คือเมื่อขนาด <script type="math/tex">\left \vert  \tau(s) \right \vert</script> เยอะขึ้นก็จะช่วยให้ bias ของ weighted importance sampling เล็กลงนั่นเอง</p>
 
-<p>หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า <script type="math/tex">\rho</script> ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า Eligibility Traces for Off-Policy Policy Evaluation (2000)</p>
+<p>หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า <script type="math/tex">\rho</script> ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า <a href="https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1079&amp;context=cs_faculty_pubs">Eligibility Traces for Off-Policy Policy Evaluation (2000)</a></p>
 
 <h4 id="แสดงว่า-mathrmerho--1">แสดงว่า $\mathrm{E}[\rho] = 1$</h4>
 
