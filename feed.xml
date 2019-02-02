@@ -1,4 +1,342 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-01-23T18:27:05+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Academic Machine Learning Development Process</title><link href="https://blog.konpat.me/academic/2019/01/23/academic-machine-learning-development-process.html" rel="alternate" type="text/html" title="Academic Machine Learning Development Process" /><published>2019-01-23T00:00:00+07:00</published><updated>2019-01-23T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/01/23/academic-machine-learning-development-process</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/01/23/academic-machine-learning-development-process.html">&lt;p&gt;Machine learning projects nowadays cannot easily fit into a laptop. While we optimize laptop for maximum portability, it does not usually come with a powerful GPU. The conventional wisdom is that we buy our own machine learning rig with powerful enough GPU(s). This now splits our development machine, where we actually writing codes, and the running machine, where we have all the libraries and resources. Of course, In this scenario, we don’t include the GPU farm, if you have any, in that case other layer of considerations must be in place.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-02-02T18:20:43+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Off-policy Importance Sampling</title><link href="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" rel="alternate" type="text/html" title="Off-policy Importance Sampling" /><published>2019-02-02T00:00:00+07:00</published><updated>2019-02-02T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html">&lt;p&gt;ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า &lt;strong&gt;prediction&lt;/strong&gt; ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; และหรือ &lt;script type=&quot;math/tex&quot;&gt;q_\pi​&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;อีกส่วนหนึ่งก็คือส่วนที่เรียกว่า &lt;strong&gt;control&lt;/strong&gt; ถ้าเรามีข้อมูลเหล่านี้ (&lt;script type=&quot;math/tex&quot;&gt;v_\pi, q_\pi&lt;/script&gt;) หรือไม่มี จะสามารถหา policy ที่ดีได้อย่างไร ในกรณีของ GPI (General Policy Iteration) นั้น control (หา policy ที่ดี) นั้นอาศัยการ prediction ที่ดีมาก่อนด้วย นั่นทำให้ในหลาย ๆ ครั้งเราถือว่า prediction กับ control เหมือนกับสองส่วนที่ขาดจากกันไม่ได้&lt;/p&gt;
+
+&lt;p&gt;ในที่นี้เราพูดถึงโจทย์ prediction เป็นหลัก โดยเฉพาะเราพูดถึงการ predict ค่า &lt;script type=&quot;math/tex&quot;&gt;q_\pi&lt;/script&gt; โดยที่เราไม่มีประสบการณ์จากการเล่น policy &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; เลย  แต่เราได้ประสบการณ์จากาแหล่งอื่น ๆ แทน เราเรียกแหล่งนั้นว่า &lt;strong&gt;behavioral policy&lt;/strong&gt; หรือ &lt;script type=&quot;math/tex&quot;&gt;b&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;จะเป็นไปได้ไหม หรือต้องทำอย่างไรเราถึงจะได้ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; ในเมื่อเรามีแต่ประสบการณ์จาก &lt;script type=&quot;math/tex&quot;&gt;b​&lt;/script&gt;?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;โจทย์นี้มีชื่ออย่างเป็นทางการว่า &lt;strong&gt;Off-policy prediction&lt;/strong&gt; ก็เพราะว่าประสบการณ์ที่เรามีมัน off ไปจาก policy &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;ก่อนที่จะไปต่อ กล่าวก่อนว่า off-policy prediction นั้นก็ไม่ได้มีสูตรสำเร็จ แต่ละวิธีก็อาจจะมีจุดแข็งจุดอ่อนของตัวเอง (เหมือนกับทุกอย่างใน RL) แต่เนื่องจาก off-policy prediction นั้นยากกว่า on-policy prediction (กรณีที่ไม่มี &lt;script type=&quot;math/tex&quot;&gt;b&lt;/script&gt;) มาก ดังนั้นงานวิจัยในด้านนี้ก็ยังไม่เจริญเท่า&lt;/p&gt;
+
+&lt;p&gt;เพราะฉะนั้นในบทความนี้เราก็อาจจะพูดแบบเกริ่น ๆ วิธีที่มีมานานแล้วของการทำ off-policy prediction ไปก่อนซึ่งในที่นี้เราจะเสนอไอเดียที่เรียกว่า Importance Sampling ซึ่งเป็นเทคนิคทางสถิติ ซึ่งเข้าใจได้ง่ายแม้จะไม่ได้เข้าใจ RL มากเท่าไหร่&lt;/p&gt;
+
+&lt;h2 id=&quot;on-policy-prediction&quot;&gt;On-policy prediction&lt;/h2&gt;
+
+&lt;p&gt;ในกรณีที่ &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; คือ &lt;script type=&quot;math/tex&quot;&gt;b&lt;/script&gt; กล่าวคือ &lt;script type=&quot;math/tex&quot;&gt;\pi(a \vert s) = b(a \vert s)&lt;/script&gt; สำหรับทุก ​&lt;script type=&quot;math/tex&quot;&gt;a, s&lt;/script&gt; เราจะได้ว่า เราสามารถแก้โจทย์ prediction ด้วยวิธีการแบบ Monte Carlo นั่นก็คือ&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathrm{E}_{r_{t+1}, r_{t+2}, ... \sim \pi} \left[ r_{t+1} + r_{t+2} + ... \right] = v_\pi&lt;/script&gt;
+
+&lt;p&gt;แปลเป็นภาษาไทยก็คือ เราสามารถหาค่า &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; ได้ (prediction) ด้วยการใช้ประสบการณ์จำนวนมากมาหาค่า “คาดหวัง” โดยมีเงื่อนไขว่าประสบการณ์จะต้องมาจาก policy &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; เท่านั้น&lt;/p&gt;
+
+&lt;p&gt;ข้อสังเกต: เราทำการ sample &lt;script type=&quot;math/tex&quot;&gt;r&lt;/script&gt; หลายครั้งจนกว่าจะจบ episode&lt;/p&gt;
+
+&lt;p&gt;เพื่อความง่ายเราจะกำหนด &lt;script type=&quot;math/tex&quot;&gt;G_t = r_{t+1} + r_{t+2} + ...&lt;/script&gt; โดยเราเรียก &lt;script type=&quot;math/tex&quot;&gt;G_t&lt;/script&gt; ว่า return อาจจะแปลได้ว่า ค่าทดลองการเล่น (จากการเล่น 1 ครั้งจนจบ แล้วรวมรางวัลที่ได้ทั้งหมด)&lt;/p&gt;
+
+&lt;p&gt;โจทย์ในที่นี้สำหรับ off-policy prediction ก็น่าจะเป็น ถ้าเราไม่ได้ &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}, r_{t+2}, ... \sim \pi&lt;/script&gt; แต่มาจาก &lt;script type=&quot;math/tex&quot;&gt;b&lt;/script&gt; แทน เป็นไปได้มั้ยที่เราจะยังประมาณค่า &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; ได้เหมือนเดิม&lt;/p&gt;
+
+&lt;h2 id=&quot;off-policy-prediction-โดยใช้-importance-sampling&quot;&gt;Off-policy prediction โดยใช้ Importance Sampling&lt;/h2&gt;
+
+&lt;p&gt;Importance Sampling เป็นวิธีทางสถิติ โดยสามารถแสดงให้เห็นแบบง่าย ๆ ได้ดังนี้&lt;/p&gt;
+
+&lt;p&gt;สมมติว่าเรามีฟังก์ชัน &lt;script type=&quot;math/tex&quot;&gt;f(x)&lt;/script&gt; เรามีฟังก์ชันความน่าจะเป็น &lt;script type=&quot;math/tex&quot;&gt;p(x)&lt;/script&gt; และเราต้องการหา “ค่าคาดหวังของ &lt;script type=&quot;math/tex&quot;&gt;f(x)&lt;/script&gt; ภายใต้ &lt;script type=&quot;math/tex&quot;&gt;p(x)&lt;/script&gt;” เราจะได้ว่า&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathrm{E}_{x \sim p(x)} f(x)&lt;/script&gt;
+
+&lt;p&gt;แต่ว่าถ้าเราไม่ได้ sample &lt;script type=&quot;math/tex&quot;&gt;x&lt;/script&gt; จาก &lt;script type=&quot;math/tex&quot;&gt;f(x)&lt;/script&gt; แต่เป็น &lt;script type=&quot;math/tex&quot;&gt;g(x)&lt;/script&gt; แทนล่ะ ? เราก็ยังหาค่าคาดหวังได้อยู่ดีแหละดังนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{split}
+\mathrm{E}_{x \sim p(x)} f(x) &amp;= \sum_x p(x) f(x) \\
+&amp;= \sum_x \frac{g(x)}{g(x)} p(x) f(x) \\
+&amp;= \sum_x g(x) \frac{p(x)}{g(x)} f(x) \\
+&amp;= \mathrm{E}_{x \sim g(x)} \frac{p(x)}{g(x)} f(x) 
+\end{split}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;การคูณ &lt;script type=&quot;math/tex&quot;&gt;\frac{g(x)}{g(x)}&lt;/script&gt; เป็นทริกที่ไม่ได้เปลี่ยนค่าแต่ใด เพราะว่าคูณด้วย &lt;script type=&quot;math/tex&quot;&gt;1&lt;/script&gt; แต่ว่าช่วยให้เราสามารถเปลี่ยนการ sample ได้ แทนที่จะต้อง sample จาก &lt;script type=&quot;math/tex&quot;&gt;p(x)&lt;/script&gt; กลายเป็น sample จาก &lt;script type=&quot;math/tex&quot;&gt;g(x)&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;เราจะได้ว่า หากทุกครั้งที่เรา sample &lt;script type=&quot;math/tex&quot;&gt;x \sim g(x)&lt;/script&gt; แล้วแทนที่จะใช้ค่า &lt;script type=&quot;math/tex&quot;&gt;f(x)&lt;/script&gt; ตรง ๆ เลยเราเอาค่านั้นมาคูณด้วย &lt;script type=&quot;math/tex&quot;&gt;\frac{p(x)}{g(x)}&lt;/script&gt; (เรียกว่า &lt;strong&gt;Importance sampling ratio&lt;/strong&gt;) ก่อน เราก็จะได้ค่าคาดหวังอันเดิมได้นั่นเอง แต่นั่นก็แปลว่าเราต้องรู้ด้วยว่า &lt;script type=&quot;math/tex&quot;&gt;g(x)&lt;/script&gt; ของเรานั้นมีค่าเท่าไหร่&lt;/p&gt;
+
+&lt;h3 id=&quot;การใช้งานกับ-reinforcement-learning&quot;&gt;การใช้งานกับ Reinforcement Learning&lt;/h3&gt;
+
+&lt;p&gt;เราจะเริ่มจากกรณีของ on-policy prediction ซึ่งก็คือการ sample &lt;script type=&quot;math/tex&quot;&gt;r&lt;/script&gt; จำนวนมากจาก &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; คราวนี้เราต้องเปลี่ยนเป็น sample จาก &lt;script type=&quot;math/tex&quot;&gt;b&lt;/script&gt; แทน&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathrm{E}_{r_{t+1}, r_{t+2}, ... \sim \pi} \left[ r_{t+1} + r_{t+2} + ... \right] = v_\pi&lt;/script&gt;
+
+&lt;p&gt;แต่มันอาจจะง่ายกว่าถ้าเราลองมองแค่ reward เดียวก่อน&lt;/p&gt;
+
+&lt;p&gt;การจะ sample reward แต่ละอันสิ่งที่เราต้องทำก็คือ&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;ทำการ sample action จาก policy &lt;script type=&quot;math/tex&quot;&gt;\pi(a \vert s)​&lt;/script&gt;&lt;/li&gt;
+  &lt;li&gt;ทำการ sample reward จาก reward distribution &lt;script type=&quot;math/tex&quot;&gt;p(r \vert s, a)​&lt;/script&gt;&lt;/li&gt;
+  &lt;li&gt;ทำการ sample state ต่อไป (ถ้าต้อง sample reward ต่อไป) จาก state transition probability &lt;script type=&quot;math/tex&quot;&gt;p(s' \vert s, a)​&lt;/script&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;สำหรับ reward แรกในที่นี้ &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}&lt;/script&gt; (สมมติว่าเราเริ่มที่ &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;) จะได้ว่า&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;r_{t+1} \sim \pi(a_t|s_t) p(r_{t+1}|s_t, a_t)&lt;/script&gt;
+
+&lt;p&gt;สำหรับ reward ต่อไป &lt;script type=&quot;math/tex&quot;&gt;r_{t+2}&lt;/script&gt; ก็จะได้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;r_{t+2} \sim \pi(a_t|s_t) p(s_{t+1}|s_t, a_t) \pi(a_{t+1}|s_{t+1}) p(r_{t+2}|s_{t+1}, a_{t+1})&lt;/script&gt;
+
+&lt;p&gt;หากเราไม่ได้ sample action จาก &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; แต่เป็นจาก &lt;script type=&quot;math/tex&quot;&gt;b&lt;/script&gt; แทน เราจะเขียนใหม่ได้ว่า&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;r_{t+1} \sim b(a_t|s_t) p(r_{t+1}|s_t, a_t)&lt;/script&gt;
+
+&lt;p&gt;และ&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;r_{t+2} \sim b(a_t|s_t) p(s_{t+1}|s_t, a_t) b(a_{t+1}|s_{t+1}) p(r_{t+2}|s_{t+1}, a_{t+1})&lt;/script&gt;
+
+&lt;p&gt;ถ้าเรามองเฉพาะ reward แรก &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}​&lt;/script&gt; เราจะเห็นว่า&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;script type=&quot;math/tex&quot;&gt;\pi(a_t \vert s_t) p(r_{t+1} \vert s_t, a_t)​&lt;/script&gt; ราวกับเป็น &lt;script type=&quot;math/tex&quot;&gt;p(x)​&lt;/script&gt; แต่เดิม และ&lt;/li&gt;
+  &lt;li&gt;&lt;script type=&quot;math/tex&quot;&gt;b(a_t \vert s_t) p(r_{t+1} \vert s_t, a_t)&lt;/script&gt; ก็คือ &lt;script type=&quot;math/tex&quot;&gt;g(x)&lt;/script&gt; อันใหม่&lt;/li&gt;
+  &lt;li&gt;&lt;script type=&quot;math/tex&quot;&gt;r_{t+1}​&lt;/script&gt; ก็คือ &lt;script type=&quot;math/tex&quot;&gt;f(x)​&lt;/script&gt; ของเรานั่นเอง&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;เมื่อเห็นฉะนี้เราก็สามาถรเขียนได้ว่า Importance sampling ratio ระหว่าง &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; กับ &lt;script type=&quot;math/tex&quot;&gt;b&lt;/script&gt; สำหรับ reward &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}&lt;/script&gt; ก็คือ&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{split}
+\rho_{t:t} &amp;= \frac{\pi(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)}}{b(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)}} \\
+&amp;= \frac{\pi(a_t|s_t)}{b(a_t|s_t)}
+\end{split}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;ใช้อักษร &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; (โรห์) แทน importance sampling ratio&lt;/p&gt;
+
+&lt;p&gt;ข้อสังเกต: จะเห็นว่าถ้า &lt;script type=&quot;math/tex&quot;&gt;b(a_t \vert s_t)&lt;/script&gt; มีค่าน้อยมาก ๆ อาจจะทำให้ค่า &lt;script type=&quot;math/tex&quot;&gt;\rho​&lt;/script&gt; ระเบิดได้ดังนั้น behavioral policy จะต้องไม่ “คม” เกินไป  กล่าวคือจะต้องให้โอกาสเลือก action ต่าง ๆ ไม่น้อยเกินไปนั่นเอง&lt;/p&gt;
+
+&lt;p&gt;และถ้าเราคิดต่อไปสำหรับกรณี reward ตัวที่สองเราก็จะได้ว่า Importance sampling ratio ระหว่าง &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; กับ &lt;script type=&quot;math/tex&quot;&gt;b&lt;/script&gt; สำหรับ &lt;script type=&quot;math/tex&quot;&gt;r_{t+2}&lt;/script&gt; ก็คือ&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{split}
+\rho_{t:t+1} &amp;= \frac{\pi(a_t|s_t) \cancel{p(s_{t+1}|s_t, a_t)} \pi(a_{t+1}|s_{t+1}) \cancel{p(r_{t+2}|s_{t+1}, a_{t+1})}}{b(a_t|s_t) \cancel{p(s_{t+1}|s_t, a_t)} b(a_{t+1}|s_{t+1}) \cancel{p(r_{t+2}|s_{t+1}, a_{t+1})}} \\
+&amp;= \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})}
+\end{split}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\rho_{t:t+1}​&lt;/script&gt; บอกถึงว่าเรา “คูณกันจาก t ถึง t+1”&lt;/p&gt;
+
+&lt;p&gt;จะเห็นว่าแม้ในตอนคูณกันนั้นจะมีส่วนของ state transition probability และ reward probability สุดท้ายแล้วก็ํจะตัดกันเองอยู่ดี เพราะว่าไม่ว่าจะเป็น &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; หรือ &lt;script type=&quot;math/tex&quot;&gt;b​&lt;/script&gt; ก็ล้วนอยู่ภายใต้ environment (MDP) เดียวกัน ทำเราให้เราสนใจเฉพาะความต่างของทั้งสองก็พอ&lt;/p&gt;
+
+&lt;p&gt;สำหรับกรณี reward อื่น ๆ นั้นเราสามารถเดาไปจากตรงนี้ว่า สำหรับ &lt;script type=&quot;math/tex&quot;&gt;r_T​&lt;/script&gt; จะมี importance sampling ratio ของตัวเองเท่ากับ&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{split}
+\rho_{t:T-1} 
+&amp;= \prod_{k=t}^{T-1} \frac{\pi(a_k|s_k)}{b(a_k|s_k)}
+\end{split}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;เอาทุกอย่างมารวมกัน เราจะได้ว่าสำหรับแต่ต้นนั้นในกรณีของ on-policy เรามี&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim \pi} \left[ r_{t+1} + r_{t+2} + \dots \right] = v_\pi&lt;/script&gt;
+
+&lt;p&gt;ในกรณีของ off-policy เราจะต้องคูณ &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; ของแต่ละ reward ให้ถูกต้อง หน้าแต่ละ reward เพื่อทำให้ได้ค่าเหมือนเดิม&lt;/p&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim b} \left[ \rho_{t:t}r_{t+1} + \rho_{t:t+1}r_{t+2} + \dots \right] = v_\pi&lt;/script&gt;
+จะเห็นว่าเราต้องใช้ แต่ละ &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; สำหรับแต่ละ reward วิธีการนี้จึงมีชื่อว่า &lt;strong&gt;Per-decision Importance Sampling&lt;/strong&gt; ก็เพราะว่าเราสร้าง importance sampling สำหรับแต่ละ decision (แต่ละ action แต่ละ reward) เลย&lt;/p&gt;
+
+&lt;p&gt;ในการ Implement จริง ๆ เราจะต้องเขียนได้ว่า &lt;script type=&quot;math/tex&quot;&gt;v(s)&lt;/script&gt; นั้นหามาจากไหน เราจะเขียนได้ว่า&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation}
+v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|}
+\end{equation}&lt;/script&gt;
+
+&lt;p&gt;อาจจะดูเข้าใจยากซักนิด แต่หากแยกเป็นส่วน ๆ จะเห็นว่า&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;script type=&quot;math/tex&quot;&gt;\sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}​&lt;/script&gt; ตรงนี้จริง ๆ แล้วก็คือ ผลรวมของ reward ที่ผ่านการคูณด้วย importance sampling ratio แล้ว&lt;/li&gt;
+  &lt;li&gt;ส่วนที่เหลือก็คือการหาค่า “เฉลี่ย” จากหลาย ๆ ครั้งนั่นเอง (เพราะว่าค่าคาดหวังก็คือค่าเฉลี่ย)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;การหาค่าเฉลี่ยในที่นี้ใช้เครื่องหมาย &lt;script type=&quot;math/tex&quot;&gt;\tau(s)​&lt;/script&gt; ช่วย โดยเราจำหนดขึ้นมาที่นี้ว่า &lt;script type=&quot;math/tex&quot;&gt;\tau(s)​&lt;/script&gt; เป็น set ของทุก ๆ timestep ที่ state “ผ่าน” state &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt; พอดิบพอดี ดังนั้นการหาค่าเฉลี่ยของทุก ๆ ครั้งที่เราวิ่งผ่าน &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt; ก็คือการหา “ค่าเฉลี่ยของผลรวม reward ทุก ๆ ครั้งที่เริ่มจาก &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt;” นั่นเอง&lt;/p&gt;
+
+&lt;p&gt;เพิ่มเติม: การกำหนด &lt;script type=&quot;math/tex&quot;&gt;\tau(s)&lt;/script&gt; ว่าเป็น set ของทุก ๆ timestep ที่ผ่าน state &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; เรียกว่า &lt;strong&gt;every-visit Monte Carlo&lt;/strong&gt; อีกวิธีหนึ่งที่เราทำได้ ก็คือ “สนใจเฉพาะ &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; แรกของแต่ละ episode เท่านั้น” เราก็จะแก้ความหมาย &lt;script type=&quot;math/tex&quot;&gt;\tau(s)&lt;/script&gt; เล็กน้อย แล้วเรียกว่า &lt;strong&gt;first-visit Monte Carlo&lt;/strong&gt; ความต่างของทั้งสองก็คือ every-visit นั้น implement ง่ายกว่า เพราะเราไม่ต้องจำว่าเราผ่าน state นี้ครั้งแรกหรือเปล่า แต่ว่าอาจจะให้ค่าที่แปลก ๆ เพราะหากเราผ่าน state &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; หลายครั้งในหนึ่ง episode ค่า &lt;script type=&quot;math/tex&quot;&gt;v(s)​&lt;/script&gt; จะเป็นค่าเฉลี่ยจากทุกครั้งที่เราผ่าน ต่างกับกรณี first-visit ที่จะสนใจเฉพาะค่าแรกเท่านั้น&lt;/p&gt;
+
+&lt;h3 id=&quot;importance-sampling-สำหรับผลรวมทั้งเส้น&quot;&gt;Importance Sampling สำหรับผลรวมทั้งเส้น&lt;/h3&gt;
+
+&lt;p&gt;แต่ว่าก็มีอีกวิธีที่เรามอง “ทุก reward เป็นภาพรวม” กล่าวคือเราไม่แยกมองเป็นทีละชิ้น แต่เรามองทั้งหมดเป็น return &lt;script type=&quot;math/tex&quot;&gt;G_t&lt;/script&gt; เลย&lt;/p&gt;
+
+&lt;p&gt;กล่าวคือ&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;G_t = r_{t+1} + r_{t+2} + r_{t+3} + \dots \quad \sim \pi&lt;/script&gt;
+
+&lt;p&gt;โดยเราจะหาความน่าจะเป็นที่จะ sample ได้ค่า &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}, r_{t+2}, \dots​&lt;/script&gt; พร้อมกันทั้งหมดแทน ซึ่งก็สามารถทำได้ในลักษณะเดียวกัน กล่าวคือ&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;r_{t+1}, r_{t+2} \sim \pi(a_t|s_t) p(r_{t+1}|s_t, a_t) p(s_{t+1}|s_t, a_t) \pi(a_{t+1}|s_{t+1}) p(r_{t+2}|s_{t+1}, a_{t+1})&lt;/script&gt;
+
+&lt;p&gt;เราสามารถคาดต่อไปได้ว่าจนถึง &lt;script type=&quot;math/tex&quot;&gt;r_{t+n}&lt;/script&gt; จะมีหน้าตาอย่างไร&lt;/p&gt;
+
+&lt;p&gt;แต่ตอนนี้เราสามารถหาค่า Importance sampling ratio ระหว่าง &lt;script type=&quot;math/tex&quot;&gt;\pi​&lt;/script&gt; กับ &lt;script type=&quot;math/tex&quot;&gt;b​&lt;/script&gt; สำหรับ &lt;script type=&quot;math/tex&quot;&gt;G_t​&lt;/script&gt; ได้ดังต่อไปนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{split}
+\rho_{t:T-1} &amp;= \prod_{k=t}^{T-1} \frac{\pi(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)} \cancel{p(s_{t+1}|s_t, a_t)}}{b(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)} \cancel{p(s_{t+1}|s_t, a_t)}} \\
+&amp;= \prod_{k=t}^{T-1} \frac{\pi(a_t|s_t)}{b(a_t|s_t)}
+\end{split}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;จะเห็นว่าหน้าตาคล้ายเดิมอย่างยิ่ง เพียงแต่ ณ ตอนนี้เราสามารถใช้ ค่า &lt;script type=&quot;math/tex&quot;&gt;\rho_{t:T-1}&lt;/script&gt; คูณเข้าไปยัง &lt;script type=&quot;math/tex&quot;&gt;G_t&lt;/script&gt; ทั้งเส้น เพื่อให้ได้ค่าที่ถูกต้อง แทนที่จะต้องใช้ค่า &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; สำหรับแต่ละ reward&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation}
+\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim b} \left[ \rho_{t:T-1} \sum_t^{T-1} r_{t+1} \right] = v_\pi
+\end{equation}&lt;/script&gt;
+
+&lt;p&gt;วิธีนี้เรียกว่า &lt;strong&gt;importance sampling&lt;/strong&gt; แบบปกติ (ทั้งเส้น)&lt;/p&gt;
+
+&lt;p&gt;เราสามารถเขียนนิยามของ &lt;script type=&quot;math/tex&quot;&gt;v(s)​&lt;/script&gt; ได้ในลักษณะเดียวกัน ก็คือการเฉลี่ยจากหลาย ๆ ครั้งที่เราผ่าน state &lt;script type=&quot;math/tex&quot;&gt;s​&lt;/script&gt; นั้น ๆ&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation}
+v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
+\label{eq:ord_is}
+\end{equation}&lt;/script&gt;
+
+&lt;h3 id=&quot;เปรียบเทียบ-importance-sampling-และ-per-decision-importance-sampling&quot;&gt;เปรียบเทียบ Importance Sampling และ Per-decision Importance Sampling&lt;/h3&gt;
+
+&lt;p&gt;ปัญหาของ Importance sampling ในภาพรวมก็คือการคูณทบ ๆ กัน ของ &lt;script type=&quot;math/tex&quot;&gt;\frac{\pi}{b}​&lt;/script&gt; ซึ่งมันจะทำให้ค่าที่ได้มีการแกว่งมาก ๆ ก็เพราะว่ามันขึ้นอยู่กับการ sampling ต่อเนื่องเป็นระยะยาว และเอาแต่ละพจน์มาคูณกัน ยิ่งส่งผลให้ช่วงของค่ามากขึ้นไปอีก ทำให้ importance sampling มีปัญหากับขนาดของ variance มีการกล่าวในหนังสือของ (Sutton, 2018) ว่า variance ของ importance sampling นั้นอาจจะถึง &lt;strong&gt;อนันต์&lt;/strong&gt; ซึ่งก็เห็นด้วยได้ง่ายเพราะว่าความยาวของ episode นั้นอาจจะยาวเท่าใดก็ได้&lt;/p&gt;
+
+&lt;p&gt;เพราะฉะนั้นสำหรับงานใดที่ต้องการใช้ importance sampling จำต้องพิเคราะห์ถึงการจำกัด variance ให้ดี โดยวิธีที่จำกัด variance ได้มาก มักก็จะส่งผลให้มีผลดีในการใช้งานจริงด้วย&lt;/p&gt;
+
+&lt;p&gt;เป็นที่ทราบกันว่าหากใช้ importance sampling (แบบทั้งเส้น) โดยตรงนั้น การเทรนจะทำได้ยากอย่างยิ่ง และอาจจะไม่ converge เลยด้วยซ้ำ แต่ว่า per-decision importance sampling ซึ่ง แม้ว่าจะมีพจน์ &lt;script type=&quot;math/tex&quot;&gt;\rho_{t:T-1}&lt;/script&gt; เช่นกัน แต่ว่าก็ส่งผลเพียงต่อ reward ท้าย ๆ ซึ่งก็อาจจะถูกพลังของ discount &lt;script type=&quot;math/tex&quot;&gt;\gamma&lt;/script&gt; ลดความสำคัญลงไปเยอะ ก็จะช่วยทำให้ variance ลดลงได้&lt;/p&gt;
+
+&lt;p&gt;อย่างไรก็ดีในการใช้งานจริงนิยมใช้วิธีที่ “ใกล้เคียง” แต่ไม่ใช่ทั้ง importance sampling หรือ per-decision importance sampling ซึ่งเรียกว่า &lt;strong&gt;weighted importance sampling&lt;/strong&gt; ซึ่งวิธีนี้นั้นจริง ๆ แล้ว “ไม่ให้ค่าที่ถูกต้อง” (มี bias) แต่ว่าสามารถควบคุม variance ได้เป็นอย่างดีจึงทำให้การใช้งานจริงนั้นให้ผลที่ดีกว่ามาก&lt;/p&gt;
+
+&lt;h3 id=&quot;weighted-importance-sampling&quot;&gt;Weighted Importance Sampling&lt;/h3&gt;
+
+&lt;p&gt;การที่เราคูณ &lt;script type=&quot;math/tex&quot;&gt;\prod \frac{\pi}{b}&lt;/script&gt; หลาย ๆ ครั้งส่งผลให้ค่า &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; นี้ แกว่งมาก ๆ และก็แกว่งมากขึ้นเรื่อย ๆ ตามจำนวนการคูณ วิธีหนึ่งที่จะช่วย “จำกัด” การแกว่งก็คือการ “หาร” ด้วยอะไรที่เยอะพอ ๆ กัน&lt;/p&gt;
+
+&lt;p&gt;เราทำการแก้ไขเล็กน้อยจากสมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:ord_is}&lt;/script&gt; โดยการแก้ตัวส่วนให้มีค่าแกว่งไปพร้อม ๆ กับตัวเศษ&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \rho_{t:T-1}}
+\label{eq:weighted_is}&lt;/script&gt;
+
+&lt;p&gt;สิ่งที่เราเห็นในทันทีก็คือ &lt;script type=&quot;math/tex&quot;&gt;v(s)&lt;/script&gt; ใหม่นี้จะแกว่งน้อยกว่ามากส่งผลให้ variance น้อยลงตามไปด้วย วิธีนี้จึงเหมาะสมมากกว่าในการใช้งานจริง&lt;/p&gt;
+
+&lt;p&gt;สิ่งที่เราเห็นต่อมาก็คือ อยู่ดี ๆ เราจะแก้ตามอำเภอใจแบบนี้ไม่ได้สิ คำตอบแบบสั้น ๆ ก็คือ เรายอม “ผิด” เพราะว่าสมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:weighted_is}&lt;/script&gt; นั้น bias ไม่ได้ให้ค่าที่ถูกต้องโดยเฉลี่ยเหมือนกับ importance sampling ทั่วไป แต่เราก็ยอมจ่ายเพราะว่ามันช่วยให้เราทำงานกับมันได้ง่ายมากขึ้น&lt;/p&gt;
+
+&lt;p&gt;คำถามต่อมาก็คือ แล้วมัน bias ไปขนาดไหนล่ะ? เพราะว่าถ้ามัน bias แบบไม่เห็นเค้าเดิมเลยมันก็ไม่น่าจะดีอยู่แล้ว จริงอย่างว่า เพราะว่า สมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:weighted_is}&lt;/script&gt; นั้นมี bias ก็จริง แต่ว่าขนาดของ bias นั้น “น้อยลง” เรื่อย ๆ หากเราเฉลี่ยด้วยจำนวนที่มากขึ้น และมัน “เข้าใกล้” ค่าจริงเมื่อเราเฉลี่ยด้วยจำนวนอนันต์ แต่แน่นอนว่าเราไม่ได้เฉลี่ยด้วยจำนวนอนันต์จึงต้องยอมรับว่า มันก็ยัง bias อยู่ดี&lt;/p&gt;
+
+&lt;p&gt;การแสดงว่ามันเข้าใกล้ค่าจริง เมื่อเฉลี่ยด้วยจำนวนอนันต์สามารถทำได้ดังนี้&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;เราอาศัยความจริงที่ว่า &lt;script type=&quot;math/tex&quot;&gt;\mathrm{E}[\rho] = 1​&lt;/script&gt;&lt;/li&gt;
+  &lt;li&gt;และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ &lt;script type=&quot;math/tex&quot;&gt;\tau(s)&lt;/script&gt; มีขนาดอนันต์&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation}
+\mathrm{E}_b \left[ \rho_{t:T-1} \right] = 1 = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1}}{\left| \tau(s) \right|}
+\label{eq:expect_rho_tau}
+\end{equation}&lt;/script&gt;
+
+&lt;p&gt;สมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:expect_rho_tau}&lt;/script&gt; จะเป็นจริงก็ด้วย Law of large numbers เท่านั้น ดังนั้นหาก &lt;script type=&quot;math/tex&quot;&gt;\left \vert  \tau(s) \right \vert&lt;/script&gt; ไม่ได้เยอะเข้าใกล้ &lt;script type=&quot;math/tex&quot;&gt;\infty&lt;/script&gt; แล้วก็พูดอย่างนั้นไม่ได้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation} 
+\left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right| = \sum_{t \in \tau(s)} \rho_{t:T-1}
+\end{equation}&lt;/script&gt;
+
+&lt;p&gt;จึงได้ว่า&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{split}
+v(s) &amp;= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \rho_{t:T-1}} \\
+&amp;= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\left|\tau(s)\right|} \\ 
+\end{split}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;นั่นก็คือเมื่อขนาด &lt;script type=&quot;math/tex&quot;&gt;\left \vert  \tau(s) \right \vert&lt;/script&gt; เยอะขึ้นก็จะช่วยให้ bias ของ weighted importance sampling เล็กลงนั่นเอง&lt;/p&gt;
+
+&lt;p&gt;หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า Eligibility Traces for Off-Policy Policy Evaluation (2000)&lt;/p&gt;
+
+&lt;h4 id=&quot;แสดงว่า-mathrmerho--1&quot;&gt;แสดงว่า $\mathrm{E}[\rho] = 1$&lt;/h4&gt;
+
+&lt;p&gt;เพื่อให้เห็นภาพจะแสดงให้ดูในกรณีของ &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}, r_{t+2}&lt;/script&gt; อย่างละเอียดเพื่อให้เห็นภาพชัดเจน&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\rho_{t:t+1} = \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})}&lt;/script&gt;
+
+&lt;p&gt;ลองหาค่าคาดหวังของ &lt;script type=&quot;math/tex&quot;&gt;\rho​&lt;/script&gt; ภายใต้ behavioral policy &lt;script type=&quot;math/tex&quot;&gt;b​&lt;/script&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{split}
+\mathrm{E}_{a_t, a_{t+1} \sim b} \left[ \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})} \right]
+&amp;= \sum_{a_t} b(a_t|s_t) \sum_{a_{t+1}} b(a_{t+1}|s_{t+1}) \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})} \\
+&amp;= \sum_{a_t} \cancel{b(a_t|s_t)} \frac{\pi(a_t|s_t)}{\cancel{b(a_t|s_t)}} 
+\sum_{a_{t+1}} \cancel{b(a_{t+1}|s_{t+1})} \frac{\pi(a_{t+1}|s_{t+1})}{\cancel{b(a_{t+1}|s_{t+1})}} \\
+&amp;= \sum_{a_t} \pi(a_t|s_t) \sum_{a_{t+1}} \pi(a_{t+1}|s_{t+1}) \\
+&amp;= \sum_{a_t} \pi(a_t|s_t) 1 \\
+&amp;=  1
+\end{split}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;จะเห็นว่าจริง ๆ แล้วเนื่องจากระหว่าง &lt;script type=&quot;math/tex&quot;&gt;a_t&lt;/script&gt; กับ &lt;script type=&quot;math/tex&quot;&gt;a_{t+1}&lt;/script&gt; นั้นไม่เกี่ยวข้องกัน (เมื่อกำหนด &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; ให้) ดังนั้นจึงราวกับว่าแต่ละ term ที่คูณกันใน &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; สามารถแยกกันคิดได้ ซึ่งก็ส่งผลให้ค่าคาดหวังทั้งหมดกลายเป็น 1 เพราะว่าแต่ละส่วนเป็น 1 นั่นเอง&lt;/p&gt;
+
+&lt;h3 id=&quot;การใช้งานกับ-n-step-td&quot;&gt;การใช้งานกับ n-step TD&lt;/h3&gt;
+
+&lt;p&gt;โดยปกติ TD หรือ Temporal Difference จะใช้ตัวอย่าง reward เพียง 1 ตัวอย่างเพื่ออัพเดทค่าประมาณ &lt;script type=&quot;math/tex&quot;&gt;v&lt;/script&gt; หรือ &lt;script type=&quot;math/tex&quot;&gt;q&lt;/script&gt; เป็นที่ทราบกันดีว่า TD นั้นอยู่ฝั่งตรงข้ามกับ Monte Carlo ในมุมของ variance และ bias กล่าวคือ&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;TD มี bias มาก มี variance น้อย&lt;/li&gt;
+  &lt;li&gt;Monte Carlo ไม่มี bias แต่มี variance มาก&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;n-step TD คือความพยายามหา “จุดกึ่งกลาง” ระหว่าง 2 วิธีการนี้ แทนที่จะใช้ reward เพียงอันเดียวแบบ TD ดังนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;G_{t:t+1} = r_{t+1} + \gamma v(s_{t+1})&lt;/script&gt;
+
+&lt;p&gt;เราจะใช้ reward หลาย ๆ ตัว ยกตัวอย่างเช่น 2 ตัว ดังต่อไปนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;G_{t:t+2} = r_{t+1} + \gamma r_{t+2} + \gamma^2 v(s_{t+2})&lt;/script&gt;
+
+&lt;p&gt;เราก็สามารถเดาได้ว่า &lt;script type=&quot;math/tex&quot;&gt;G_{t:t+n}&lt;/script&gt; จะมีหน้าตาเป็นอย่างไร&lt;/p&gt;
+
+&lt;p&gt;n-step TD คือการใช้ &lt;script type=&quot;math/tex&quot;&gt;G_{t:t+n}&lt;/script&gt; มาแทนที่ของ &lt;script type=&quot;math/tex&quot;&gt;G_{t:t+1}&lt;/script&gt; เราจะได้ว่าหน้าตาของ &lt;strong&gt;n-step SARSA&lt;/strong&gt; เป็นดังนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;q(s_t,a_t) \leftarrow q(s_t, a_t) + \alpha \left[ G_{t:t+n} - q(s_t, a_t) \right]&lt;/script&gt;
+
+&lt;p&gt;จะเห็นว่า &lt;script type=&quot;math/tex&quot;&gt;G_{t:t+n}&lt;/script&gt; ต้องการ &lt;script type=&quot;math/tex&quot;&gt;v&lt;/script&gt; แต่ในกรณีที่เรามีเฉพาะค่า &lt;script type=&quot;math/tex&quot;&gt;q&lt;/script&gt; เราจะสามารถหาค่า &lt;script type=&quot;math/tex&quot;&gt;G_{t:t+n}&lt;/script&gt; ได้ดังนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;G_{t:t+n} = \left( \sum_{i=0}^{n-1} \gamma^i r_{t+i+1} \right) + \gamma^n \mathrm{E}_{a \sim \pi} \left[ q(s_{t+n}, a) \right]&lt;/script&gt;
+
+&lt;p&gt;หากเราใช้การ sampling สำหรับประมาณ &lt;script type=&quot;math/tex&quot;&gt;v&lt;/script&gt; ดังด้านบน เราจะเรียกว่า SARSA เฉย ๆ แต่ว่าถ้าเราใช้การหาค่าเฉลี่ยแบบเป๊ะ ๆ ดังต่อไปนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;G_{t:t+n} = \left( \sum_{i=0}^{n-1} \gamma^i r_{t+i+1} \right) + \gamma^n \sum_a \pi(a|s_{t+n}) q(s_{t+n}, a)&lt;/script&gt;
+
+&lt;p&gt;เราเรียกวิธีการนี้ว่า &lt;strong&gt;n-step expected SARSA&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;ซึ่งเวลาที่เรามาใช้กับ off-policy importance sampling สิ่งที่เราต้องสนใจก็คือ “สำหรับแต่ละ term มีการ sampling action หรือเปล่า?” เพราะว่าเราต้องคูณ &lt;script type=&quot;math/tex&quot;&gt;\rho&lt;/script&gt; ทุกที่ที่มีการ sampling action&lt;/p&gt;
+
+&lt;p&gt;จะเห็นว่าในกรณีของ n-step SARSA เรามีการสุ่ม n-1 ครั้งสำหรับ n reward แรก ที่เป็น n-1 ก็เพราะว่า SARSA เป็นฟังก์ชัน &lt;script type=&quot;math/tex&quot;&gt;q(s,a)&lt;/script&gt; ดังนั้น action แรกไม่ได้เกิดจากการสุ่ม และรวมกับอีก 1 ครั้งตอนสุ่มหาค่า &lt;script type=&quot;math/tex&quot;&gt;v&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;จึงได้ว่าสำหรับ n-step SARSA เราจะเขียนแบบ off-policy ได้ดังนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;G_{t:t+n} = \left( \sum_{i=0}^{n-1} \rho_{t:t+i} \gamma^i r_{t+i+1} \right) + \rho_{t:t+n} \gamma^n \mathrm{E}_{a \sim \pi} \left[ q(s_{t+n}, a) \right]&lt;/script&gt;
+
+&lt;p&gt;สำหรับ n-step expected SARSA เรามีการ n-1 ครั้งสำหรับ n reward แรก เหมือนกัน แต่ว่าเราไม่ได้สุ่มอีกเลยตอนหาค่า v เพราะเราหาค่าแบบเป๊ะ ๆ&lt;/p&gt;
+
+&lt;p&gt;จึงได้ว่าสำหรับ n-step expected SARSA เราสามารถเขียน off-policy ได้ดังนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;G_{t:t+n} = \left( \sum_{i=0}^{n-1} \rho_{t:t+i} \gamma^i r_{t+i+1} \right) + \gamma^n \sum_a \pi(a|s_{t+n}) q(s_{t+n}, a)&lt;/script&gt;
+
+&lt;p&gt;หมายเหตุ: เราสามารถใช้ได้ทั้ง importance sampling หรือ per-decision importance sampling หรือ weighted importance sampling เพียงแค่แก้ค่า &lt;script type=&quot;math/tex&quot;&gt;G_{t:t+n}&lt;/script&gt; ให้เหมาะสม&lt;/p&gt;
+
+&lt;h3 id=&quot;การใช้งานกับ-experience-replay&quot;&gt;การใช้งานกับ Experience Replay&lt;/h3&gt;
+
+&lt;p&gt;สำหรับอัลกอริทึมที่ใช้ข้อมูลแบบ off-policy เรามักจะใช้งาน experience replay เนื่องจากเราสามารถใช้ขอมูลเก่า ๆ ได้ (ต่างจาก on-policy ที่ต้องการประสบการณ์สดใหม่เท่านั้น จึงไม่นิยมใช้ experience replay)&lt;/p&gt;
+
+&lt;p&gt;หมายเหตุ: กรณีของ DQN และ Q-learning โดยทั่วไปไม่ต้องทำการคูณด้วย importance sampling ratio เนื่องจากสมการของ Q-learning ไม่ได้สนใจว่าประสบการณ์นั้นมาจาก policy ใด จึงเรียกว่า Q-learning เป็น off-policy โดยกำเนิด แต่นี่ไม่เป็นจริงสำหรับการใช้ n-step Q-learning (และ n-step algorithm ในภาพรวม)&lt;/p&gt;
+
+&lt;p&gt;เนื่องจากการใช้งาน importance sampling เราจำเป็นต้องรู้ว่า policy ที่ใช้เก็บข้อมูลนั้นมีหน้าตาเป็นอย่างไร กล่าวคือ &lt;script type=&quot;math/tex&quot;&gt;b(a \vert s)&lt;/script&gt; มีค่าเท่าไหร่ เพราะว่าต้องเอาไปเป็นตัวหาร ดังนั้น นอกจากจะต้องเก็บข้อมูลอย่าง state, action, reward ใน experience replay แล้ว ก็ยังจะต้องเก็บด้วยว่า ณ ตอนที่เก็บข้อมูลนี้นั้น &lt;script type=&quot;math/tex&quot;&gt;b(a \vert s)&lt;/script&gt; มีค่าเท่าไหร่&lt;/p&gt;
+
+&lt;h1 id=&quot;อ้างอิง&quot;&gt;อ้างอิง&lt;/h1&gt;
+
+&lt;p&gt;Sutton, R. S., &amp;amp; Barto, A. G. (2018). Reinforcement learning: An introduction. MIT press. https://doi.org/10.1016/S1364-6613(99)01331-5&lt;/p&gt;
+
+&lt;p&gt;Hernandez-Garcia, J. F., &amp;amp; Sutton, R. S. (2019). Understanding Multi-Step Deep Reinforcement Learning: A Systematic Study of the DQN Target. Retrieved from http://arxiv.org/abs/1901.07510&lt;/p&gt;
+
+&lt;p&gt;Amherst, S., Precup, D., Sutton, R. S., &amp;amp; Singh, S. (2000). Eligibility Traces for Off-Policy Policy Evaluation (Vol. 80).&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="rl," /><category term="thai" /><summary type="html">ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า prediction ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ และหรือ</summary></entry><entry><title type="html">Academic Machine Learning Development Process</title><link href="https://blog.konpat.me/academic/2019/01/23/academic-machine-learning-development-process.html" rel="alternate" type="text/html" title="Academic Machine Learning Development Process" /><published>2019-01-23T00:00:00+07:00</published><updated>2019-01-23T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/01/23/academic-machine-learning-development-process</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/01/23/academic-machine-learning-development-process.html">&lt;p&gt;Machine learning projects nowadays cannot easily fit into a laptop. While we optimize laptop for maximum portability, it does not usually come with a powerful GPU. The conventional wisdom is that we buy our own machine learning rig with powerful enough GPU(s). This now splits our development machine, where we actually writing codes, and the running machine, where we have all the libraries and resources. Of course, In this scenario, we don’t include the GPU farm, if you have any, in that case other layer of considerations must be in place.&lt;/p&gt;
 
 &lt;p&gt;Splitting developing machine and running machine give rise to a lot of headaches because the latency of the task is generally very low, iterations are fast. How could we manage to do this? Worse yet, usually during coding we want to have access to all development tools including but not limited to code suggestion and auto-completion. If all the libraries reside in the running machine, how could we have a precise code suggestion then?&lt;/p&gt;
 
@@ -35709,39 +36047,4 @@ def copy(a, b):
 
 &lt;h4 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h4&gt;
 
-&lt;p&gt;To what I have to be working, &lt;strong&gt;try-moving-the-file&lt;/strong&gt; wins because it is the most reliable !&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="js" /><summary type="html">To me at first, it should have a simple graceful solution, but turned out it has none. I will try to convince you by the following scenario. Writer I have a python writer (to make sure the file will be written by another process rather than the node itself), here is the code: import os import time from functools import partial def copy(a, b): with open(a, 'rb') as r: with open(b, 'wb', 0) as w: for chunk in iter(partial(r.read, 4 * 1024), b''): w.write(chunk) time.sleep(0.1) Basically, it will write a file by copying chunk by chunk of 4 KB to the destination. I have added some timeout in the code to make the write slower and to emphasize the problem. Reader Now, we expect that the reader must be able to know whether the file is being written by the code above. Things that don’t work fs.access(path, fs.constants.R_OK &amp;amp; fs.constants.W_OK &amp;amp; fs.constants.X_OK, callback) fs.open(path, 'r+', callback) fs.open(path, 'a+', callback) lockfile.lock(path, {}, callback) by using npm install lockfile here. It just cannot lock whether how long. lockfile.lock(path, callback) by using npm install proper-lockfile here. It always can lock. Things that do work Check the file size difference: const aSize = await fileSize(path) await delay(100) const bSize = await fileSize(path) return aSize !== bSize Note: It is not reliable though because you cannot guarantee that the delay you put is enough for any writer. Check whether the file can be moved: const tmp = path + '-tmp' try { await rename(path, tmp) await rename(tmp, path) return false } catch (err) { return true } Conclusion To what I have to be working, try-moving-the-file wins because it is the most reliable !</summary></entry><entry><title type="html">Cygwin Problems with CR/LF newline</title><link href="https://blog.konpat.me/dev/2017/06/18/cygwin-problems-with-cr-lf-newline.html" rel="alternate" type="text/html" title="Cygwin Problems with CR/LF newline" /><published>2017-06-18T07:29:50+07:00</published><updated>2017-06-18T07:29:50+07:00</updated><id>https://blog.konpat.me/dev/2017/06/18/cygwin-problems-with-cr-lf-newline</id><content type="html" xml:base="https://blog.konpat.me/dev/2017/06/18/cygwin-problems-with-cr-lf-newline.html">&lt;p&gt;Upon finding this short post, you might have encountered the notoriously newline issue in Windows. The more you try to be UNIX-like on Windows the more the issue pronounces itself.&lt;/p&gt;
-
-&lt;p&gt;For a prominent example, when you are trying to build some certain program on Windows. You will more than likely to encounter the excess &lt;code class=&quot;highlighter-rouge&quot;&gt;\r&lt;/code&gt; problem (or in some circumstances will you see &lt;code class=&quot;highlighter-rouge&quot;&gt;^M&lt;/code&gt;). I am not certainly sure how it happens but it is sure that any native Linux program which we runs on Windows will struggle to understand &lt;code class=&quot;highlighter-rouge&quot;&gt;\r&lt;/code&gt; and must fail.&lt;/p&gt;
-
-&lt;p&gt;So this is where &lt;code class=&quot;highlighter-rouge&quot;&gt;dos2unix&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;unix2dos&lt;/code&gt; commands come in to play. It mitigates the problem if your source of problem comes from the file system itself.&lt;/p&gt;
-
-&lt;p&gt;But, it is not the only source of problem.&lt;/p&gt;
-
-&lt;p&gt;Some commands just output with a newline and it might have problems, for example:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jupyter --data-dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Which should output the &lt;code class=&quot;highlighter-rouge&quot;&gt;data-dir&lt;/code&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter&lt;/code&gt; in this case it might be &lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Users\&amp;lt;user&amp;gt;\AppData\Roaming\jupyter&lt;/code&gt;, but in practices, it is not, it has a newline, and not only &lt;code class=&quot;highlighter-rouge&quot;&gt;\n&lt;/code&gt; conventional newline. It comes with &lt;code class=&quot;highlighter-rouge&quot;&gt;\r\n&lt;/code&gt; newline. which becomes a problem when you trying to substitute this command in another command like:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$(jupyter --data-dir)/abc
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;You will not get &lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Users\&amp;lt;user&amp;gt;\AppData\Roaming\jupyter/abc&lt;/code&gt; as you might have expected. You will rather get &lt;code class=&quot;highlighter-rouge&quot;&gt;C:\Users\&amp;lt;user&amp;gt;\AppData\Roaming\jupyter^M/abc&lt;/code&gt;. This breaks the command !&lt;/p&gt;
-
-&lt;p&gt;As you can see, it is really a problem and cannot be solved by simply running &lt;code class=&quot;highlighter-rouge&quot;&gt;dos2unix&lt;/code&gt; because it is not a file.&lt;/p&gt;
-
-&lt;p&gt;Fortunately, there is a way to make &lt;code class=&quot;highlighter-rouge&quot;&gt;bash&lt;/code&gt; completely ignore &lt;code class=&quot;highlighter-rouge&quot;&gt;\r&lt;/code&gt; character. It only works on bash.&lt;/p&gt;
-
-&lt;p&gt;In &lt;code class=&quot;highlighter-rouge&quot;&gt;.bash_profile&lt;/code&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ignore carriage return
-export SHELLOPTS
-set -o igncr
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;And then source it &lt;code class=&quot;highlighter-rouge&quot;&gt;source .bash_profile&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Now, all the excess &lt;code class=&quot;highlighter-rouge&quot;&gt;\r&lt;/code&gt; will be ignored. And now you will be happy :D.&lt;/p&gt;
-
-&lt;p&gt;The only question persists so far is that: Is there something like this for &lt;code class=&quot;highlighter-rouge&quot;&gt;zsh&lt;/code&gt;, which is arguably much superior to &lt;code class=&quot;highlighter-rouge&quot;&gt;bash&lt;/code&gt; ? which I have yet to find.&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="cygwin" /><summary type="html">Upon finding this short post, you might have encountered the notoriously newline issue in Windows. The more you try to be UNIX-like on Windows the more the issue pronounces itself. For a prominent example, when you are trying to build some certain program on Windows. You will more than likely to encounter the excess \r problem (or in some circumstances will you see ^M). I am not certainly sure how it happens but it is sure that any native Linux program which we runs on Windows will struggle to understand \r and must fail. So this is where dos2unix and unix2dos commands come in to play. It mitigates the problem if your source of problem comes from the file system itself. But, it is not the only source of problem. Some commands just output with a newline and it might have problems, for example: jupyter --data-dir Which should output the data-dir for jupyter in this case it might be C:\Users\&amp;lt;user&amp;gt;\AppData\Roaming\jupyter, but in practices, it is not, it has a newline, and not only \n conventional newline. It comes with \r\n newline. which becomes a problem when you trying to substitute this command in another command like: $(jupyter --data-dir)/abc You will not get C:\Users\&amp;lt;user&amp;gt;\AppData\Roaming\jupyter/abc as you might have expected. You will rather get C:\Users\&amp;lt;user&amp;gt;\AppData\Roaming\jupyter^M/abc. This breaks the command ! As you can see, it is really a problem and cannot be solved by simply running dos2unix because it is not a file. Fortunately, there is a way to make bash completely ignore \r character. It only works on bash. In .bash_profile # ignore carriage return export SHELLOPTS set -o igncr And then source it source .bash_profile. Now, all the excess \r will be ignored. And now you will be happy :D. The only question persists so far is that: Is there something like this for zsh, which is arguably much superior to bash ? which I have yet to find.</summary></entry></feed>
+&lt;p&gt;To what I have to be working, &lt;strong&gt;try-moving-the-file&lt;/strong&gt; wins because it is the most reliable !&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="js" /><summary type="html">To me at first, it should have a simple graceful solution, but turned out it has none. I will try to convince you by the following scenario. Writer I have a python writer (to make sure the file will be written by another process rather than the node itself), here is the code: import os import time from functools import partial def copy(a, b): with open(a, 'rb') as r: with open(b, 'wb', 0) as w: for chunk in iter(partial(r.read, 4 * 1024), b''): w.write(chunk) time.sleep(0.1) Basically, it will write a file by copying chunk by chunk of 4 KB to the destination. I have added some timeout in the code to make the write slower and to emphasize the problem. Reader Now, we expect that the reader must be able to know whether the file is being written by the code above. Things that don’t work fs.access(path, fs.constants.R_OK &amp;amp; fs.constants.W_OK &amp;amp; fs.constants.X_OK, callback) fs.open(path, 'r+', callback) fs.open(path, 'a+', callback) lockfile.lock(path, {}, callback) by using npm install lockfile here. It just cannot lock whether how long. lockfile.lock(path, callback) by using npm install proper-lockfile here. It always can lock. Things that do work Check the file size difference: const aSize = await fileSize(path) await delay(100) const bSize = await fileSize(path) return aSize !== bSize Note: It is not reliable though because you cannot guarantee that the delay you put is enough for any writer. Check whether the file can be moved: const tmp = path + '-tmp' try { await rename(path, tmp) await rename(tmp, path) return false } catch (err) { return true } Conclusion To what I have to be working, try-moving-the-file wins because it is the most reliable !</summary></entry></feed>

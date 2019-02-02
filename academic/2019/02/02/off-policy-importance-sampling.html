@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Off-policy Importance Sampling | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Off-policy Importance Sampling" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า prediction ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ และหรือ" />
+<meta property="og:description" content="ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า prediction ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ และหรือ" />
+<link rel="canonical" href="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" />
+<meta property="og:url" content="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-02-02T00:00:00+07:00" />
+<script type="application/ld+json">
+{"description":"ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า prediction ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ และหรือ","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html","headline":"Off-policy Importance Sampling","dateModified":"2019-02-02T00:00:00+07:00","datePublished":"2019-02-02T00:00:00+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: {
+          equationNumbers: {
+            autoNumber: "all"
+          },
+          extensions: ["cancel.js"]
+        },
+      })
+  </script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/academic/index.html">Academic</a>
+            
+          
+            
+            <a class="page-link" href="/all/index.html">All</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Dev</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Off-policy Importance Sampling</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-02-02T00:00:00+07:00" itemprop="datePublished">Feb 2, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า <strong>prediction</strong> ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ <script type="math/tex">v_\pi</script> และหรือ <script type="math/tex">q_\pi​</script></p>
+
+<p>อีกส่วนหนึ่งก็คือส่วนที่เรียกว่า <strong>control</strong> ถ้าเรามีข้อมูลเหล่านี้ (<script type="math/tex">v_\pi, q_\pi</script>) หรือไม่มี จะสามารถหา policy ที่ดีได้อย่างไร ในกรณีของ GPI (General Policy Iteration) นั้น control (หา policy ที่ดี) นั้นอาศัยการ prediction ที่ดีมาก่อนด้วย นั่นทำให้ในหลาย ๆ ครั้งเราถือว่า prediction กับ control เหมือนกับสองส่วนที่ขาดจากกันไม่ได้</p>
+
+<p>ในที่นี้เราพูดถึงโจทย์ prediction เป็นหลัก โดยเฉพาะเราพูดถึงการ predict ค่า <script type="math/tex">q_\pi</script> โดยที่เราไม่มีประสบการณ์จากการเล่น policy <script type="math/tex">\pi</script> เลย  แต่เราได้ประสบการณ์จากาแหล่งอื่น ๆ แทน เราเรียกแหล่งนั้นว่า <strong>behavioral policy</strong> หรือ <script type="math/tex">b</script></p>
+
+<p><strong>จะเป็นไปได้ไหม หรือต้องทำอย่างไรเราถึงจะได้ <script type="math/tex">v_\pi</script> ในเมื่อเรามีแต่ประสบการณ์จาก <script type="math/tex">b​</script>?</strong></p>
+
+<p>โจทย์นี้มีชื่ออย่างเป็นทางการว่า <strong>Off-policy prediction</strong> ก็เพราะว่าประสบการณ์ที่เรามีมัน off ไปจาก policy <script type="math/tex">\pi</script></p>
+
+<p>ก่อนที่จะไปต่อ กล่าวก่อนว่า off-policy prediction นั้นก็ไม่ได้มีสูตรสำเร็จ แต่ละวิธีก็อาจจะมีจุดแข็งจุดอ่อนของตัวเอง (เหมือนกับทุกอย่างใน RL) แต่เนื่องจาก off-policy prediction นั้นยากกว่า on-policy prediction (กรณีที่ไม่มี <script type="math/tex">b</script>) มาก ดังนั้นงานวิจัยในด้านนี้ก็ยังไม่เจริญเท่า</p>
+
+<p>เพราะฉะนั้นในบทความนี้เราก็อาจจะพูดแบบเกริ่น ๆ วิธีที่มีมานานแล้วของการทำ off-policy prediction ไปก่อนซึ่งในที่นี้เราจะเสนอไอเดียที่เรียกว่า Importance Sampling ซึ่งเป็นเทคนิคทางสถิติ ซึ่งเข้าใจได้ง่ายแม้จะไม่ได้เข้าใจ RL มากเท่าไหร่</p>
+
+<h2 id="on-policy-prediction">On-policy prediction</h2>
+
+<p>ในกรณีที่ <script type="math/tex">\pi</script> คือ <script type="math/tex">b</script> กล่าวคือ <script type="math/tex">\pi(a \vert s) = b(a \vert s)</script> สำหรับทุก ​<script type="math/tex">a, s</script> เราจะได้ว่า เราสามารถแก้โจทย์ prediction ด้วยวิธีการแบบ Monte Carlo นั่นก็คือ</p>
+
+<script type="math/tex; mode=display">\mathrm{E}_{r_{t+1}, r_{t+2}, ... \sim \pi} \left[ r_{t+1} + r_{t+2} + ... \right] = v_\pi</script>
+
+<p>แปลเป็นภาษาไทยก็คือ เราสามารถหาค่า <script type="math/tex">v_\pi</script> ได้ (prediction) ด้วยการใช้ประสบการณ์จำนวนมากมาหาค่า “คาดหวัง” โดยมีเงื่อนไขว่าประสบการณ์จะต้องมาจาก policy <script type="math/tex">\pi</script> เท่านั้น</p>
+
+<p>ข้อสังเกต: เราทำการ sample <script type="math/tex">r</script> หลายครั้งจนกว่าจะจบ episode</p>
+
+<p>เพื่อความง่ายเราจะกำหนด <script type="math/tex">G_t = r_{t+1} + r_{t+2} + ...</script> โดยเราเรียก <script type="math/tex">G_t</script> ว่า return อาจจะแปลได้ว่า ค่าทดลองการเล่น (จากการเล่น 1 ครั้งจนจบ แล้วรวมรางวัลที่ได้ทั้งหมด)</p>
+
+<p>โจทย์ในที่นี้สำหรับ off-policy prediction ก็น่าจะเป็น ถ้าเราไม่ได้ <script type="math/tex">r_{t+1}, r_{t+2}, ... \sim \pi</script> แต่มาจาก <script type="math/tex">b</script> แทน เป็นไปได้มั้ยที่เราจะยังประมาณค่า <script type="math/tex">v_\pi</script> ได้เหมือนเดิม</p>
+
+<h2 id="off-policy-prediction-โดยใช้-importance-sampling">Off-policy prediction โดยใช้ Importance Sampling</h2>
+
+<p>Importance Sampling เป็นวิธีทางสถิติ โดยสามารถแสดงให้เห็นแบบง่าย ๆ ได้ดังนี้</p>
+
+<p>สมมติว่าเรามีฟังก์ชัน <script type="math/tex">f(x)</script> เรามีฟังก์ชันความน่าจะเป็น <script type="math/tex">p(x)</script> และเราต้องการหา “ค่าคาดหวังของ <script type="math/tex">f(x)</script> ภายใต้ <script type="math/tex">p(x)</script>” เราจะได้ว่า</p>
+
+<script type="math/tex; mode=display">\mathrm{E}_{x \sim p(x)} f(x)</script>
+
+<p>แต่ว่าถ้าเราไม่ได้ sample <script type="math/tex">x</script> จาก <script type="math/tex">f(x)</script> แต่เป็น <script type="math/tex">g(x)</script> แทนล่ะ ? เราก็ยังหาค่าคาดหวังได้อยู่ดีแหละดังนี้</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{split}
+\mathrm{E}_{x \sim p(x)} f(x) &= \sum_x p(x) f(x) \\
+&= \sum_x \frac{g(x)}{g(x)} p(x) f(x) \\
+&= \sum_x g(x) \frac{p(x)}{g(x)} f(x) \\
+&= \mathrm{E}_{x \sim g(x)} \frac{p(x)}{g(x)} f(x) 
+\end{split}
+\end{equation} %]]></script>
+
+<p>การคูณ <script type="math/tex">\frac{g(x)}{g(x)}</script> เป็นทริกที่ไม่ได้เปลี่ยนค่าแต่ใด เพราะว่าคูณด้วย <script type="math/tex">1</script> แต่ว่าช่วยให้เราสามารถเปลี่ยนการ sample ได้ แทนที่จะต้อง sample จาก <script type="math/tex">p(x)</script> กลายเป็น sample จาก <script type="math/tex">g(x)</script></p>
+
+<p>เราจะได้ว่า หากทุกครั้งที่เรา sample <script type="math/tex">x \sim g(x)</script> แล้วแทนที่จะใช้ค่า <script type="math/tex">f(x)</script> ตรง ๆ เลยเราเอาค่านั้นมาคูณด้วย <script type="math/tex">\frac{p(x)}{g(x)}</script> (เรียกว่า <strong>Importance sampling ratio</strong>) ก่อน เราก็จะได้ค่าคาดหวังอันเดิมได้นั่นเอง แต่นั่นก็แปลว่าเราต้องรู้ด้วยว่า <script type="math/tex">g(x)</script> ของเรานั้นมีค่าเท่าไหร่</p>
+
+<h3 id="การใช้งานกับ-reinforcement-learning">การใช้งานกับ Reinforcement Learning</h3>
+
+<p>เราจะเริ่มจากกรณีของ on-policy prediction ซึ่งก็คือการ sample <script type="math/tex">r</script> จำนวนมากจาก <script type="math/tex">\pi</script> คราวนี้เราต้องเปลี่ยนเป็น sample จาก <script type="math/tex">b</script> แทน</p>
+
+<script type="math/tex; mode=display">\mathrm{E}_{r_{t+1}, r_{t+2}, ... \sim \pi} \left[ r_{t+1} + r_{t+2} + ... \right] = v_\pi</script>
+
+<p>แต่มันอาจจะง่ายกว่าถ้าเราลองมองแค่ reward เดียวก่อน</p>
+
+<p>การจะ sample reward แต่ละอันสิ่งที่เราต้องทำก็คือ</p>
+
+<ol>
+  <li>ทำการ sample action จาก policy <script type="math/tex">\pi(a \vert s)​</script></li>
+  <li>ทำการ sample reward จาก reward distribution <script type="math/tex">p(r \vert s, a)​</script></li>
+  <li>ทำการ sample state ต่อไป (ถ้าต้อง sample reward ต่อไป) จาก state transition probability <script type="math/tex">p(s' \vert s, a)​</script></li>
+</ol>
+
+<p>สำหรับ reward แรกในที่นี้ <script type="math/tex">r_{t+1}</script> (สมมติว่าเราเริ่มที่ <script type="math/tex">t</script>) จะได้ว่า</p>
+
+<script type="math/tex; mode=display">r_{t+1} \sim \pi(a_t|s_t) p(r_{t+1}|s_t, a_t)</script>
+
+<p>สำหรับ reward ต่อไป <script type="math/tex">r_{t+2}</script> ก็จะได้</p>
+
+<script type="math/tex; mode=display">r_{t+2} \sim \pi(a_t|s_t) p(s_{t+1}|s_t, a_t) \pi(a_{t+1}|s_{t+1}) p(r_{t+2}|s_{t+1}, a_{t+1})</script>
+
+<p>หากเราไม่ได้ sample action จาก <script type="math/tex">\pi</script> แต่เป็นจาก <script type="math/tex">b</script> แทน เราจะเขียนใหม่ได้ว่า</p>
+
+<script type="math/tex; mode=display">r_{t+1} \sim b(a_t|s_t) p(r_{t+1}|s_t, a_t)</script>
+
+<p>และ</p>
+
+<script type="math/tex; mode=display">r_{t+2} \sim b(a_t|s_t) p(s_{t+1}|s_t, a_t) b(a_{t+1}|s_{t+1}) p(r_{t+2}|s_{t+1}, a_{t+1})</script>
+
+<p>ถ้าเรามองเฉพาะ reward แรก <script type="math/tex">r_{t+1}​</script> เราจะเห็นว่า</p>
+
+<ul>
+  <li><script type="math/tex">\pi(a_t \vert s_t) p(r_{t+1} \vert s_t, a_t)​</script> ราวกับเป็น <script type="math/tex">p(x)​</script> แต่เดิม และ</li>
+  <li><script type="math/tex">b(a_t \vert s_t) p(r_{t+1} \vert s_t, a_t)</script> ก็คือ <script type="math/tex">g(x)</script> อันใหม่</li>
+  <li><script type="math/tex">r_{t+1}​</script> ก็คือ <script type="math/tex">f(x)​</script> ของเรานั่นเอง</li>
+</ul>
+
+<p>เมื่อเห็นฉะนี้เราก็สามาถรเขียนได้ว่า Importance sampling ratio ระหว่าง <script type="math/tex">\pi</script> กับ <script type="math/tex">b</script> สำหรับ reward <script type="math/tex">r_{t+1}</script> ก็คือ</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{split}
+\rho_{t:t} &= \frac{\pi(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)}}{b(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)}} \\
+&= \frac{\pi(a_t|s_t)}{b(a_t|s_t)}
+\end{split}
+\end{equation} %]]></script>
+
+<p>ใช้อักษร <script type="math/tex">\rho</script> (โรห์) แทน importance sampling ratio</p>
+
+<p>ข้อสังเกต: จะเห็นว่าถ้า <script type="math/tex">b(a_t \vert s_t)</script> มีค่าน้อยมาก ๆ อาจจะทำให้ค่า <script type="math/tex">\rho​</script> ระเบิดได้ดังนั้น behavioral policy จะต้องไม่ “คม” เกินไป  กล่าวคือจะต้องให้โอกาสเลือก action ต่าง ๆ ไม่น้อยเกินไปนั่นเอง</p>
+
+<p>และถ้าเราคิดต่อไปสำหรับกรณี reward ตัวที่สองเราก็จะได้ว่า Importance sampling ratio ระหว่าง <script type="math/tex">\pi</script> กับ <script type="math/tex">b</script> สำหรับ <script type="math/tex">r_{t+2}</script> ก็คือ</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{split}
+\rho_{t:t+1} &= \frac{\pi(a_t|s_t) \cancel{p(s_{t+1}|s_t, a_t)} \pi(a_{t+1}|s_{t+1}) \cancel{p(r_{t+2}|s_{t+1}, a_{t+1})}}{b(a_t|s_t) \cancel{p(s_{t+1}|s_t, a_t)} b(a_{t+1}|s_{t+1}) \cancel{p(r_{t+2}|s_{t+1}, a_{t+1})}} \\
+&= \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})}
+\end{split}
+\end{equation} %]]></script>
+
+<p><script type="math/tex">\rho_{t:t+1}​</script> บอกถึงว่าเรา “คูณกันจาก t ถึง t+1”</p>
+
+<p>จะเห็นว่าแม้ในตอนคูณกันนั้นจะมีส่วนของ state transition probability และ reward probability สุดท้ายแล้วก็ํจะตัดกันเองอยู่ดี เพราะว่าไม่ว่าจะเป็น <script type="math/tex">\pi</script> หรือ <script type="math/tex">b​</script> ก็ล้วนอยู่ภายใต้ environment (MDP) เดียวกัน ทำเราให้เราสนใจเฉพาะความต่างของทั้งสองก็พอ</p>
+
+<p>สำหรับกรณี reward อื่น ๆ นั้นเราสามารถเดาไปจากตรงนี้ว่า สำหรับ <script type="math/tex">r_T​</script> จะมี importance sampling ratio ของตัวเองเท่ากับ</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{split}
+\rho_{t:T-1} 
+&= \prod_{k=t}^{T-1} \frac{\pi(a_k|s_k)}{b(a_k|s_k)}
+\end{split}
+\end{equation} %]]></script>
+
+<p>เอาทุกอย่างมารวมกัน เราจะได้ว่าสำหรับแต่ต้นนั้นในกรณีของ on-policy เรามี</p>
+
+<script type="math/tex; mode=display">\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim \pi} \left[ r_{t+1} + r_{t+2} + \dots \right] = v_\pi</script>
+
+<p>ในกรณีของ off-policy เราจะต้องคูณ <script type="math/tex">\rho</script> ของแต่ละ reward ให้ถูกต้อง หน้าแต่ละ reward เพื่อทำให้ได้ค่าเหมือนเดิม</p>
+
+<p><script type="math/tex">\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim b} \left[ \rho_{t:t}r_{t+1} + \rho_{t:t+1}r_{t+2} + \dots \right] = v_\pi</script>
+จะเห็นว่าเราต้องใช้ แต่ละ <script type="math/tex">\rho</script> สำหรับแต่ละ reward วิธีการนี้จึงมีชื่อว่า <strong>Per-decision Importance Sampling</strong> ก็เพราะว่าเราสร้าง importance sampling สำหรับแต่ละ decision (แต่ละ action แต่ละ reward) เลย</p>
+
+<p>ในการ Implement จริง ๆ เราจะต้องเขียนได้ว่า <script type="math/tex">v(s)</script> นั้นหามาจากไหน เราจะเขียนได้ว่า</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|}
+\end{equation}</script>
+
+<p>อาจจะดูเข้าใจยากซักนิด แต่หากแยกเป็นส่วน ๆ จะเห็นว่า</p>
+
+<ul>
+  <li><script type="math/tex">\sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}​</script> ตรงนี้จริง ๆ แล้วก็คือ ผลรวมของ reward ที่ผ่านการคูณด้วย importance sampling ratio แล้ว</li>
+  <li>ส่วนที่เหลือก็คือการหาค่า “เฉลี่ย” จากหลาย ๆ ครั้งนั่นเอง (เพราะว่าค่าคาดหวังก็คือค่าเฉลี่ย)</li>
+</ul>
+
+<p>การหาค่าเฉลี่ยในที่นี้ใช้เครื่องหมาย <script type="math/tex">\tau(s)​</script> ช่วย โดยเราจำหนดขึ้นมาที่นี้ว่า <script type="math/tex">\tau(s)​</script> เป็น set ของทุก ๆ timestep ที่ state “ผ่าน” state <script type="math/tex">s​</script> พอดิบพอดี ดังนั้นการหาค่าเฉลี่ยของทุก ๆ ครั้งที่เราวิ่งผ่าน <script type="math/tex">s​</script> ก็คือการหา “ค่าเฉลี่ยของผลรวม reward ทุก ๆ ครั้งที่เริ่มจาก <script type="math/tex">s​</script>” นั่นเอง</p>
+
+<p>เพิ่มเติม: การกำหนด <script type="math/tex">\tau(s)</script> ว่าเป็น set ของทุก ๆ timestep ที่ผ่าน state <script type="math/tex">s</script> เรียกว่า <strong>every-visit Monte Carlo</strong> อีกวิธีหนึ่งที่เราทำได้ ก็คือ “สนใจเฉพาะ <script type="math/tex">s</script> แรกของแต่ละ episode เท่านั้น” เราก็จะแก้ความหมาย <script type="math/tex">\tau(s)</script> เล็กน้อย แล้วเรียกว่า <strong>first-visit Monte Carlo</strong> ความต่างของทั้งสองก็คือ every-visit นั้น implement ง่ายกว่า เพราะเราไม่ต้องจำว่าเราผ่าน state นี้ครั้งแรกหรือเปล่า แต่ว่าอาจจะให้ค่าที่แปลก ๆ เพราะหากเราผ่าน state <script type="math/tex">s</script> หลายครั้งในหนึ่ง episode ค่า <script type="math/tex">v(s)​</script> จะเป็นค่าเฉลี่ยจากทุกครั้งที่เราผ่าน ต่างกับกรณี first-visit ที่จะสนใจเฉพาะค่าแรกเท่านั้น</p>
+
+<h3 id="importance-sampling-สำหรับผลรวมทั้งเส้น">Importance Sampling สำหรับผลรวมทั้งเส้น</h3>
+
+<p>แต่ว่าก็มีอีกวิธีที่เรามอง “ทุก reward เป็นภาพรวม” กล่าวคือเราไม่แยกมองเป็นทีละชิ้น แต่เรามองทั้งหมดเป็น return <script type="math/tex">G_t</script> เลย</p>
+
+<p>กล่าวคือ</p>
+
+<script type="math/tex; mode=display">G_t = r_{t+1} + r_{t+2} + r_{t+3} + \dots \quad \sim \pi</script>
+
+<p>โดยเราจะหาความน่าจะเป็นที่จะ sample ได้ค่า <script type="math/tex">r_{t+1}, r_{t+2}, \dots​</script> พร้อมกันทั้งหมดแทน ซึ่งก็สามารถทำได้ในลักษณะเดียวกัน กล่าวคือ</p>
+
+<script type="math/tex; mode=display">r_{t+1}, r_{t+2} \sim \pi(a_t|s_t) p(r_{t+1}|s_t, a_t) p(s_{t+1}|s_t, a_t) \pi(a_{t+1}|s_{t+1}) p(r_{t+2}|s_{t+1}, a_{t+1})</script>
+
+<p>เราสามารถคาดต่อไปได้ว่าจนถึง <script type="math/tex">r_{t+n}</script> จะมีหน้าตาอย่างไร</p>
+
+<p>แต่ตอนนี้เราสามารถหาค่า Importance sampling ratio ระหว่าง <script type="math/tex">\pi​</script> กับ <script type="math/tex">b​</script> สำหรับ <script type="math/tex">G_t​</script> ได้ดังต่อไปนี้</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{split}
+\rho_{t:T-1} &= \prod_{k=t}^{T-1} \frac{\pi(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)} \cancel{p(s_{t+1}|s_t, a_t)}}{b(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)} \cancel{p(s_{t+1}|s_t, a_t)}} \\
+&= \prod_{k=t}^{T-1} \frac{\pi(a_t|s_t)}{b(a_t|s_t)}
+\end{split}
+\end{equation} %]]></script>
+
+<p>จะเห็นว่าหน้าตาคล้ายเดิมอย่างยิ่ง เพียงแต่ ณ ตอนนี้เราสามารถใช้ ค่า <script type="math/tex">\rho_{t:T-1}</script> คูณเข้าไปยัง <script type="math/tex">G_t</script> ทั้งเส้น เพื่อให้ได้ค่าที่ถูกต้อง แทนที่จะต้องใช้ค่า <script type="math/tex">\rho</script> สำหรับแต่ละ reward</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+\mathrm{E}_{r_{t+1}, r_{t+2}, \dots \sim b} \left[ \rho_{t:T-1} \sum_t^{T-1} r_{t+1} \right] = v_\pi
+\end{equation}</script>
+
+<p>วิธีนี้เรียกว่า <strong>importance sampling</strong> แบบปกติ (ทั้งเส้น)</p>
+
+<p>เราสามารถเขียนนิยามของ <script type="math/tex">v(s)​</script> ได้ในลักษณะเดียวกัน ก็คือการเฉลี่ยจากหลาย ๆ ครั้งที่เราผ่าน state <script type="math/tex">s​</script> นั้น ๆ</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
+\label{eq:ord_is}
+\end{equation}</script>
+
+<h3 id="เปรียบเทียบ-importance-sampling-และ-per-decision-importance-sampling">เปรียบเทียบ Importance Sampling และ Per-decision Importance Sampling</h3>
+
+<p>ปัญหาของ Importance sampling ในภาพรวมก็คือการคูณทบ ๆ กัน ของ <script type="math/tex">\frac{\pi}{b}​</script> ซึ่งมันจะทำให้ค่าที่ได้มีการแกว่งมาก ๆ ก็เพราะว่ามันขึ้นอยู่กับการ sampling ต่อเนื่องเป็นระยะยาว และเอาแต่ละพจน์มาคูณกัน ยิ่งส่งผลให้ช่วงของค่ามากขึ้นไปอีก ทำให้ importance sampling มีปัญหากับขนาดของ variance มีการกล่าวในหนังสือของ (Sutton, 2018) ว่า variance ของ importance sampling นั้นอาจจะถึง <strong>อนันต์</strong> ซึ่งก็เห็นด้วยได้ง่ายเพราะว่าความยาวของ episode นั้นอาจจะยาวเท่าใดก็ได้</p>
+
+<p>เพราะฉะนั้นสำหรับงานใดที่ต้องการใช้ importance sampling จำต้องพิเคราะห์ถึงการจำกัด variance ให้ดี โดยวิธีที่จำกัด variance ได้มาก มักก็จะส่งผลให้มีผลดีในการใช้งานจริงด้วย</p>
+
+<p>เป็นที่ทราบกันว่าหากใช้ importance sampling (แบบทั้งเส้น) โดยตรงนั้น การเทรนจะทำได้ยากอย่างยิ่ง และอาจจะไม่ converge เลยด้วยซ้ำ แต่ว่า per-decision importance sampling ซึ่ง แม้ว่าจะมีพจน์ <script type="math/tex">\rho_{t:T-1}</script> เช่นกัน แต่ว่าก็ส่งผลเพียงต่อ reward ท้าย ๆ ซึ่งก็อาจจะถูกพลังของ discount <script type="math/tex">\gamma</script> ลดความสำคัญลงไปเยอะ ก็จะช่วยทำให้ variance ลดลงได้</p>
+
+<p>อย่างไรก็ดีในการใช้งานจริงนิยมใช้วิธีที่ “ใกล้เคียง” แต่ไม่ใช่ทั้ง importance sampling หรือ per-decision importance sampling ซึ่งเรียกว่า <strong>weighted importance sampling</strong> ซึ่งวิธีนี้นั้นจริง ๆ แล้ว “ไม่ให้ค่าที่ถูกต้อง” (มี bias) แต่ว่าสามารถควบคุม variance ได้เป็นอย่างดีจึงทำให้การใช้งานจริงนั้นให้ผลที่ดีกว่ามาก</p>
+
+<h3 id="weighted-importance-sampling">Weighted Importance Sampling</h3>
+
+<p>การที่เราคูณ <script type="math/tex">\prod \frac{\pi}{b}</script> หลาย ๆ ครั้งส่งผลให้ค่า <script type="math/tex">\rho</script> นี้ แกว่งมาก ๆ และก็แกว่งมากขึ้นเรื่อย ๆ ตามจำนวนการคูณ วิธีหนึ่งที่จะช่วย “จำกัด” การแกว่งก็คือการ “หาร” ด้วยอะไรที่เยอะพอ ๆ กัน</p>
+
+<p>เราทำการแก้ไขเล็กน้อยจากสมการ <script type="math/tex">\eqref{eq:ord_is}</script> โดยการแก้ตัวส่วนให้มีค่าแกว่งไปพร้อม ๆ กับตัวเศษ</p>
+
+<script type="math/tex; mode=display">v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \rho_{t:T-1}}
+\label{eq:weighted_is}</script>
+
+<p>สิ่งที่เราเห็นในทันทีก็คือ <script type="math/tex">v(s)</script> ใหม่นี้จะแกว่งน้อยกว่ามากส่งผลให้ variance น้อยลงตามไปด้วย วิธีนี้จึงเหมาะสมมากกว่าในการใช้งานจริง</p>
+
+<p>สิ่งที่เราเห็นต่อมาก็คือ อยู่ดี ๆ เราจะแก้ตามอำเภอใจแบบนี้ไม่ได้สิ คำตอบแบบสั้น ๆ ก็คือ เรายอม “ผิด” เพราะว่าสมการ <script type="math/tex">\eqref{eq:weighted_is}</script> นั้น bias ไม่ได้ให้ค่าที่ถูกต้องโดยเฉลี่ยเหมือนกับ importance sampling ทั่วไป แต่เราก็ยอมจ่ายเพราะว่ามันช่วยให้เราทำงานกับมันได้ง่ายมากขึ้น</p>
+
+<p>คำถามต่อมาก็คือ แล้วมัน bias ไปขนาดไหนล่ะ? เพราะว่าถ้ามัน bias แบบไม่เห็นเค้าเดิมเลยมันก็ไม่น่าจะดีอยู่แล้ว จริงอย่างว่า เพราะว่า สมการ <script type="math/tex">\eqref{eq:weighted_is}</script> นั้นมี bias ก็จริง แต่ว่าขนาดของ bias นั้น “น้อยลง” เรื่อย ๆ หากเราเฉลี่ยด้วยจำนวนที่มากขึ้น และมัน “เข้าใกล้” ค่าจริงเมื่อเราเฉลี่ยด้วยจำนวนอนันต์ แต่แน่นอนว่าเราไม่ได้เฉลี่ยด้วยจำนวนอนันต์จึงต้องยอมรับว่า มันก็ยัง bias อยู่ดี</p>
+
+<p>การแสดงว่ามันเข้าใกล้ค่าจริง เมื่อเฉลี่ยด้วยจำนวนอนันต์สามารถทำได้ดังนี้</p>
+
+<ul>
+  <li>เราอาศัยความจริงที่ว่า <script type="math/tex">\mathrm{E}[\rho] = 1​</script></li>
+  <li>และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ <script type="math/tex">\tau(s)</script> มีขนาดอนันต์</li>
+</ul>
+
+<script type="math/tex; mode=display">\begin{equation}
+\mathrm{E}_b \left[ \rho_{t:T-1} \right] = 1 = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1}}{\left| \tau(s) \right|}
+\label{eq:expect_rho_tau}
+\end{equation}</script>
+
+<p>สมการ <script type="math/tex">\eqref{eq:expect_rho_tau}</script> จะเป็นจริงก็ด้วย Law of large numbers เท่านั้น ดังนั้นหาก <script type="math/tex">\left \vert  \tau(s) \right \vert</script> ไม่ได้เยอะเข้าใกล้ <script type="math/tex">\infty</script> แล้วก็พูดอย่างนั้นไม่ได้</p>
+
+<script type="math/tex; mode=display">\begin{equation} 
+\left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right| = \sum_{t \in \tau(s)} \rho_{t:T-1}
+\end{equation}</script>
+
+<p>จึงได้ว่า</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{split}
+v(s) &= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \rho_{t:T-1}} \\
+&= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\left|\tau(s)\right|} \\ 
+\end{split}
+\end{equation} %]]></script>
+
+<p>นั่นก็คือเมื่อขนาด <script type="math/tex">\left \vert  \tau(s) \right \vert</script> เยอะขึ้นก็จะช่วยให้ bias ของ weighted importance sampling เล็กลงนั่นเอง</p>
+
+<p>หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า <script type="math/tex">\rho</script> ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า Eligibility Traces for Off-Policy Policy Evaluation (2000)</p>
+
+<h4 id="แสดงว่า-mathrmerho--1">แสดงว่า $\mathrm{E}[\rho] = 1$</h4>
+
+<p>เพื่อให้เห็นภาพจะแสดงให้ดูในกรณีของ <script type="math/tex">r_{t+1}, r_{t+2}</script> อย่างละเอียดเพื่อให้เห็นภาพชัดเจน</p>
+
+<script type="math/tex; mode=display">\rho_{t:t+1} = \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})}</script>
+
+<p>ลองหาค่าคาดหวังของ <script type="math/tex">\rho​</script> ภายใต้ behavioral policy <script type="math/tex">b​</script></p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{split}
+\mathrm{E}_{a_t, a_{t+1} \sim b} \left[ \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})} \right]
+&= \sum_{a_t} b(a_t|s_t) \sum_{a_{t+1}} b(a_{t+1}|s_{t+1}) \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})} \\
+&= \sum_{a_t} \cancel{b(a_t|s_t)} \frac{\pi(a_t|s_t)}{\cancel{b(a_t|s_t)}} 
+\sum_{a_{t+1}} \cancel{b(a_{t+1}|s_{t+1})} \frac{\pi(a_{t+1}|s_{t+1})}{\cancel{b(a_{t+1}|s_{t+1})}} \\
+&= \sum_{a_t} \pi(a_t|s_t) \sum_{a_{t+1}} \pi(a_{t+1}|s_{t+1}) \\
+&= \sum_{a_t} \pi(a_t|s_t) 1 \\
+&=  1
+\end{split}
+\end{equation} %]]></script>
+
+<p>จะเห็นว่าจริง ๆ แล้วเนื่องจากระหว่าง <script type="math/tex">a_t</script> กับ <script type="math/tex">a_{t+1}</script> นั้นไม่เกี่ยวข้องกัน (เมื่อกำหนด <script type="math/tex">s</script> ให้) ดังนั้นจึงราวกับว่าแต่ละ term ที่คูณกันใน <script type="math/tex">\rho</script> สามารถแยกกันคิดได้ ซึ่งก็ส่งผลให้ค่าคาดหวังทั้งหมดกลายเป็น 1 เพราะว่าแต่ละส่วนเป็น 1 นั่นเอง</p>
+
+<h3 id="การใช้งานกับ-n-step-td">การใช้งานกับ n-step TD</h3>
+
+<p>โดยปกติ TD หรือ Temporal Difference จะใช้ตัวอย่าง reward เพียง 1 ตัวอย่างเพื่ออัพเดทค่าประมาณ <script type="math/tex">v</script> หรือ <script type="math/tex">q</script> เป็นที่ทราบกันดีว่า TD นั้นอยู่ฝั่งตรงข้ามกับ Monte Carlo ในมุมของ variance และ bias กล่าวคือ</p>
+
+<ul>
+  <li>TD มี bias มาก มี variance น้อย</li>
+  <li>Monte Carlo ไม่มี bias แต่มี variance มาก</li>
+</ul>
+
+<p>n-step TD คือความพยายามหา “จุดกึ่งกลาง” ระหว่าง 2 วิธีการนี้ แทนที่จะใช้ reward เพียงอันเดียวแบบ TD ดังนี้</p>
+
+<script type="math/tex; mode=display">G_{t:t+1} = r_{t+1} + \gamma v(s_{t+1})</script>
+
+<p>เราจะใช้ reward หลาย ๆ ตัว ยกตัวอย่างเช่น 2 ตัว ดังต่อไปนี้</p>
+
+<script type="math/tex; mode=display">G_{t:t+2} = r_{t+1} + \gamma r_{t+2} + \gamma^2 v(s_{t+2})</script>
+
+<p>เราก็สามารถเดาได้ว่า <script type="math/tex">G_{t:t+n}</script> จะมีหน้าตาเป็นอย่างไร</p>
+
+<p>n-step TD คือการใช้ <script type="math/tex">G_{t:t+n}</script> มาแทนที่ของ <script type="math/tex">G_{t:t+1}</script> เราจะได้ว่าหน้าตาของ <strong>n-step SARSA</strong> เป็นดังนี้</p>
+
+<script type="math/tex; mode=display">q(s_t,a_t) \leftarrow q(s_t, a_t) + \alpha \left[ G_{t:t+n} - q(s_t, a_t) \right]</script>
+
+<p>จะเห็นว่า <script type="math/tex">G_{t:t+n}</script> ต้องการ <script type="math/tex">v</script> แต่ในกรณีที่เรามีเฉพาะค่า <script type="math/tex">q</script> เราจะสามารถหาค่า <script type="math/tex">G_{t:t+n}</script> ได้ดังนี้</p>
+
+<script type="math/tex; mode=display">G_{t:t+n} = \left( \sum_{i=0}^{n-1} \gamma^i r_{t+i+1} \right) + \gamma^n \mathrm{E}_{a \sim \pi} \left[ q(s_{t+n}, a) \right]</script>
+
+<p>หากเราใช้การ sampling สำหรับประมาณ <script type="math/tex">v</script> ดังด้านบน เราจะเรียกว่า SARSA เฉย ๆ แต่ว่าถ้าเราใช้การหาค่าเฉลี่ยแบบเป๊ะ ๆ ดังต่อไปนี้</p>
+
+<script type="math/tex; mode=display">G_{t:t+n} = \left( \sum_{i=0}^{n-1} \gamma^i r_{t+i+1} \right) + \gamma^n \sum_a \pi(a|s_{t+n}) q(s_{t+n}, a)</script>
+
+<p>เราเรียกวิธีการนี้ว่า <strong>n-step expected SARSA</strong></p>
+
+<p>ซึ่งเวลาที่เรามาใช้กับ off-policy importance sampling สิ่งที่เราต้องสนใจก็คือ “สำหรับแต่ละ term มีการ sampling action หรือเปล่า?” เพราะว่าเราต้องคูณ <script type="math/tex">\rho</script> ทุกที่ที่มีการ sampling action</p>
+
+<p>จะเห็นว่าในกรณีของ n-step SARSA เรามีการสุ่ม n-1 ครั้งสำหรับ n reward แรก ที่เป็น n-1 ก็เพราะว่า SARSA เป็นฟังก์ชัน <script type="math/tex">q(s,a)</script> ดังนั้น action แรกไม่ได้เกิดจากการสุ่ม และรวมกับอีก 1 ครั้งตอนสุ่มหาค่า <script type="math/tex">v</script></p>
+
+<p>จึงได้ว่าสำหรับ n-step SARSA เราจะเขียนแบบ off-policy ได้ดังนี้</p>
+
+<script type="math/tex; mode=display">G_{t:t+n} = \left( \sum_{i=0}^{n-1} \rho_{t:t+i} \gamma^i r_{t+i+1} \right) + \rho_{t:t+n} \gamma^n \mathrm{E}_{a \sim \pi} \left[ q(s_{t+n}, a) \right]</script>
+
+<p>สำหรับ n-step expected SARSA เรามีการ n-1 ครั้งสำหรับ n reward แรก เหมือนกัน แต่ว่าเราไม่ได้สุ่มอีกเลยตอนหาค่า v เพราะเราหาค่าแบบเป๊ะ ๆ</p>
+
+<p>จึงได้ว่าสำหรับ n-step expected SARSA เราสามารถเขียน off-policy ได้ดังนี้</p>
+
+<script type="math/tex; mode=display">G_{t:t+n} = \left( \sum_{i=0}^{n-1} \rho_{t:t+i} \gamma^i r_{t+i+1} \right) + \gamma^n \sum_a \pi(a|s_{t+n}) q(s_{t+n}, a)</script>
+
+<p>หมายเหตุ: เราสามารถใช้ได้ทั้ง importance sampling หรือ per-decision importance sampling หรือ weighted importance sampling เพียงแค่แก้ค่า <script type="math/tex">G_{t:t+n}</script> ให้เหมาะสม</p>
+
+<h3 id="การใช้งานกับ-experience-replay">การใช้งานกับ Experience Replay</h3>
+
+<p>สำหรับอัลกอริทึมที่ใช้ข้อมูลแบบ off-policy เรามักจะใช้งาน experience replay เนื่องจากเราสามารถใช้ขอมูลเก่า ๆ ได้ (ต่างจาก on-policy ที่ต้องการประสบการณ์สดใหม่เท่านั้น จึงไม่นิยมใช้ experience replay)</p>
+
+<p>หมายเหตุ: กรณีของ DQN และ Q-learning โดยทั่วไปไม่ต้องทำการคูณด้วย importance sampling ratio เนื่องจากสมการของ Q-learning ไม่ได้สนใจว่าประสบการณ์นั้นมาจาก policy ใด จึงเรียกว่า Q-learning เป็น off-policy โดยกำเนิด แต่นี่ไม่เป็นจริงสำหรับการใช้ n-step Q-learning (และ n-step algorithm ในภาพรวม)</p>
+
+<p>เนื่องจากการใช้งาน importance sampling เราจำเป็นต้องรู้ว่า policy ที่ใช้เก็บข้อมูลนั้นมีหน้าตาเป็นอย่างไร กล่าวคือ <script type="math/tex">b(a \vert s)</script> มีค่าเท่าไหร่ เพราะว่าต้องเอาไปเป็นตัวหาร ดังนั้น นอกจากจะต้องเก็บข้อมูลอย่าง state, action, reward ใน experience replay แล้ว ก็ยังจะต้องเก็บด้วยว่า ณ ตอนที่เก็บข้อมูลนี้นั้น <script type="math/tex">b(a \vert s)</script> มีค่าเท่าไหร่</p>
+
+<h1 id="อ้างอิง">อ้างอิง</h1>
+
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). Reinforcement learning: An introduction. MIT press. https://doi.org/10.1016/S1364-6613(99)01331-5</p>
+
+<p>Hernandez-Garcia, J. F., &amp; Sutton, R. S. (2019). Understanding Multi-Step Deep Reinforcement Learning: A Systematic Study of the DQN Target. Retrieved from http://arxiv.org/abs/1901.07510</p>
+
+<p>Amherst, S., Precup, D., Sutton, R. S., &amp; Singh, S. (2000). Eligibility Traces for Off-Policy Policy Evaluation (Vol. 80).</p>
+
+
+    <small>
+      
+      <a href="/tags/#rl,">rl,</a>
+      
+      <a href="/tags/#thai">thai</a>
+      
+    </small>
+  </div><a class="u-url" href="/academic/2019/02/02/off-policy-importance-sampling.html" hidden></a>
+</article>
+
+
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+      <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
