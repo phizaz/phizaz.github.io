@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-02-02T18:41:27+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Off-policy Importance Sampling</title><link href="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" rel="alternate" type="text/html" title="Off-policy Importance Sampling" /><published>2019-02-02T00:00:00+07:00</published><updated>2019-02-02T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html">&lt;p&gt;ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า &lt;strong&gt;prediction&lt;/strong&gt; ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; และหรือ &lt;script type=&quot;math/tex&quot;&gt;q_\pi​&lt;/script&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-02-02T21:24:32+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Off-policy Importance Sampling</title><link href="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" rel="alternate" type="text/html" title="Off-policy Importance Sampling" /><published>2019-02-02T00:00:00+07:00</published><updated>2019-02-02T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html">&lt;p&gt;ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า &lt;strong&gt;prediction&lt;/strong&gt; ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; และหรือ &lt;script type=&quot;math/tex&quot;&gt;q_\pi​&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;อีกส่วนหนึ่งก็คือส่วนที่เรียกว่า &lt;strong&gt;control&lt;/strong&gt; ถ้าเรามีข้อมูลเหล่านี้ (&lt;script type=&quot;math/tex&quot;&gt;v_\pi, q_\pi&lt;/script&gt;) หรือไม่มี จะสามารถหา policy ที่ดีได้อย่างไร ในกรณีของ &lt;a href=&quot;http://www.incompleteideas.net/book/ebook/node46.html&quot;&gt;GPI (Generalized Policy Iteration)&lt;/a&gt; นั้น control (การหา policy ที่ดี) นั้นอาศัยการ prediction ที่ดีมาก่อนด้วย นั่นทำให้ในหลาย ๆ ครั้งเราถือว่า prediction กับ control เหมือนกับสองส่วนที่ขาดจากกันไม่ได้&lt;/p&gt;
 
@@ -162,19 +162,21 @@ v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;G_t = r_{t+1} + r_{t+2} + r_{t+3} + \dots \quad \sim \pi&lt;/script&gt;
 
-&lt;p&gt;โดยเราจะหาความน่าจะเป็นที่จะ sample ได้ค่า &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}, r_{t+2}, \dots​&lt;/script&gt; พร้อมกันทั้งหมดแทน ซึ่งก็สามารถทำได้ในลักษณะเดียวกัน กล่าวคือ&lt;/p&gt;
+&lt;p&gt;โดยเราจะหาความน่าจะเป็นที่จะ sample ได้ค่า &lt;script type=&quot;math/tex&quot;&gt;r_{t+1}, r_{t+2}, \dots&lt;/script&gt; พร้อมกันทั้งหมดแทน ซึ่งก็สามารถทำได้ในลักษณะเดียวกัน โดยจะยกตัวอย่างกรณีเฉพาะ reward สองตัวแรกดังนี้&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;r_{t+1}, r_{t+2} \sim \pi(a_t|s_t) p(r_{t+1}|s_t, a_t) p(s_{t+1}|s_t, a_t) \pi(a_{t+1}|s_{t+1}) p(r_{t+2}|s_{t+1}, a_{t+1})&lt;/script&gt;
 
-&lt;p&gt;เราสามารถคาดต่อไปได้ว่าจนถึง &lt;script type=&quot;math/tex&quot;&gt;r_{t+n}&lt;/script&gt; จะมีหน้าตาอย่างไร&lt;/p&gt;
+&lt;p&gt;สำหรับกรณีทั่วไปตั้งแต่ &lt;script type=&quot;math/tex&quot;&gt;t+1&lt;/script&gt; ถึง &lt;script type=&quot;math/tex&quot;&gt;T&lt;/script&gt; จะสามารถเขียนได้ดังนี้&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;r_{t+1}, r_{t+2}, \dots \sim \prod_{k=t}^{T-1} \pi(a_k|s_k) p(r_{k+1}|s_k, a_k) p(s_{k+1}|s_k, a_k)&lt;/script&gt;
 
 &lt;p&gt;แต่ตอนนี้เราสามารถหาค่า Importance sampling ratio ระหว่าง &lt;script type=&quot;math/tex&quot;&gt;\pi​&lt;/script&gt; กับ &lt;script type=&quot;math/tex&quot;&gt;b​&lt;/script&gt; สำหรับ &lt;script type=&quot;math/tex&quot;&gt;G_t​&lt;/script&gt; ได้ดังต่อไปนี้&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{equation}
 \begin{split}
-\rho_{t:T-1} &amp;= \prod_{k=t}^{T-1} \frac{\pi(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)} \cancel{p(s_{t+1}|s_t, a_t)}}{b(a_t|s_t) \cancel{p(r_{t+1}|s_t, a_t)} \cancel{p(s_{t+1}|s_t, a_t)}} \\
-&amp;= \prod_{k=t}^{T-1} \frac{\pi(a_t|s_t)}{b(a_t|s_t)}
+\rho_{t:T-1} &amp;= \prod_{k=t}^{T-1} \frac{\pi(a_k|s_k) \cancel{p(r_{k+1}|s_k, a_k)} \cancel{p(s_{k+1}|s_k, a_k)}}{b(a_k|s_k) \cancel{p(r_{k+1}|s_k, a_k)} \cancel{p(s_{k+1}|s_k, a_k)}} \\
+&amp;= \prod_{k=t}^{T-1} \frac{\pi(a_k|s_k)}{b(a_k|s_k)}
 \end{split}
 \end{equation} %]]&gt;&lt;/script&gt;
 
@@ -222,7 +224,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
 
 &lt;ul&gt;
   &lt;li&gt;เราอาศัยความจริงที่ว่า &lt;script type=&quot;math/tex&quot;&gt;\mathrm{E}[\rho] = 1​&lt;/script&gt;&lt;/li&gt;
-  &lt;li&gt;และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ &lt;script type=&quot;math/tex&quot;&gt;\tau(s)&lt;/script&gt; มีขนาดอนันต์&lt;/li&gt;
+  &lt;li&gt;และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ &lt;script type=&quot;math/tex&quot;&gt;\vert \tau(s) \vert&lt;/script&gt; มีขนาดเข้าใกล้อนันต์&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation}
@@ -230,7 +232,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
 \label{eq:expect_rho_tau}
 \end{equation}&lt;/script&gt;
 
-&lt;p&gt;สมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:expect_rho_tau}&lt;/script&gt; จะเป็นจริงก็ด้วย &lt;a href=&quot;http://www.incompleteideas.net/book/ebook/node46.html&quot;&gt;Law of large numbers&lt;/a&gt; เท่านั้น ดังนั้นหาก &lt;script type=&quot;math/tex&quot;&gt;\left \vert  \tau(s) \right \vert&lt;/script&gt; ไม่ได้เยอะเข้าใกล้ &lt;script type=&quot;math/tex&quot;&gt;\infty&lt;/script&gt; แล้วก็พูดอย่างนั้นไม่ได้&lt;/p&gt;
+&lt;p&gt;สมการ &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:expect_rho_tau}​&lt;/script&gt; จะเป็นจริงก็ด้วย &lt;a href=&quot;http://www.incompleteideas.net/book/ebook/node46.html&quot;&gt;Law of large numbers&lt;/a&gt; เท่านั้น ดังนั้นหาก &lt;script type=&quot;math/tex&quot;&gt;\left \vert  \tau(s) \right \vert ​&lt;/script&gt; ไม่ได้เยอะเข้าใกล้ &lt;script type=&quot;math/tex&quot;&gt;\infty​&lt;/script&gt; แล้วก็พูดอย่างนั้นไม่ได้&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation} 
 \left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right| = \sum_{t \in \tau(s)} \rho_{t:T-1}
