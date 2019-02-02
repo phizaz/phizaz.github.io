@@ -255,11 +255,11 @@
 \end{split}
 \end{equation} %]]></script>
 
-<p><script type="math/tex">\rho_{t:t+1}​</script> บอกถึงว่าเรา “คูณกันจาก t ถึง t+1”</p>
+<p><script type="math/tex">\rho_{t:t+1}</script> บอกถึงว่าเรา “คูณกันจาก t ถึง t+1”</p>
 
 <p>จะเห็นว่าแม้ในตอนคูณกันนั้นจะมีส่วนของ state transition probability และ reward probability สุดท้ายแล้วก็ํจะตัดกันเองอยู่ดี เพราะว่าไม่ว่าจะเป็น <script type="math/tex">\pi</script> หรือ <script type="math/tex">b​</script> ก็ล้วนอยู่ภายใต้ environment (MDP) เดียวกัน ทำเราให้เราสนใจเฉพาะความต่างของทั้งสองก็พอ</p>
 
-<p>สำหรับกรณี reward อื่น ๆ นั้นเราสามารถเดาไปจากตรงนี้ว่า สำหรับ <script type="math/tex">r_T​</script> จะมี importance sampling ratio ของตัวเองเท่ากับ</p>
+<p>สำหรับกรณี reward อื่น ๆ นั้นเราสามารถเดาไปจากตรงนี้ว่า สำหรับ <script type="math/tex">r_T</script> จะมี importance sampling ratio ของตัวเองเท่ากับ</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 \begin{equation}
@@ -279,7 +279,7 @@
 
 <p>จะเห็นว่าเราต้องใช้ แต่ละ <script type="math/tex">\rho</script> สำหรับแต่ละ reward วิธีการนี้จึงมีชื่อว่า <strong>Per-decision Importance Sampling</strong> ก็เพราะว่าเราสร้าง importance sampling สำหรับแต่ละ decision (แต่ละ action แต่ละ reward) เลย</p>
 
-<p>ในการ Implement จริง ๆ เราจะต้องเขียนได้ว่า <script type="math/tex">v(s)​</script> นั้นหามาจากไหน เราจะเขียนได้ว่า</p>
+<p>ในการ Implement จริง ๆ เราจะต้องเขียนได้ว่า <script type="math/tex">v(s)</script> นั้นหามาจากไหน เราจะเขียนได้ว่า</p>
 
 <script type="math/tex; mode=display">\begin{equation}
 v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|}
@@ -298,7 +298,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|
 
 <h3 id="importance-sampling-สำหรับผลรวมทั้งเส้น">Importance Sampling สำหรับผลรวมทั้งเส้น</h3>
 
-<p>แต่ว่าก็มีอีกวิธีที่เรามอง “ทุก reward เป็นภาพรวม” กล่าวคือเราไม่แยกมองเป็นทีละชิ้น แต่เรามองทั้งหมดเป็น return <script type="math/tex">G_t</script> เลย</p>
+<p>แต่ว่าก็มีอีกวิธีที่เรามอง “ทุก reward เป็นภาพรวม” กล่าวคือเราไม่แยกมองเป็นทีละชิ้น แต่เรามองทั้งหมดเป็น return <script type="math/tex">G_t​</script> เลย</p>
 
 <p>กล่าวคือ</p>
 
@@ -331,7 +331,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \sum_{k=t}^{T-1} \rho_{t:k} r_{t+1}}{|\tau(s)|
 
 <p>วิธีนี้เรียกว่า <strong>importance sampling</strong> แบบปกติ (ทั้งเส้น)</p>
 
-<p>เราสามารถเขียนนิยามของ <script type="math/tex">v(s)​</script> ได้ในลักษณะเดียวกัน ก็คือการเฉลี่ยจากหลาย ๆ ครั้งที่เราผ่าน state <script type="math/tex">s​</script> นั้น ๆ</p>
+<p>เราสามารถเขียนนิยามของ <script type="math/tex">v(s)</script> ได้ในลักษณะเดียวกัน ก็คือการเฉลี่ยจากหลาย ๆ ครั้งที่เราผ่าน state <script type="math/tex">s</script> นั้น ๆ</p>
 
 <script type="math/tex; mode=display">\begin{equation}
 v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
@@ -367,7 +367,7 @@ v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
 
 <ul>
   <li>เราอาศัยความจริงที่ว่า <script type="math/tex">\mathrm{E}[\rho] = 1​</script></li>
-  <li>และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ <script type="math/tex">\tau(s)​</script> มีขนาดอนันต์</li>
+  <li>และเราจะแสดงว่า weighted importance sampling นั้นเข้าใกล้ importance sampling เมื่อ <script type="math/tex">\tau(s)</script> มีขนาดอนันต์</li>
 </ul>
 
 <script type="math/tex; mode=display">\begin{equation}
@@ -377,31 +377,33 @@ v(s) = \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{|\tau(s)|}
 
 <p>สมการ <script type="math/tex">\eqref{eq:expect_rho_tau}</script> จะเป็นจริงก็ด้วย <a href="http://www.incompleteideas.net/book/ebook/node46.html">Law of large numbers</a> เท่านั้น ดังนั้นหาก <script type="math/tex">\left \vert  \tau(s) \right \vert</script> ไม่ได้เยอะเข้าใกล้ <script type="math/tex">\infty</script> แล้วก็พูดอย่างนั้นไม่ได้</p>
 
-<p>หลังจากนั้นเราก็ทำการย้ายข้างเล็กน้อยดังนี้
-<script type="math/tex">\begin{equation} 
-\sum_{t \in \tau(s)} \rho_{t:T-1} = \left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right|
-\end{equation}</script></p>
+<p>หลังจากนั้นเราก็ทำการย้ายข้างเล็กน้อยดังนี้</p>
 
-<p>นำค่าที่ได้ไปแทนในสมการ <script type="math/tex">\eqref{eq:weighted_is}​</script> จะได้ว่า
-<script type="math/tex">% <![CDATA[
+<script type="math/tex; mode=display">\begin{equation} 
+\sum_{t \in \tau(s)} \rho_{t:T-1} = \left| \tau(s) \right| \mathrm{E}_b \left[ \rho_{t:T-1} \right] = \left| \tau(s) \right|
+\end{equation}</script>
+
+<p>นำค่าที่ได้ไปแทนในสมการ <script type="math/tex">\eqref{eq:weighted_is}</script> จะได้ว่า</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{equation}
 \begin{split}
 v(s) &= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \rho_{t:T-1}} \\
 &= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\left|\tau(s)\right|} \\ 
 \end{split}
-\end{equation} %]]></script></p>
+\end{equation} %]]></script>
 
 <p>เราจะเห็นว่าจริง ๆ แล้ว weighted importance sampling กับ importance sampling ธรรมดานั้นมีค่าเท่ากันเมื่อ <script type="math/tex">\vert \tau(s) \vert</script> เป็นอนันต์ (ใหญ่พอ)</p>
 
 <p>หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า <script type="math/tex">\rho​</script> ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า <a href="https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1079&amp;context=cs_faculty_pubs">Eligibility Traces for Off-Policy Policy Evaluation (2000)</a></p>
 
-<h4 id="แสดงว่า-mathrmerho--1">แสดงว่า <script type="math/tex">\mathrm{E}[\rho] = 1</script></h4>
+<h4 id="แสดงว่า-mathrmerho--1">แสดงว่า $\mathrm{E}[\rho] = 1$</h4>
 
-<p>เพื่อให้เห็นภาพจะแสดงให้ดูในกรณีของ <script type="math/tex">r_{t+1}, r_{t+2}​</script> อย่างละเอียดเพื่อให้เห็นภาพชัดเจน</p>
+<p>เพื่อให้เห็นภาพจะแสดงให้ดูในกรณีของ <script type="math/tex">r_{t+1}, r_{t+2}</script> อย่างละเอียดเพื่อให้เห็นภาพชัดเจน</p>
 
 <script type="math/tex; mode=display">\rho_{t:t+1} = \frac{\pi(a_t|s_t)\pi(a_{t+1}|s_{t+1})}{b(a_t|s_t)b(a_{t+1}|s_{t+1})}</script>
 
-<p>ลองหาค่าคาดหวังของ <script type="math/tex">\rho​</script> ภายใต้ behavioral policy <script type="math/tex">b​</script></p>
+<p>ลองหาค่าคาดหวังของ <script type="math/tex">\rho</script> ภายใต้ behavioral policy <script type="math/tex">b</script></p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 \begin{equation}
