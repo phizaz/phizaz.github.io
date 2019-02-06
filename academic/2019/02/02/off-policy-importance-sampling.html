@@ -165,19 +165,19 @@
 
 <p>ข้อสังเกต: เราทำการ sample <script type="math/tex">r</script> หลายครั้งจนกว่าจะจบ episode</p>
 
-<p>เพื่อความง่ายเราจะกำหนด <script type="math/tex">G_t = r_{t+1} + r_{t+2} + ...</script> โดยเราเรียก <script type="math/tex">G_t</script> ว่า return อาจจะแปลได้ว่า ค่าทดลองการเล่น (จากการเล่น 1 ครั้งจนจบ แล้วรวมรางวัลที่ได้ทั้งหมด)</p>
+<p>เพื่อความง่ายเราจะกำหนด <script type="math/tex">G_t = r_{t+1} + r_{t+2} + ...​</script> โดยเราเรียก <script type="math/tex">G_t​</script> ว่า return อาจจะแปลได้ว่า ค่าทดลองการเล่น (จากการเล่น 1 ครั้งจนจบ แล้วรวมรางวัลที่ได้ทั้งหมด)</p>
 
-<p>โจทย์ในที่นี้สำหรับ off-policy prediction ก็น่าจะเป็น ถ้าเราไม่ได้ <script type="math/tex">r_{t+1}, r_{t+2}, ... \sim \pi</script> แต่มาจาก <script type="math/tex">b</script> แทน เป็นไปได้มั้ยที่เราจะยังประมาณค่า <script type="math/tex">v_\pi</script> ได้เหมือนเดิม</p>
+<p>โจทย์ในที่นี้สำหรับ off-policy prediction ก็น่าจะเป็น ถ้าเราไม่ได้ <script type="math/tex">r_{t+1}, r_{t+2}, ... \sim \pi​</script> แต่มาจาก <script type="math/tex">b​</script> แทน เป็นไปได้มั้ยที่เราจะยังประมาณค่า <script type="math/tex">v_\pi​</script> ได้เหมือนเดิม</p>
 
 <h2 id="off-policy-prediction-โดยใช้-importance-sampling">Off-policy prediction โดยใช้ Importance Sampling</h2>
 
 <p>Importance Sampling เป็นวิธีทางสถิติ โดยสามารถแสดงให้เห็นแบบง่าย ๆ ได้ดังนี้</p>
 
-<p>สมมติว่าเรามีฟังก์ชัน <script type="math/tex">f(x)</script> เรามีฟังก์ชันความน่าจะเป็น <script type="math/tex">p(x)</script> และเราต้องการหา “ค่าคาดหวังของ <script type="math/tex">f(x)</script> ภายใต้ <script type="math/tex">p(x)</script>” เราจะได้ว่า</p>
+<p>สมมติว่าเรามีฟังก์ชัน <script type="math/tex">f(x)​</script> เรามีฟังก์ชันความน่าจะเป็น <script type="math/tex">p(x)​</script> และเราต้องการหา “ค่าคาดหวังของ <script type="math/tex">f(x)​</script> ภายใต้ <script type="math/tex">p(x)​</script>” เราจะได้ว่า</p>
 
 <script type="math/tex; mode=display">\mathrm{E}_{x \sim p(x)} f(x)</script>
 
-<p>แต่ว่าถ้าเราไม่ได้ sample <script type="math/tex">x</script> จาก <script type="math/tex">f(x)</script> แต่เป็น <script type="math/tex">g(x)</script> แทนล่ะ ? เราก็ยังหาค่าคาดหวังได้อยู่ดีแหละดังนี้</p>
+<p>แต่ว่าถ้าเราไม่ได้ sample <script type="math/tex">x​</script> จาก <script type="math/tex">p(x)​</script> แต่เป็น <script type="math/tex">g(x)​</script> แทนล่ะ ? เราก็ยังหาค่าคาดหวังได้อยู่ดีแหละดังนี้</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 \begin{equation}
@@ -189,9 +189,9 @@
 \end{split}
 \end{equation} %]]></script>
 
-<p>การคูณ <script type="math/tex">\frac{g(x)}{g(x)}</script> เป็นทริกที่ไม่ได้เปลี่ยนค่าแต่ใด เพราะว่าคูณด้วย <script type="math/tex">1</script> แต่ว่าช่วยให้เราสามารถเปลี่ยนการ sample ได้ แทนที่จะต้อง sample จาก <script type="math/tex">p(x)</script> กลายเป็น sample จาก <script type="math/tex">g(x)</script></p>
+<p>การคูณ <script type="math/tex">\frac{g(x)}{g(x)}​</script> เป็นทริกที่ไม่ได้เปลี่ยนค่าแต่ใด เพราะว่าคูณด้วย <script type="math/tex">1​</script> แต่ว่าช่วยให้เราสามารถเปลี่ยนการ sample ได้ แทนที่จะต้อง sample จาก <script type="math/tex">p(x)​</script> กลายเป็น sample จาก <script type="math/tex">g(x)​</script></p>
 
-<p>เราจะได้ว่า หากทุกครั้งที่เรา sample <script type="math/tex">x \sim g(x)</script> แล้วแทนที่จะใช้ค่า <script type="math/tex">f(x)</script> ตรง ๆ เลยเราเอาค่านั้นมาคูณด้วย <script type="math/tex">\frac{p(x)}{g(x)}</script> (เรียกว่า <strong>Importance sampling ratio</strong>) ก่อน เราก็จะได้ค่าคาดหวังอันเดิมได้นั่นเอง แต่นั่นก็แปลว่าเราต้องรู้ด้วยว่า <script type="math/tex">g(x)</script> ของเรานั้นมีค่าเท่าไหร่</p>
+<p>เราจะได้ว่า หากทุกครั้งที่เรา sample <script type="math/tex">x \sim g(x)</script> แล้วแทนที่จะใช้ค่า <script type="math/tex">f(x)</script> ตรง ๆ เลยเราเอาค่านั้นมาคูณด้วย <script type="math/tex">\frac{p(x)}{g(x)}</script> (เรียกว่า <strong>Importance sampling ratio</strong>) ก่อน นั่นคือ <script type="math/tex">\frac{p(x)}{g(x)} f(x)</script> เราก็จะได้ค่าคาดหวังอันเดิมได้นั่นเอง แต่นั่นก็แปลว่าเราต้องรู้ด้วยว่า <script type="math/tex">g(x)</script> ของเรานั้นมีค่าเท่าไหร่</p>
 
 <h3 id="การใช้งานกับ-reinforcement-learning">การใช้งานกับ Reinforcement Learning</h3>
 
@@ -397,7 +397,7 @@ v(s) &= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \rho_{
 
 <p>หมายเหตุ: การจะทำแบบเดียวกันนี้กับ per-decision importance sampling นั้นไม่ตรงไปตรงมาเท่าใดนักก็เพราะว่า <script type="math/tex">\rho​</script> ของแต่ละ reward ไม่เหมือนกัน ทำให้พูดได้ยากว่าอะไรคือ weight ที่เหมาะสมกันแน่ อย่างไรก็ดีมีงานที่เสนอการทำ weighted per-decision importance sampling ชื่อว่า <a href="https://scholarworks.umass.edu/cgi/viewcontent.cgi?article=1079&amp;context=cs_faculty_pubs">Eligibility Traces for Off-Policy Policy Evaluation (2000)</a></p>
 
-<h4 id="แสดงว่า-mathrmerho--1">แสดงว่า <script type="math/tex">\mathrm{E}[\rho] = 1</script></h4>
+<h4 id="แสดงว่า-mathrmerho--1">แสดงว่า $\mathrm{E}[\rho] = 1$</h4>
 
 <p>เพื่อให้เห็นภาพจะแสดงให้ดูในกรณีของ <script type="math/tex">r_{t+1}, r_{t+2}</script> อย่างละเอียดเพื่อให้เห็นภาพชัดเจน</p>
 
