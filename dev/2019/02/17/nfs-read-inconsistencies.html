@@ -152,6 +152,8 @@
 
 <p>There is a <a href="https://blogs.sap.com/2015/11/20/performance-impact-of-disabling-nfs-attribute-caching/">mention</a> about performance degradation of <code class="highlighter-rouge">noac</code> option. The source suggests that <code class="highlighter-rouge">actimeo=0</code> has lower performance impact comparing to <code class="highlighter-rouge">noac</code> .</p>
 
+<p>Personally, I see <code class="highlighter-rouge">noac</code> and <code class="highlighter-rouge">actimeo=0</code> to be too much a drag on performance. I now use <code class="highlighter-rouge">actimeo=3</code> (3 seconds) and see a much lower drag.</p>
+
 <p><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nfs-mount-on-ubuntu-16-04">Reference</a> NFS mounting configuration in fstab:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>203.0.113.0:/home       /nfs/home      nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
