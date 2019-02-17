@@ -133,7 +133,12 @@
     <h1 class="post-title p-name" itemprop="name headline">Async Await with Timeout</h1>
     <p class="post-meta">
       <time class="dt-published" datetime="2017-06-07T08:11:10+07:00" itemprop="datePublished">Jun 7, 2017
-      </time></p>
+      </time>
+      <span>
+        
+        <a href="/tags/#js"><span class="badge badge-secondary">js</span></a>
+        
+      </span></p>
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
@@ -182,12 +187,6 @@
 <p>You now have it ! In a normal case, <code class="highlighter-rouge">longRunning()</code> is expected to be resolved earlier than <code class="highlighter-rouge">timeout(1000)</code> and the <code class="highlighter-rouge">const res</code> is the return value of that <code class="highlighter-rouge">longRunning()</code> function, but when the <code class="highlighter-rouge">timeout(1000)</code> is resolved earlier, it throws causing <code class="highlighter-rouge">await Proimse.race</code> to throw as well, no return value recorded.</p>
 
 
-
-    <small>
-      
-      <a href="/tags/#js">js</a>
-      
-    </small>
   </div><a class="u-url" href="/dev/2017/06/07/async-await-with-timeout.html" hidden></a>
 </article>
 
