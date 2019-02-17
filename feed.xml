@@ -1,4 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-02-12T12:34:00+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Off-policy Importance Sampling</title><link href="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" rel="alternate" type="text/html" title="Off-policy Importance Sampling" /><published>2019-02-02T00:00:00+07:00</published><updated>2019-02-02T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html">&lt;p&gt;ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า &lt;strong&gt;prediction&lt;/strong&gt; ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; และหรือ &lt;script type=&quot;math/tex&quot;&gt;q_\pi​&lt;/script&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-02-17T12:47:32+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Vim Navigation within Wrapped Lines in VSCode</title><link href="https://blog.konpat.me/dev/2019/02/17/vim-navigation-within-wrapped-lines-in-vscode.html" rel="alternate" type="text/html" title="Vim Navigation within Wrapped Lines in VSCode" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2019/02/17/vim-navigation-within-wrapped-lines-in-vscode</id><content type="html" xml:base="https://blog.konpat.me/dev/2019/02/17/vim-navigation-within-wrapped-lines-in-vscode.html">&lt;p&gt;Noticing that long lines might be soft-wrapped automatically and navigating with &lt;code class=&quot;highlighter-rouge&quot;&gt;j&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt; would result in jumping across many soft-wrapped lines (but it is in fact a single line). VIM uses &lt;code class=&quot;highlighter-rouge&quot;&gt;g j&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;g k&lt;/code&gt; to navigate within the lines instead.&lt;/p&gt;
+
+&lt;p&gt;If you want &lt;code class=&quot;highlighter-rouge&quot;&gt;j&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt; to be your default navigating keys through the block, one possible way is to remap it to &lt;code class=&quot;highlighter-rouge&quot;&gt;g j&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;g k&lt;/code&gt; instead. As mentioned in this &lt;a href=&quot;https://stackoverflow.com/questions/46433500/vs-code-navigate-within-a-wrapped-line-vs-jumping-to-next-line&quot;&gt;Stackoverflow thread&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The key mapping for Vim extension for VSCode is done thus:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;vim.normalModeKeyBindingsNonRecursive&quot;: [
+    {
+        &quot;before&quot;: [
+            &quot;j&quot;
+        ],
+        &quot;after&quot;: [
+            &quot;g&quot;,
+            &quot;j&quot;
+        ]
+    },
+    {
+        &quot;before&quot;: [
+            &quot;k&quot;
+        ],
+        &quot;after&quot;: [
+            &quot;g&quot;,
+            &quot;k&quot;
+        ]
+    }
+],
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Put it in your &lt;code class=&quot;highlighter-rouge&quot;&gt;settings.json&lt;/code&gt; .&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="vscode" /><summary type="html">Noticing that long lines might be soft-wrapped automatically and navigating with j k would result in jumping across many soft-wrapped lines (but it is in fact a single line). VIM uses g j and g k to navigate within the lines instead.</summary></entry><entry><title type="html">Off-policy Importance Sampling</title><link href="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" rel="alternate" type="text/html" title="Off-policy Importance Sampling" /><published>2019-02-02T00:00:00+07:00</published><updated>2019-02-02T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html">&lt;p&gt;ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า &lt;strong&gt;prediction&lt;/strong&gt; ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; และหรือ &lt;script type=&quot;math/tex&quot;&gt;q_\pi​&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;อีกส่วนหนึ่งก็คือส่วนที่เรียกว่า &lt;strong&gt;control&lt;/strong&gt; ถ้าเรามีข้อมูลเหล่านี้ (&lt;script type=&quot;math/tex&quot;&gt;v_\pi, q_\pi&lt;/script&gt;) หรือไม่มี จะสามารถหา policy ที่ดีได้อย่างไร ในกรณีของ &lt;a href=&quot;http://www.incompleteideas.net/book/ebook/node46.html&quot;&gt;GPI (Generalized Policy Iteration)&lt;/a&gt; นั้น control (การหา policy ที่ดี) นั้นอาศัยการ prediction ที่ดีมาก่อนด้วย นั่นทำให้ในหลาย ๆ ครั้งเราถือว่า prediction กับ control เหมือนกับสองส่วนที่ขาดจากกันไม่ได้&lt;/p&gt;
 
@@ -35985,68 +36013,4 @@ tf.Session(config=config)&lt;/code&gt;&lt;/pre&gt;
         throw err
     }
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Konpat Preechakul</name></author><category term="js" /><summary type="html">At first, you might hope that just calls the function and let it tell you just when the job is done and you wait … and wait. Soon, you realize that the callback you have been waiting will never come. This is true, and I can pretty much guarantee you that. I have been working with a project involves in heavy IO operations. Even I try to fine tune the speed at which node reads. It is not suffice as I have seen. It soon slows down and stops completely with the cause I have yet to find. So, I decided that I have to put some timeout, which is not provided by default means, here is my attempt: export async function delay(ms: number) { return new Promise&amp;lt;void&amp;gt;((res, rej) =&amp;gt; { setTimeout(() =&amp;gt; res(), ms) }) } class Timeout extends Error {} export async function delayedError(timeout: number) { await delay(timeout) throw new Timeout() } export async function withTimeout&amp;lt;T&amp;gt;(promise: Promise&amp;lt;T&amp;gt;, timeout: number) { return await Promise.race&amp;lt;T&amp;gt;([ promise, delayedError(timeout) as any ]) } Let’s further say that wrap the fs.readFile with this async: import fs = require('fs') export async function readFile(path: string) { return new Promise&amp;lt;Buffer&amp;gt;((res, rej) =&amp;gt; { fs.readFile(path, (err, content) =&amp;gt; { if (err) rej(err) else res(content) }) }) } To use it, now you can: try { await withTimeout(readFile('test.txt'), 1000) } catch (err) { if (err instanceof Timeout) { console.error('timeout') } else { throw err } }</summary></entry><entry><title type="html">NodeJS to check whether the file is being written by another process</title><link href="https://blog.konpat.me/dev/2017/06/26/nodejs-to-check-whether-the-file-is-being-written-by-another-process.html" rel="alternate" type="text/html" title="NodeJS to check whether the file is being written by another process" /><published>2017-06-26T08:34:03+07:00</published><updated>2017-06-26T08:34:03+07:00</updated><id>https://blog.konpat.me/dev/2017/06/26/nodejs-to-check-whether-the-file-is-being-written-by-another-process</id><content type="html" xml:base="https://blog.konpat.me/dev/2017/06/26/nodejs-to-check-whether-the-file-is-being-written-by-another-process.html">&lt;p&gt;To me at first, it should have a simple graceful solution, but turned out it has none.&lt;/p&gt;
-
-&lt;p&gt;I will try to convince you by the following scenario.&lt;/p&gt;
-
-&lt;h3 id=&quot;writer&quot;&gt;Writer&lt;/h3&gt;
-
-&lt;p&gt;I have a python writer (to make sure the file will be written by another process rather than the node itself), here is the code:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import os
-import time
-from functools import partial
-
-def copy(a, b):
-    with open(a, 'rb') as r:
-        with open(b, 'wb', 0) as w:
-            for chunk in iter(partial(r.read, 4 * 1024), b''):
-                w.write(chunk)
-                time.sleep(0.1)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Basically, it will write a file by copying chunk by chunk of 4 KB to the destination.&lt;/p&gt;
-
-&lt;p&gt;I have added some timeout in the code to make the write slower and to emphasize the problem.&lt;/p&gt;
-
-&lt;h3 id=&quot;reader&quot;&gt;Reader&lt;/h3&gt;
-
-&lt;p&gt;Now, we expect that the reader must be able to know whether the file is being written by the code above.&lt;/p&gt;
-
-&lt;h4 id=&quot;things-that-dont-work&quot;&gt;Things that don’t work&lt;/h4&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;fs.access(path, fs.constants.R_OK &amp;amp; fs.constants.W_OK &amp;amp; fs.constants.X_OK, callback)&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;fs.open(path, 'r+', callback)&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;fs.open(path, 'a+', callback)&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lockfile.lock(path, {}, callback)&lt;/code&gt; by using &lt;code class=&quot;highlighter-rouge&quot;&gt;npm install lockfile&lt;/code&gt; here. It just cannot lock whether how long.&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lockfile.lock(path, callback)&lt;/code&gt; by using &lt;code class=&quot;highlighter-rouge&quot;&gt;npm install proper-lockfile&lt;/code&gt; here. It always can lock.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&quot;things-that-do-work&quot;&gt;Things that do work&lt;/h4&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Check the file size difference:
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; const aSize = await fileSize(path)
- await delay(100)
- const bSize = await fileSize(path)
- return aSize !== bSize
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-    &lt;p&gt;Note: It is not reliable though because you cannot guarantee that the &lt;code class=&quot;highlighter-rouge&quot;&gt;delay&lt;/code&gt; you put is enough for any writer.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Check whether the file can be moved:
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; const tmp = path + '-tmp'
- try {
-     await rename(path, tmp)
-     await rename(tmp, path)
-     return false
- } catch (err) {
-     return true
- }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h4&gt;
-
-&lt;p&gt;To what I have to be working, &lt;strong&gt;try-moving-the-file&lt;/strong&gt; wins because it is the most reliable !&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="js" /><summary type="html">To me at first, it should have a simple graceful solution, but turned out it has none. I will try to convince you by the following scenario. Writer I have a python writer (to make sure the file will be written by another process rather than the node itself), here is the code: import os import time from functools import partial def copy(a, b): with open(a, 'rb') as r: with open(b, 'wb', 0) as w: for chunk in iter(partial(r.read, 4 * 1024), b''): w.write(chunk) time.sleep(0.1) Basically, it will write a file by copying chunk by chunk of 4 KB to the destination. I have added some timeout in the code to make the write slower and to emphasize the problem. Reader Now, we expect that the reader must be able to know whether the file is being written by the code above. Things that don’t work fs.access(path, fs.constants.R_OK &amp;amp; fs.constants.W_OK &amp;amp; fs.constants.X_OK, callback) fs.open(path, 'r+', callback) fs.open(path, 'a+', callback) lockfile.lock(path, {}, callback) by using npm install lockfile here. It just cannot lock whether how long. lockfile.lock(path, callback) by using npm install proper-lockfile here. It always can lock. Things that do work Check the file size difference: const aSize = await fileSize(path) await delay(100) const bSize = await fileSize(path) return aSize !== bSize Note: It is not reliable though because you cannot guarantee that the delay you put is enough for any writer. Check whether the file can be moved: const tmp = path + '-tmp' try { await rename(path, tmp) await rename(tmp, path) return false } catch (err) { return true } Conclusion To what I have to be working, try-moving-the-file wins because it is the most reliable !</summary></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Konpat Preechakul</name></author><category term="js" /><summary type="html">At first, you might hope that just calls the function and let it tell you just when the job is done and you wait … and wait. Soon, you realize that the callback you have been waiting will never come. This is true, and I can pretty much guarantee you that. I have been working with a project involves in heavy IO operations. Even I try to fine tune the speed at which node reads. It is not suffice as I have seen. It soon slows down and stops completely with the cause I have yet to find. So, I decided that I have to put some timeout, which is not provided by default means, here is my attempt: export async function delay(ms: number) { return new Promise&amp;lt;void&amp;gt;((res, rej) =&amp;gt; { setTimeout(() =&amp;gt; res(), ms) }) } class Timeout extends Error {} export async function delayedError(timeout: number) { await delay(timeout) throw new Timeout() } export async function withTimeout&amp;lt;T&amp;gt;(promise: Promise&amp;lt;T&amp;gt;, timeout: number) { return await Promise.race&amp;lt;T&amp;gt;([ promise, delayedError(timeout) as any ]) } Let’s further say that wrap the fs.readFile with this async: import fs = require('fs') export async function readFile(path: string) { return new Promise&amp;lt;Buffer&amp;gt;((res, rej) =&amp;gt; { fs.readFile(path, (err, content) =&amp;gt; { if (err) rej(err) else res(content) }) }) } To use it, now you can: try { await withTimeout(readFile('test.txt'), 1000) } catch (err) { if (err instanceof Timeout) { console.error('timeout') } else { throw err } }</summary></entry></feed>
