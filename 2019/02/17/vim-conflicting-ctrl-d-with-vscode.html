@@ -3,19 +3,20 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
-<title>Page 11 of 11 for All struggles - page 11 | Konpat’s Record of Struggles</title>
+<title>Vim conflicting with VSCode | Konpat’s Record of Struggles</title>
 <meta name="generator" content="Jekyll v3.8.5" />
-<meta property="og:title" content="All struggles - page 11" />
+<meta property="og:title" content="Vim conflicting with VSCode" />
 <meta name="author" content="Konpat Preechakul" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="O thou, I long to rival thy greatest invention, the mind." />
-<meta property="og:description" content="O thou, I long to rival thy greatest invention, the mind." />
-<link rel="canonical" href="https://blog.konpat.me/11/" />
-<meta property="og:url" content="https://blog.konpat.me/11/" />
+<meta name="description" content="VSCode Vim extension binds &lt;Ctrl-d&gt; for its own use. This keymap is used by VSCode for “selecting next word occurrence” in a multi-cursor fashion. If you like VSCode to handle this keymap (and others of your choice) you could do so via vim.handleKeys option." />
+<meta property="og:description" content="VSCode Vim extension binds &lt;Ctrl-d&gt; for its own use. This keymap is used by VSCode for “selecting next word occurrence” in a multi-cursor fashion. If you like VSCode to handle this keymap (and others of your choice) you could do so via vim.handleKeys option." />
+<link rel="canonical" href="https://blog.konpat.me/2019/02/17/vim-conflicting-ctrl-d-with-vscode.html" />
+<meta property="og:url" content="https://blog.konpat.me/2019/02/17/vim-conflicting-ctrl-d-with-vscode.html" />
 <meta property="og:site_name" content="Konpat’s Record of Struggles" />
-<link rel="prev" href="https://blog.konpat.me/10/index.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-02-17T00:00:00+07:00" />
 <script type="application/ld+json">
-{"description":"O thou, I long to rival thy greatest invention, the mind.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"WebPage","url":"https://blog.konpat.me/11/","headline":"All struggles - page 11","@context":"http://schema.org"}</script>
+{"description":"VSCode Vim extension binds &lt;Ctrl-d&gt; for its own use. This keymap is used by VSCode for “selecting next word occurrence” in a multi-cursor fashion. If you like VSCode to handle this keymap (and others of your choice) you could do so via vim.handleKeys option.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/2019/02/17/vim-conflicting-ctrl-d-with-vscode.html","headline":"Vim conflicting with VSCode","dateModified":"2019-02-17T00:00:00+07:00","datePublished":"2019-02-17T00:00:00+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/2019/02/17/vim-conflicting-ctrl-d-with-vscode.html"},"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
 <script>
@@ -126,187 +127,54 @@
 </header>
 <main class="page-content" aria-label="Content">
       <div class="wrapper">
-        <!-- Just some nice to have styles for the pager buttons -->
-<style>
-  ul.pager {
-    text-align: center;
-    list-style: none;
-  }
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
-  ul.pager li {
-    display: inline;
-    border: 1px solid black;
-    padding: 10px;
-    margin: 5px;
-  }
-</style>
-
-<div class="home">
-
-  <h1 class="page-heading">All struggles - page 11</h1>
-
-  
-
-  <ul class="post-list">
-    
-    <li>
-      <span class="post-meta">Jul 23, 2015</span>
-
-      <small>
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Vim conflicting &lt;Ctrl-d&gt; with VSCode</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-02-17T00:00:00+07:00" itemprop="datePublished">Feb 17, 2019
+      </time>
+      <span>
         
-        <a href="/tags/#dev"><span class="badge badge-secondary">dev</span></a>
-        
-      </small>
+      </span></p>
+  </header>
 
-      <h2>
-        <a class="post-link" href="/dev/2015/07/23/jetbrains-ides-problems-with-other-keyboard-layout-2.html">Jetbrains&#39; IDEs Problems with Other Keyboard Layout</a>
-      </h2>
-    </li>
-    
-    <li>
-      <span class="post-meta">Jun 10, 2015</span>
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>VSCode <strong>Vim</strong> extension binds <code class="highlighter-rouge">&lt;Ctrl-d&gt;</code> for its own use. This keymap is used by VSCode for “selecting next word occurrence” in a multi-cursor fashion. If you like VSCode to handle this keymap (and others of your choice) you could do so via <code class="highlighter-rouge">vim.handleKeys</code> option.</p>
 
-      <small>
-        
-        <a href="/tags/#web"><span class="badge badge-secondary">web</span></a>
-        
-      </small>
+<p>The following table is copied and pasted from the <a href="https://github.com/VSCodeVim/Vim#vscodevim-settings">project</a>:</p>
 
-      <h2>
-        <a class="post-link" href="/dev/2015/06/10/tracking-angular-js-apps-with-google-analytics.html">Tracking Angular.js Apps with Google Analytics</a>
-      </h2>
-    </li>
-    
-    <li>
-      <span class="post-meta">May 30, 2015</span>
+<table>
+  <thead>
+    <tr>
+      <th>Setting</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Default Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>vim.handleKeys</td>
+      <td>Delegate configured keys to be handled by VSCode instead of by the VSCodeVim extension. Any key in <code class="highlighter-rouge">keybindings</code> section of the <a href="https://github.com/VSCodeVim/Vim/blob/master/package.json">package.json</a> that has a <code class="highlighter-rouge">vim.use&lt;C-...&gt;</code> in the when argument can be delegated back to VS Code by setting <code class="highlighter-rouge">"&lt;C-...&gt;": false</code>. Example: to use <code class="highlighter-rouge">ctrl+f</code> for find (native VS Code behaviour): <code class="highlighter-rouge">"vim.handleKeys": { "&lt;C-f&gt;": false }</code>.</td>
+      <td>String</td>
+      <td><code class="highlighter-rouge">"&lt;C-d&gt;": true</code></td>
+    </tr>
+  </tbody>
+</table>
 
-      <small>
-        
-        <a href="/tags/#web"><span class="badge badge-secondary">web</span></a>
-        
-      </small>
+<p>Using the <code class="highlighter-rouge">vim.handleKeys</code> option you could delegate the handles to VSCode by setting each to <code class="highlighter-rouge">false</code> like so:</p>
 
-      <h2>
-        <a class="post-link" href="/dev/2015/05/30/a-fresh-approach-to-deal-with-browsers-caching-2.html">A Fresh Approach to Deal with Browser&#39;s Caching</a>
-      </h2>
-    </li>
-    
-    <li>
-      <span class="post-meta">May 28, 2015</span>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"vim.handleKeys"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"&lt;C-d&gt;"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
 
-      <small>
-        
-        <a href="/tags/#angular"><span class="badge badge-secondary">angular</span></a>
-        
-        <a href="/tags/#web"><span class="badge badge-secondary">web</span></a>
-        
-      </small>
+  </div><a class="u-url" href="/2019/02/17/vim-conflicting-ctrl-d-with-vscode.html" hidden></a>
+</article>
 
-      <h2>
-        <a class="post-link" href="/dev/2015/05/28/angularjs-routing-with-permissions-2.html">AngularJS Routing with Permissions</a>
-      </h2>
-    </li>
-    
-    <li>
-      <span class="post-meta">May 20, 2015</span>
 
-      <small>
-        
-        <a href="/tags/#web"><span class="badge badge-secondary">web</span></a>
-        
-      </small>
 
-      <h2>
-        <a class="post-link" href="/dev/2015/05/20/boosting-web-responsiveness-with-gzip-on-nginx.html">Boosting Web Responsiveness with Gzip on Nginx</a>
-      </h2>
-    </li>
-    
-    <li>
-      <span class="post-meta">May 9, 2015</span>
-
-      <small>
-        
-        <a href="/tags/#web"><span class="badge badge-secondary">web</span></a>
-        
-      </small>
-
-      <h2>
-        <a class="post-link" href="/dev/2015/05/09/adding-css-important-flag-with-jquery.html">Adding CSS !important flag with jQuery</a>
-      </h2>
-    </li>
-    
-    <li>
-      <span class="post-meta">May 2, 2015</span>
-
-      <small>
-        
-        <a href="/tags/#php"><span class="badge badge-secondary">php</span></a>
-        
-        <a href="/tags/#laravel"><span class="badge badge-secondary">laravel</span></a>
-        
-      </small>
-
-      <h2>
-        <a class="post-link" href="/dev/2015/05/02/laravel-controller-cant-return-in-boolean.html">Laravel Controller Can&#39;t Return in Boolean</a>
-      </h2>
-    </li>
-    
-    <li>
-      <span class="post-meta">Apr 7, 2015</span>
-
-      <small>
-        
-        <a href="/tags/#angular"><span class="badge badge-secondary">angular</span></a>
-        
-        <a href="/tags/#web"><span class="badge badge-secondary">web</span></a>
-        
-      </small>
-
-      <h2>
-        <a class="post-link" href="/dev/2015/04/07/single-use-angular-listener-2.html">Single-use Angular Listener</a>
-      </h2>
-    </li>
-    
-    <li>
-      <span class="post-meta">Mar 28, 2015</span>
-
-      <small>
-        
-        <a href="/tags/#devops"><span class="badge badge-secondary">devops</span></a>
-        
-      </small>
-
-      <h2>
-        <a class="post-link" href="/dev/2015/03/28/git-automatic-deployment.html">Git Automatic Deployment</a>
-      </h2>
-    </li>
-    
-    <li>
-      <span class="post-meta">Mar 27, 2015</span>
-
-      <small>
-        
-      </small>
-
-      <h2>
-        <a class="post-link" href="/dev/2015/03/27/konpats-blog-manifesto-2.html">Konpat&#39;s Development Blog Manifesto</a>
-      </h2>
-    </li>
-    
-  </ul>
-
-  
-  <ul class="pager">
-    
-    <li class="previous">
-      <a href="/10/index.html">&larr; Newer Posts</a>
-    </li>
-    
-    
-  </ul>
-  
-
-</div>
       </div>
     </main><footer class="site-footer h-card">
   <data class="u-url" href="/"></data>
