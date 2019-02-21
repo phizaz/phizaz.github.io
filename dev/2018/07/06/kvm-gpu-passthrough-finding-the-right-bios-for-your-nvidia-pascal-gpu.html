@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>KVM GPU Passthrough Finding The Right Bios for Your Nvidia Pascal GPU | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="KVM GPU Passthrough Finding The Right Bios for Your Nvidia Pascal GPU" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Disclaimer: I’m new to the KVM myself. Spending hours, I realized that I should write something down. May in the future I stumbled upon the same problem I would have hope to solve it." />
+<meta property="og:description" content="Disclaimer: I’m new to the KVM myself. Spending hours, I realized that I should write something down. May in the future I stumbled upon the same problem I would have hope to solve it." />
+<link rel="canonical" href="https://blog.konpat.me/dev/2018/07/06/kvm-gpu-passthrough-finding-the-right-bios-for-your-nvidia-pascal-gpu.html" />
+<meta property="og:url" content="https://blog.konpat.me/dev/2018/07/06/kvm-gpu-passthrough-finding-the-right-bios-for-your-nvidia-pascal-gpu.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-07-06T00:00:00+07:00" />
+<script type="application/ld+json">
+{"description":"Disclaimer: I’m new to the KVM myself. Spending hours, I realized that I should write something down. May in the future I stumbled upon the same problem I would have hope to solve it.","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2018/07/06/kvm-gpu-passthrough-finding-the-right-bios-for-your-nvidia-pascal-gpu.html","headline":"KVM GPU Passthrough Finding The Right Bios for Your Nvidia Pascal GPU","dateModified":"2018-07-06T00:00:00+07:00","datePublished":"2018-07-06T00:00:00+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2018/07/06/kvm-gpu-passthrough-finding-the-right-bios-for-your-nvidia-pascal-gpu.html"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
+<script>
+  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-91416417-1');
+</script>
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: {
+          equationNumbers: {
+            autoNumber: "all"
+          },
+          extensions: ["cancel.js"]
+        },
+      })
+  </script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/academic/index.html">Academic</a>
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Dev</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/me/index.html">Personal</a>
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">KVM GPU Passthrough Finding The Right Bios for Your Nvidia Pascal GPU</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2018-07-06T00:00:00+07:00" itemprop="datePublished">Jul 6, 2018
+      </time>
+      <span>
+        
+        <a href="/tags/#vfio"><span class="badge badge-secondary">vfio</span></a>
+        
+      </span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><em>Disclaimer: I’m new to the KVM myself. Spending hours, I realized that I should write something down. May in the future I stumbled upon the same problem I would have hope to solve it.</em></p>
+
+<p>Before the start, here is the brief:</p>
+
+<ul>
+  <li>You want to create a KVM virtual machine for Windows</li>
+  <li>You want to bypass (pass-through) the PCI-express port of your GPU to it</li>
+  <li>Your GPU is Nvidia Pascal (GTX 10xx)</li>
+  <li>You use UEFI mode with your virtual machine</li>
+  <li>You have problem with the GPU Bios</li>
+  <li>Most likely you get error code 43, or the Windows turned black, but the virtual machine still can boot</li>
+  <li>You seem to see that your <a href="https://pve.proxmox.com/wiki/Pci_passthrough#How_to_known_if_card_is_UEFI_.28ovmf.29_compatible">GPU is not UEFI compatible </a>?</li>
+  <li>But, from the <a href="https://www.techpowerup.com/vgabios/">techpowerup</a> Bios collection page (or from <a href="https://forum.hiveos.farm/discussion/772/guide-nvidia-gpu-vbios-flashing-with-hiveos">nvflash</a> software) states that your GPU should support UEFI.</li>
+  <li>You use Proxmox, this is not the deal breaker though most of the article doesn’t need it</li>
+</ul>
+
+<h4 id="your-gpu-is-still-uefi-compatible">Your GPU is still UEFI compatible!</h4>
+
+<p>Don’t believe the <a href="https://pve.proxmox.com/wiki/Pci_passthrough#How_to_known_if_card_is_UEFI_.28ovmf.29_compatible">check</a> just yet, check what your GPU model (and brand) in the <a href="https://www.techpowerup.com/vgabios/">techpowerup</a> tells. If it says compatible, it means compatible.</p>
+
+<p>There are ways for the manual check to go wrong. One of them, as I know, is that your GPU Bios is changed during the boot process, this only happens, seemingly, to the first GPU slot.</p>
+
+<p>Because your GPU’s Bios is not right, it’s been changed (why? I don’t fully understand it myself), passing this Bios to the virtual machine won’t work. You need a working Bios with UEFI compatible anyway.</p>
+
+<p>Most of the internet will say, “I will put my card in the second slot then!”. The idea is to avoid the motherboard (or whatever) to mingle with the GPU Bios. So that, we can at least “dump” the correct looking of the Bios, saved as a file. As when we swapped the card back to its first slot, even though the Bios will still be invalidated, but we can supply the virtual machine with the correct one that we have saved.</p>
+
+<p>Well that sounds right but impractical.</p>
+
+<h4 id="techpowerup-or-nvflash-bios-is-different-from-the-one-you-would-need-to-supply-to-the-virtual-machine">Techpowerup (or Nvflash) Bios is different from the one you would need to supply to the virtual machine</h4>
+
+<p>You cannot just use the download version and supply it to the virtual machine, that wouldn’t work.</p>
+
+<p>Fortunately, there is a certain someone figured this out for us. He figured out that though there are differences, but they are not much apart. It is possible to modify the downloaded Bios to get what we want! He’s made a python script that can convert the Bios from techpowerup for us.</p>
+
+<p><a href="https://github.com/Matoking/NVIDIA-vBIOS-VFIO-Patcher">Here is it: https://github.com/Matoking/NVIDIA-vBIOS-VFIO-Patcher</a></p>
+
+<p>It is a python script and can be used this way:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python nvidia_vbios_vfio_patcher.py -i &lt;ORIGINAL_ROM&gt; -o &lt;PATCHED_ROM&gt;
+</code></pre></div></div>
+
+<p>The patched bios can be supplied readily to the virtual machine, using the guide from Proxmox wiki<a href="https://pve.proxmox.com/wiki/Pci_passthrough#romfile">, How to supply the Bios to a virtual machine in Proxmox?</a></p>
+
+  </div><a class="u-url" href="/dev/2018/07/06/kvm-gpu-passthrough-finding-the-right-bios-for-your-nvidia-pascal-gpu.html" hidden></a>
+</article>
+
+
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+        <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer></body>
+
+</html>
