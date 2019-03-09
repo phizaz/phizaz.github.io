@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-03-09T23:26:16+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Approximately Optimal Approximate Reinforcement Learning (Kakade &amp;amp; Langford, 2002)</title><link href="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html" rel="alternate" type="text/html" title="Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)" /><published>2019-03-09T00:00:00+07:00</published><updated>2019-03-09T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/03/09/kakade-2002</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html">&lt;p&gt;In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-03-10T00:11:15+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Approximately Optimal Approximate Reinforcement Learning (Kakade &amp;amp; Langford, 2002)</title><link href="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html" rel="alternate" type="text/html" title="Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)" /><published>2019-03-09T00:00:00+07:00</published><updated>2019-03-09T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/03/09/kakade-2002</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html">&lt;p&gt;In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Is there a way to guarantee policy improvement?&lt;/strong&gt;&lt;/p&gt;
 
@@ -76,7 +76,7 @@
 
 &lt;p&gt;From &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_x}&lt;/script&gt;, the only problematic part is the second term (first derivative), we want &lt;script type=&quot;math/tex&quot;&gt;\nabla_\alpha&lt;/script&gt; not &lt;script type=&quot;math/tex&quot;&gt;\nabla_\pi&lt;/script&gt;.&lt;/p&gt;
 
-&lt;h4 id=&quot;we-would-begin-to-derive-the-nabla_alpha-etapi&quot;&gt;We would begin to derive the $\nabla_\alpha \eta(\pi)$&lt;/h4&gt;
+&lt;p&gt;We now begin to derive the &lt;script type=&quot;math/tex&quot;&gt;\nabla_\alpha \eta(\pi)&lt;/script&gt;.&lt;/p&gt;
 
 &lt;p&gt;The gradient of policy performance was first derived in Sutton’s 1999, policy gradient theorem. We would put it here without further ado:&lt;/p&gt;
 
@@ -164,7 +164,7 @@
 
 &lt;p&gt;We first rewrite it in a different form.&lt;/p&gt;
 
-&lt;h5 id=&quot;lemma-61&quot;&gt;Lemma 6.1&lt;/h5&gt;
+&lt;h4 id=&quot;lemma-61&quot;&gt;Lemma 6.1&lt;/h4&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\eta_\pi(\tilde{\pi}) - \eta_\pi(\pi) = \frac{1}{1-\gamma} \mathrm{E}_{a,s \sim \tilde{\pi}, d_{\tilde{\pi}}} \left[ A_\pi(s, a) \right]&lt;/script&gt;
 
@@ -202,7 +202,7 @@
 
 &lt;p&gt;Consider the policy &lt;script type=&quot;math/tex&quot;&gt;\pi_{new}​&lt;/script&gt;, we know from its definition that it is a compound policy. Another way to look at it is we have two policies: &lt;script type=&quot;math/tex&quot;&gt;\pi​&lt;/script&gt; an &lt;script type=&quot;math/tex&quot;&gt;\pi'​&lt;/script&gt;. With probability of &lt;script type=&quot;math/tex&quot;&gt;\alpha​&lt;/script&gt; we will select an action according to &lt;script type=&quot;math/tex&quot;&gt;\pi'​&lt;/script&gt;, and probability of &lt;script type=&quot;math/tex&quot;&gt;1-\alpha​&lt;/script&gt; we will select an action from &lt;script type=&quot;math/tex&quot;&gt;\pi​&lt;/script&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;At time &lt;script type=&quot;math/tex&quot;&gt;t​&lt;/script&gt;,&lt;/strong&gt; we define our two parts as:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;At time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;,&lt;/strong&gt; we define our two parts as:&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;Part one: we follow &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; from &lt;script type=&quot;math/tex&quot;&gt;t=0&lt;/script&gt; until now.&lt;/li&gt;
@@ -219,7 +219,7 @@
 (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
 \end{equation*}&lt;/script&gt;
 
-&lt;p&gt;If we has followed &lt;script type=&quot;math/tex&quot;&gt;\pi'&lt;/script&gt; at any point prior &lt;script type=&quot;math/tex&quot;&gt;t​&lt;/script&gt;.**&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;If we has followed &lt;script type=&quot;math/tex&quot;&gt;\pi'&lt;/script&gt; at any point prior &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;.&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;The probability is &lt;script type=&quot;math/tex&quot;&gt;P(\text{not follow } \pi) = \rho_t = 1-(1-\alpha)^t​&lt;/script&gt;.&lt;/p&gt;
 
@@ -239,7 +239,7 @@
 &amp;= \epsilon
 \end{align} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;This is obvious we just use the &lt;script type=&quot;math/tex&quot;&gt;\max&lt;/script&gt; here which literally cannot be exceeded.&lt;/p&gt;
+&lt;p&gt;This is obvious we just use the &lt;script type=&quot;math/tex&quot;&gt;\max&lt;/script&gt; here which literally cannot be exceeded. As you shall see later on, the smaller the &lt;script type=&quot;math/tex&quot;&gt;\epsilon&lt;/script&gt; the tighter our estimate would be.&lt;/p&gt;
 
 &lt;p&gt;The total expected advantage function at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; is then the sum of both:&lt;/p&gt;
 
@@ -281,7 +281,7 @@
 
 &lt;p&gt;This is just for a time frame &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;. After all, we still need to incorporate it into the whole trajectories which extends from &lt;script type=&quot;math/tex&quot;&gt;t=0&lt;/script&gt; to &lt;script type=&quot;math/tex&quot;&gt;t=\infty&lt;/script&gt;.&lt;/p&gt;
 
-&lt;h5 id=&quot;apply-to-all-time-steps&quot;&gt;Apply to all time steps&lt;/h5&gt;
+&lt;p&gt;Apply to all time steps&lt;/p&gt;
 
 &lt;p&gt;Substitute &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:two_paths2}&lt;/script&gt; into &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_delta}&lt;/script&gt;:&lt;/p&gt;
 
@@ -346,6 +346,8 @@
 
 &lt;p&gt;We call equation &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:two_parts5}&lt;/script&gt; &lt;strong&gt;theorem 4.1&lt;/strong&gt;.&lt;/p&gt;
 
+&lt;h4 id=&quot;finding-the-right-step&quot;&gt;Finding the right step&lt;/h4&gt;
+
 &lt;p&gt;Finally, we want to guarantee the policy improvement by selecting a proper &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;. We then need to solve for &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;:&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
@@ -354,10 +356,12 @@
 \eta(\pi_{new}) - \eta(\pi)
 &amp;\geq \frac{\alpha}{1-\gamma} \left[ \mathbb{A}_\pi(\pi') 
 - \frac{2\epsilon\gamma\alpha}{1-\gamma(1-\alpha)} \right] 
-\geq 0
+\gt 0
 \end{aligned}
 \label{eq:two_parts6}
-\end{equation} %]]&gt;&lt;/script&gt;</content><author><name>Konpat Preechakul</name></author><category term="rl" /><summary type="html">In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:</summary></entry><entry><title type="html">NFS file attribution caching causes reading inconsistency in multi-producer scenario</title><link href="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html" rel="alternate" type="text/html" title="NFS file attribution caching causes reading inconsistency in multi-producer scenario" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies</id><content type="html" xml:base="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html">&lt;p&gt;With two producers e.g. local and remote producers, the changes made locally might need time to be acknowledged by the remote.&lt;/p&gt;
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;This &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; would be guaranteed to improve the policy because we calculate it from the pessimistic estimate (its lower bound).&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="rl" /><summary type="html">In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:</summary></entry><entry><title type="html">NFS file attribution caching causes reading inconsistency in multi-producer scenario</title><link href="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html" rel="alternate" type="text/html" title="NFS file attribution caching causes reading inconsistency in multi-producer scenario" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies</id><content type="html" xml:base="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html">&lt;p&gt;With two producers e.g. local and remote producers, the changes made locally might need time to be acknowledged by the remote.&lt;/p&gt;
 
 &lt;p&gt;Even without file caching this could still be a problem, I experience this first-hand while using Python. I think Python might use some kind of file attribute to determine file updates. NFS has this which is called “attribute caching”.&lt;/p&gt;
 

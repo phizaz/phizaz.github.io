@@ -16,7 +16,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2019-03-09T00:00:00+07:00" />
 <script type="application/ld+json">
-{"datePublished":"2019-03-09T00:00:00+07:00","description":"In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:","author":{"@type":"Person","name":"Konpat Preechakul"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/academic/2019/03/09/kakade-2002.html"},"@type":"BlogPosting","url":"https://blog.konpat.me/academic/2019/03/09/kakade-2002.html","headline":"Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)","dateModified":"2019-03-09T00:00:00+07:00","@context":"http://schema.org"}</script>
+{"datePublished":"2019-03-09T00:00:00+07:00","description":"In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/academic/2019/03/09/kakade-2002.html"},"@type":"BlogPosting","author":{"@type":"Person","name":"Konpat Preechakul"},"url":"https://blog.konpat.me/academic/2019/03/09/kakade-2002.html","headline":"Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)","dateModified":"2019-03-09T00:00:00+07:00","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script type="text/x-mathjax-config">
       MathJax.Hub.Config({
@@ -221,7 +221,7 @@
 
 <p>From <script type="math/tex">\eqref{eq:eta_x}</script>, the only problematic part is the second term (first derivative), we want <script type="math/tex">\nabla_\alpha</script> not <script type="math/tex">\nabla_\pi</script>.</p>
 
-<h4 id="we-would-begin-to-derive-the-nabla_alpha-etapi">We would begin to derive the $\nabla_\alpha \eta(\pi)$</h4>
+<p>We now begin to derive the <script type="math/tex">\nabla_\alpha \eta(\pi)</script>.</p>
 
 <p>The gradient of policy performance was first derived in Sutton’s 1999, policy gradient theorem. We would put it here without further ado:</p>
 
@@ -309,7 +309,7 @@
 
 <p>We first rewrite it in a different form.</p>
 
-<h5 id="lemma-61">Lemma 6.1</h5>
+<h4 id="lemma-61">Lemma 6.1</h4>
 
 <script type="math/tex; mode=display">\eta_\pi(\tilde{\pi}) - \eta_\pi(\pi) = \frac{1}{1-\gamma} \mathrm{E}_{a,s \sim \tilde{\pi}, d_{\tilde{\pi}}} \left[ A_\pi(s, a) \right]</script>
 
@@ -347,7 +347,7 @@
 
 <p>Consider the policy <script type="math/tex">\pi_{new}​</script>, we know from its definition that it is a compound policy. Another way to look at it is we have two policies: <script type="math/tex">\pi​</script> an <script type="math/tex">\pi'​</script>. With probability of <script type="math/tex">\alpha​</script> we will select an action according to <script type="math/tex">\pi'​</script>, and probability of <script type="math/tex">1-\alpha​</script> we will select an action from <script type="math/tex">\pi​</script>.</p>
 
-<p><strong>At time <script type="math/tex">t​</script>,</strong> we define our two parts as:</p>
+<p><strong>At time <script type="math/tex">t</script>,</strong> we define our two parts as:</p>
 
 <ol>
   <li>Part one: we follow <script type="math/tex">\pi</script> from <script type="math/tex">t=0</script> until now.</li>
@@ -364,7 +364,7 @@
 (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
 \end{equation*}</script>
 
-<p>If we has followed <script type="math/tex">\pi'</script> at any point prior <script type="math/tex">t​</script>.**</p>
+<p><strong>If we has followed <script type="math/tex">\pi'</script> at any point prior <script type="math/tex">t</script>.</strong></p>
 
 <p>The probability is <script type="math/tex">P(\text{not follow } \pi) = \rho_t = 1-(1-\alpha)^t​</script>.</p>
 
@@ -384,7 +384,7 @@
 &= \epsilon
 \end{align} %]]></script>
 
-<p>This is obvious we just use the <script type="math/tex">\max</script> here which literally cannot be exceeded.</p>
+<p>This is obvious we just use the <script type="math/tex">\max</script> here which literally cannot be exceeded. As you shall see later on, the smaller the <script type="math/tex">\epsilon</script> the tighter our estimate would be.</p>
 
 <p>The total expected advantage function at time <script type="math/tex">t</script> is then the sum of both:</p>
 
@@ -426,7 +426,7 @@
 
 <p>This is just for a time frame <script type="math/tex">t</script>. After all, we still need to incorporate it into the whole trajectories which extends from <script type="math/tex">t=0</script> to <script type="math/tex">t=\infty</script>.</p>
 
-<h5 id="apply-to-all-time-steps">Apply to all time steps</h5>
+<p>Apply to all time steps</p>
 
 <p>Substitute <script type="math/tex">\eqref{eq:two_paths2}</script> into <script type="math/tex">\eqref{eq:eta_delta}</script>:</p>
 
@@ -491,6 +491,8 @@
 
 <p>We call equation <script type="math/tex">\eqref{eq:two_parts5}</script> <strong>theorem 4.1</strong>.</p>
 
+<h4 id="finding-the-right-step">Finding the right step</h4>
+
 <p>Finally, we want to guarantee the policy improvement by selecting a proper <script type="math/tex">\alpha</script>. We then need to solve for <script type="math/tex">\alpha</script>:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
@@ -499,10 +501,12 @@
 \eta(\pi_{new}) - \eta(\pi)
 &\geq \frac{\alpha}{1-\gamma} \left[ \mathbb{A}_\pi(\pi') 
 - \frac{2\epsilon\gamma\alpha}{1-\gamma(1-\alpha)} \right] 
-\geq 0
+\gt 0
 \end{aligned}
 \label{eq:two_parts6}
 \end{equation} %]]></script>
+
+<p>This <script type="math/tex">\alpha</script> would be guaranteed to improve the policy because we calculate it from the pessimistic estimate (its lower bound).</p>
 
   </div><a class="u-url" href="/academic/2019/03/09/kakade-2002.html" hidden></a>
 </article>
