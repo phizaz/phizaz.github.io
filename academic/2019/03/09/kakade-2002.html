@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002) | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:" />
+<meta property="og:description" content="In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:" />
+<link rel="canonical" href="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html" />
+<meta property="og:url" content="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-09T00:00:00+07:00" />
+<script type="application/ld+json">
+{"datePublished":"2019-03-09T00:00:00+07:00","description":"In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:","author":{"@type":"Person","name":"Konpat Preechakul"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/academic/2019/03/09/kakade-2002.html"},"@type":"BlogPosting","url":"https://blog.konpat.me/academic/2019/03/09/kakade-2002.html","headline":"Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)","dateModified":"2019-03-09T00:00:00+07:00","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: {
+          equationNumbers: {
+            autoNumber: "all"
+          },
+          extensions: ["cancel.js"]
+        },
+      })
+  </script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/academic/index.html">Academic</a>
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Dev</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/me/index.html">Personal</a>
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-03-09T00:00:00+07:00" itemprop="datePublished">Mar 9, 2019
+      </time>
+      <span>
+        
+        <a href="/tags/#rl"><span class="badge badge-secondary">rl</span></a>
+        
+      </span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:</p>
+
+<p><strong>Is there a way to guarantee policy improvement?</strong></p>
+
+<p>And the answer is <strong>yes</strong>.</p>
+
+<p>In order to do show we need 3 ingredients:</p>
+
+<ol>
+  <li>Policy performance measurement</li>
+  <li>Policy improvement algorithm</li>
+  <li>Improved policy performance estimation</li>
+</ol>
+
+<p>The overall idea is that if we can give the <em>lower bound</em> to the improved policy performance and we can show that it is &gt; 0, we thus guarantee policy improvement.</p>
+
+<p>So the path forward is to show you approaches to estimate the improved policy performance.</p>
+
+<h3 id="basics">Basics</h3>
+
+<p><script type="math/tex">V_\pi(s)</script> is a state-value function.</p>
+
+<p><script type="math/tex">Q_\pi(s, a)</script> is a action-value function.</p>
+
+<p><script type="math/tex">A_\pi(s, a) = Q_\pi(s, a) - V_\pi(s)</script> is an advantage function.</p>
+
+<h2 id="policy-performance">Policy performance</h2>
+
+<p>We first define the policy performance as the average performance over state states.</p>
+
+<script type="math/tex; mode=display">\eta_D(\pi) = \mathrm{E}_{s \sim D} \left[ V_\pi(s) \right]</script>
+
+<p>where the start state distribution is <script type="math/tex">D</script>. In the paper, this <script type="math/tex">D</script> could be substituted with other distribution at will under the notion of <strong>restart distribution</strong> but we don’t care about it that much here. Let’s say that it is under <em>some</em> start state distribution.</p>
+
+<h2 id="conservative-greedy-policy-improvement">Conservative greedy policy improvement</h2>
+
+<p>The usual policy improvement is to alter the current policy to be <script type="math/tex">\mathrm{argmax}_a A(s, a)</script> for all <script type="math/tex">s</script>. Here we look for a more general case allowing us to transform the policy in a more granular way using <script type="math/tex">\alpha</script> as a parameter.</p>
+
+<script type="math/tex; mode=display">\pi_{new} = (1-\alpha)\pi + \alpha\pi'</script>
+
+<p>where <script type="math/tex">\pi'</script> is a greedy improvement of <script type="math/tex">\pi</script>.</p>
+
+<p>So our goal is to guarantee the improvement of policy under the conservative greedy improvement that is:</p>
+
+<script type="math/tex; mode=display">\eta(\pi_{new}) - \eta(\pi) > 0
+\label{eq:eta}</script>
+
+<p>That is at any moment we need to find <script type="math/tex">\alpha</script> that satisfies the above inequation. In other words, how small should <script type="math/tex">\alpha</script> be that it still improves the policy.</p>
+
+<h2 id="improved-policy-performance-estimation">Improved policy performance estimation</h2>
+
+<p>As you see from <script type="math/tex">\eqref{eq:eta}</script>, we need to get the improved policy performance <script type="math/tex">\eta(\pi_{new})</script>, but we want to get it fast because we might need to fine tune it for the right <script type="math/tex">\alpha</script>. This not viable if we just rerun the policy evaluation, it is just too slow. We need to estimate its lower bound.</p>
+
+<p>In the paper, the author shows two ways for estimation:</p>
+
+<ol>
+  <li>Using Taylor’s series to the first order. Unfortunately this approach does get us any closer to the lower bound of the estimation. But it is a useful starting point anyway.</li>
+  <li>Using the author’s proposed approach. This gives a lower bound.</li>
+</ol>
+
+<h3 id="using-taylors-series-to-approximate">Using Taylor’s series to approximate</h3>
+
+<p>If we write <script type="math/tex">\eta(\pi)</script> using Taylor’s expansion to the first degree we will get:</p>
+
+<script type="math/tex; mode=display">\eta(\pi+x) = \eta(\pi) + x \nabla_\pi \eta(\pi) + \mathrm{O}(x^2)
+\label{eq:eta_x}</script>
+
+<p>Here we have an approximation error in the order of <script type="math/tex">\mathrm{O}(x^2)</script> albeit not knowing its constant factor.</p>
+
+<p>Since our policy improvement is not exactly in the form of aforementioned <script type="math/tex">x​</script>, we rather want it to be in the form of <script type="math/tex">\alpha​</script> (recall the conservative policy improvement).</p>
+
+<p>So we want to get the estimate of something like:</p>
+
+<script type="math/tex; mode=display">\eta_\pi(\alpha) = \eta((1-\alpha)\pi + \alpha \pi') = \eta(\pi) + \alpha \nabla_\alpha \eta(\pi) + \mathrm{O}(\alpha^2)
+\label{eq:eta_alpha}</script>
+
+<p>From <script type="math/tex">\eqref{eq:eta_x}</script>, the only problematic part is the second term (first derivative), we want <script type="math/tex">\nabla_\alpha</script> not <script type="math/tex">\nabla_\pi</script>.</p>
+
+<h4 id="we-would-begin-to-derive-the-nabla_alpha-etapi">We would begin to derive the $\nabla_\alpha \eta(\pi)$</h4>
+
+<p>The gradient of policy performance was first derived in Sutton’s 1999, policy gradient theorem. We would put it here without further ado:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\nabla_\pi \eta(\pi) &= \sum_{s, a} d_\pi(s) Q_\pi(s, a) \nabla \pi(a|s) \\
+&= \sum_{s, a} d_\pi(s) A_\pi(s, a) \nabla \pi(a|s) 
+\end{aligned}
+\label{eq:policy_gradient}
+\end{equation} %]]></script>
+
+<p>where <script type="math/tex">d_\pi(s)</script> is a discounted state visitation probability. For completeness:</p>
+
+<script type="math/tex; mode=display">d_\pi(s) = \sum_{t=0}^\infty \gamma^t \mathrm{P}(s_t=s, \pi)</script>
+
+<p>where <script type="math/tex">\mathrm{P}(s_t=s, \pi)</script> is the probability of visiting state <script type="math/tex">s</script> after taking <script type="math/tex">t</script> steps under a policy <script type="math/tex">\pi</script>. Please note that <script type="math/tex">d_\pi</script> is not a probability distribution (it does not sum to <script type="math/tex">1</script>), but we can make it so by multiplying <script type="math/tex">1-\gamma</script> to it (since <script type="math/tex">\sum_{i=0}^\infty \gamma^i = \frac{1}{1-\gamma}</script>).</p>
+
+<p>From <script type="math/tex">\eqref{eq:policy_gradient}</script>, we substitute <script type="math/tex">\nabla_\pi</script> with <script type="math/tex">\nabla_\alpha</script>, we also write <script type="math/tex">\pi</script> as a function of <script type="math/tex">\alpha</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+\nabla_\alpha \eta(\pi) &= \sum_{s, a} d_\pi(s) A_\pi(s, a) \nabla_\alpha \left[ (1-\alpha) \pi + \alpha \pi' \right]
+\label{eq:eta_alpha1}
+\end{align} %]]></script>
+
+<p>Consider <script type="math/tex">\nabla_\alpha \left[ (1-\alpha) \pi + \alpha \pi' \right]</script>:</p>
+
+<script type="math/tex; mode=display">\nabla_\alpha \left[ (1-\alpha) \pi + \alpha \pi' \right] = -\pi + \pi'
+\label{eq:pi_grad}</script>
+
+<p>We substitute <script type="math/tex">\eqref{eq:pi_grad}</script> into <script type="math/tex">\eqref{eq:eta_alpha1}</script> followed by some algebra:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\nabla_\alpha \eta(\pi) 
+&= \sum_{s, a} d_\pi(s) A_\pi(s, a) (-\pi + \pi') \\
+&= - \sum_{s, a} d_\pi(s) A_\pi(s, a) \pi(a|s) + \sum_{s,a} d_\pi(s) A_\pi(s, a) \pi'(a|s) \\
+&= - \sum_{s} d_\pi(s) \cancel{\sum_a A_\pi(s, a) \pi(a|s)} + \sum_{s,a} d_\pi(s) A_\pi(s, a) \pi'(a|s) \\
+&= \sum_{s,a} d_\pi(s) A_\pi(s, a) \pi'(a|s)
+\end{aligned}
+\label{eq:eta_grad}
+\end{equation} %]]></script>
+
+<p>This gradient can be computed without the need to further interact with the environment. We just need to change <script type="math/tex">\pi</script> to <script type="math/tex">\pi'</script> and then rerun on the previous experience.</p>
+
+<h4 id="policy-advantage">Policy advantage</h4>
+
+<p>The quantity in <script type="math/tex">\eqref{eq:eta_grad}</script> is closely related to <strong>policy advantage</strong> which defines:</p>
+
+<script type="math/tex; mode=display">\mathbb{A}_\pi(\tilde{\pi}) = \mathrm{E}_{s \sim d_\tilde{\pi}} \mathrm{E}_{a \sim \pi'} A_\pi(s, a)</script>
+
+<p>Since it obeys the expectation, it uses a normalized distribution. Hence:</p>
+
+<script type="math/tex; mode=display">\mathbb{A}_\pi(\tilde{\pi}) = (1-\gamma) \nabla_\alpha \eta(\pi)</script>
+
+<p>Intuitively, the policy advantage tells us how much <script type="math/tex">\tilde{\pi}</script> tries to take large advantages (be greedy). If <script type="math/tex">\tilde{\pi} = \pi</script>, this quantity is <script type="math/tex">0</script>. It is maximized when <script type="math/tex">\pi'</script> is a greedy policy wrt. <script type="math/tex">\pi</script>.</p>
+
+<h4 id="taylors-expansion-of-policy-performance">Taylor’s expansion of policy performance</h4>
+
+<p>We now get:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) 
+&= \eta(\pi) + \alpha \nabla_\alpha \eta(\pi) + \mathrm{O}(\alpha^2) \\
+&= \eta(\pi) + \frac{\alpha}{1-\gamma} \mathbb{A}_\pi(\pi') + \mathrm{O}(\alpha^2)
+\end{aligned}
+\end{equation} %]]></script>
+
+<p>Now, we can draw some conclusion from the above equation:</p>
+
+<ol>
+  <li>With policy improvement the second term (first derivative) is positive (if the policy is not optimal).</li>
+  <li>If <script type="math/tex">\alpha</script> is small enough, the second term will dominate the third term (second derivative) resulting in policy improvement.</li>
+</ol>
+
+<p>The only problem is that we don’t know what <script type="math/tex">\alpha</script> is to guarantee the policy improvement.  We now turn to a different approach.</p>
+
+<h3 id="using-the-authors-approach">Using the author’s approach</h3>
+
+<p>In order to guarantee policy improvement, we need to show that <script type="math/tex">\eta_\pi(\pi_{new}) - \eta_\pi(\pi) > 0</script>.</p>
+
+<p>We first rewrite it in a different form.</p>
+
+<h5 id="lemma-61">Lemma 6.1</h5>
+
+<script type="math/tex; mode=display">\eta_\pi(\tilde{\pi}) - \eta_\pi(\pi) = \frac{1}{1-\gamma} \mathrm{E}_{a,s \sim \tilde{\pi}, d_{\tilde{\pi}}} \left[ A_\pi(s, a) \right]</script>
+
+<p><strong>Proof:</strong></p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation*}
+\begin{aligned}
+& \frac{1}{1-\gamma} \mathrm{E}_{a,s \sim \tilde{\pi}, d_{\tilde{\pi}}} \left[ A_\pi(s, a) \right] \\
+&= \mathrm{E}_{s_0, a_0, s_1, a_1, \dots \sim \tilde{\pi}} \left[ A_\pi(s_0, a_0) + \gamma A_\pi(s_1, a_1) + \dots  \right] \\
+&= \mathrm{E}_{s_0, a_0, s_1, a_1, \dots \sim \tilde{\pi}} \left[ r_1 + \cancel{\gamma V_1} - V_0 + \gamma r_2 + \cancel{\gamma^2 V_2} - \cancel{\gamma V_1} + \dots \right] \\
+&= \mathrm{E}_{s_0, a_0, s_1, a_1, \dots \sim \tilde{\pi}} \left[ \sum_{t=0}^\infty \gamma^t r_{t+1} - V_\pi(s_0)  \right] \\
+&= \mathrm{E}_{s_0 \sim \tilde{\pi}} \left[ V_{\tilde{\pi}} - V_\pi(s_0)  \right] \\
+&= \eta_\pi(\tilde{\pi}) - \eta_\pi(\pi)
+\end{aligned}
+\end{equation*} %]]></script>
+
+<p>With Lemma 6.1 we now have:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta_\pi(\pi_{new}) - \eta_\pi(\pi) 
+&= \frac{1}{1-\gamma} \mathrm{E}_{a,s \sim \pi_{new}, d_{\pi_{new}}} \left[ A_\pi(s, a) \right] \\
+&= \sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t, \pi_{new})} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] 
+\end{aligned}
+\label{eq:eta_delta}
+\end{equation} %]]></script>
+
+<p>where <script type="math/tex">P(s_t, \pi_{new})</script> is the probability of visiting state <script type="math/tex">s_t</script> at time <script type="math/tex">t</script> under policy <script type="math/tex">\pi_{new}</script>.</p>
+
+<p>Evidently, we do have <script type="math/tex">P(s_t, \pi)</script> but we do not have <script type="math/tex">P(s_t, \pi_{new})</script>. A way forward is to estimate the equation <script type="math/tex">\eqref{eq:eta_delta}</script> with all we have. Since the deviation from our estimate comes from the mismatch between <script type="math/tex">P(s_t, \pi_{new})</script> and <script type="math/tex">P(s_t, \pi)</script>, intuitively, a small <script type="math/tex">\alpha</script> should result in a small mismatch and vice versa. This implies that <script type="math/tex">P(s_t, \pi_{new})</script> must share some roots with <script type="math/tex">P(s_t, \pi)</script> which part we can work with. This allows us to get an informed estimate, and put the upper bound to the part we cannot work with.</p>
+
+<h4 id="the-two-parts">The two parts</h4>
+
+<p>Consider the policy <script type="math/tex">\pi_{new}​</script>, we know from its definition that it is a compound policy. Another way to look at it is we have two policies: <script type="math/tex">\pi​</script> an <script type="math/tex">\pi'​</script>. With probability of <script type="math/tex">\alpha​</script> we will select an action according to <script type="math/tex">\pi'​</script>, and probability of <script type="math/tex">1-\alpha​</script> we will select an action from <script type="math/tex">\pi​</script>.</p>
+
+<p><strong>At time <script type="math/tex">t​</script>,</strong> we define our two parts as:</p>
+
+<ol>
+  <li>Part one: we follow <script type="math/tex">\pi</script> from <script type="math/tex">t=0</script> until now.</li>
+  <li>Part two: at some point we selected an action from <script type="math/tex">\pi'</script>.</li>
+</ol>
+
+<p><strong>If we has been following <script type="math/tex">\pi</script>.</strong></p>
+
+<p>The probability is <script type="math/tex">P(\text{follow } \pi) = (1-\alpha)^t = 1 - \rho_t​</script>.</p>
+
+<p>The expected advantage function for this part is:</p>
+
+<script type="math/tex; mode=display">\begin{equation*}
+(1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+\end{equation*}</script>
+
+<p>If we has followed <script type="math/tex">\pi'</script> at any point prior <script type="math/tex">t​</script>.**</p>
+
+<p>The probability is <script type="math/tex">P(\text{not follow } \pi) = \rho_t = 1-(1-\alpha)^t​</script>.</p>
+
+<p>The expected advantage function for this part is:</p>
+
+<script type="math/tex; mode=display">\begin{equation*}
+\rho_t \mathrm{E}_{s \sim P(s_t|\text{not follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+\end{equation*}</script>
+
+<p>We can define the <em>upper</em> bound of this value to be:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+\mathrm{E}_{s \sim P(s_t|\text{not follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] 
+&\leq \max_s \left\vert \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] \right\vert \\
+&\leq \max_s \left\vert \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \right\vert \\
+&= \epsilon
+\end{align} %]]></script>
+
+<p>This is obvious we just use the <script type="math/tex">\max</script> here which literally cannot be exceeded.</p>
+
+<p>The total expected advantage function at time <script type="math/tex">t</script> is then the sum of both:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\mathrm{E}_{s \sim P(s_t, \pi_{new})} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+&= (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] \\ 
+& \quad + \rho_t \mathrm{E}_{s \sim P(s_t|\text{not follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] \\
+& \geq \alpha (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] \\ 
+& \quad - \alpha \rho_t \epsilon
+\end{aligned}
+\label{eq:two_paths}
+\end{equation} %]]></script>
+
+<p>Furthermore, we can show that <script type="math/tex">\mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] = \alpha \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right]</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation} 
+\begin{aligned}
+\mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+&= \sum_a ((1-\alpha) \pi(a|s) + \alpha \pi(a|s)) A_\pi(s, a) \\
+&= (1-\alpha) \cancel{\sum_a \pi(a|s) A_\pi(s, a)} + \alpha \sum_a \pi'(a|s) A_\pi(s, a) \\
+&= \alpha \sum_a \pi'(a|s) A_\pi(s, a)
+\end{aligned}
+\label{eq:pi'_a}
+\end{equation} %]]></script>
+
+<p>Substitute <script type="math/tex">\eqref{eq:pi'_a}</script> into <script type="math/tex">\eqref{eq:two_paths}</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\mathrm{E}_{s \sim P(s_t, \pi_{new})} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+&\geq \alpha (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+& \quad - \alpha \rho_t \epsilon
+\end{aligned}\label{eq:two_paths2}
+\end{equation} %]]></script>
+
+<p>This is just for a time frame <script type="math/tex">t</script>. After all, we still need to incorporate it into the whole trajectories which extends from <script type="math/tex">t=0</script> to <script type="math/tex">t=\infty</script>.</p>
+
+<h5 id="apply-to-all-time-steps">Apply to all time steps</h5>
+
+<p>Substitute <script type="math/tex">\eqref{eq:two_paths2}</script> into <script type="math/tex">\eqref{eq:eta_delta}</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) - \eta(\pi)
+&\geq \alpha \sum_{t=0}^\infty \gamma^t (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+& \quad - \alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t 
+\end{aligned}
+\label{eq:two_parts3}
+\end{equation} %]]></script>
+
+<p>Looking more carefully at the first term, <script type="math/tex">\rho_t</script> depends on <script type="math/tex">\alpha</script> which is something we want to find (remember we want to find the policy improving <script type="math/tex">\alpha</script>). With this form, solving to find <script type="math/tex">\alpha</script> will be very hard because it is not in a closed form. We want the $\sum$ term to be a constant independent of <script type="math/tex">\alpha</script>. In this way, solving to find <script type="math/tex">\alpha</script> becomes trivial.</p>
+
+<p>To realize this, we further substitute <script type="math/tex">\epsilon</script> into <script type="math/tex">\eqref{eq:two_parts3}</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) - \eta(\pi)
+&\geq \alpha \sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+& \quad - \alpha \sum_{t=0}^\infty \gamma^t \rho_t \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\
+& \quad - \alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t \\
+&\geq \alpha \sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+& \quad - \alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t \\
+& \quad - \alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t \\
+&= \alpha \sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+& \quad - 2\alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t \\
+\end{aligned}
+\label{eq:two_parts4}
+\end{equation} %]]></script>
+
+<p>Consider <script type="math/tex">\sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t \vert \text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right]</script>, this is in fact the unnormalized policy advantage. It equals to <script type="math/tex">\frac{1}{1-\gamma} \mathbb{A}_\pi(\pi')</script>.</p>
+
+<p>Now consider the <script type="math/tex">\sum_{t=0}^\infty \gamma^t \rho_t</script>, we can substitute its real values and get:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\sum_{t=0}^\infty \gamma^t \rho_t 
+&= \sum_{t=0}^\infty \gamma^t (1-(1-\alpha)^t) \\
+&= \sum_{t=0}^\infty \gamma^t - \sum_{t=0}^\infty \gamma^t (1-\alpha)^t \\
+&= \frac{1}{1-\gamma} - \frac{1}{1-\gamma(1-\alpha)} \\
+&= \frac{\gamma\alpha}{(1-\gamma)(1-\gamma(1-\alpha))}
+\end{aligned}
+\end{equation} %]]></script>
+
+<p>Substitute them into <script type="math/tex">\eqref{eq:two_parts4}</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) - \eta(\pi)
+&\geq \frac{\alpha}{1-\gamma} \mathbb{A}_\pi(\pi') \\ 
+& \quad - 2\alpha \epsilon \left[ \frac{\gamma\alpha}{(1-\gamma)(1-\gamma(1-\alpha))} \right] \\
+&= \frac{\alpha}{1-\gamma} \left[ \mathbb{A}_\pi(\pi') 
+- \frac{2\epsilon\gamma\alpha}{1-\gamma(1-\alpha)} \right]
+\end{aligned}
+\label{eq:two_parts5}
+\end{equation} %]]></script>
+
+<p>We call equation <script type="math/tex">\eqref{eq:two_parts5}</script> <strong>theorem 4.1</strong>.</p>
+
+<p>Finally, we want to guarantee the policy improvement by selecting a proper <script type="math/tex">\alpha</script>. We then need to solve for <script type="math/tex">\alpha</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) - \eta(\pi)
+&\geq \frac{\alpha}{1-\gamma} \left[ \mathbb{A}_\pi(\pi') 
+- \frac{2\epsilon\gamma\alpha}{1-\gamma(1-\alpha)} \right] 
+\geq 0
+\end{aligned}
+\label{eq:two_parts6}
+\end{equation} %]]></script>
+
+  </div><a class="u-url" href="/academic/2019/03/09/kakade-2002.html" hidden></a>
+</article>
+
+
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+        <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer></body>
+
+</html>

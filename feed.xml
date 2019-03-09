@@ -1,4 +1,363 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-02-21T23:32:29+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">NFS file attribution caching causes reading inconsistency in multi-producer scenario</title><link href="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html" rel="alternate" type="text/html" title="NFS file attribution caching causes reading inconsistency in multi-producer scenario" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies</id><content type="html" xml:base="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html">&lt;p&gt;With two producers e.g. local and remote producers, the changes made locally might need time to be acknowledged by the remote.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-03-09T23:26:16+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Approximately Optimal Approximate Reinforcement Learning (Kakade &amp;amp; Langford, 2002)</title><link href="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html" rel="alternate" type="text/html" title="Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)" /><published>2019-03-09T00:00:00+07:00</published><updated>2019-03-09T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/03/09/kakade-2002</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html">&lt;p&gt;In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Is there a way to guarantee policy improvement?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;And the answer is &lt;strong&gt;yes&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;In order to do show we need 3 ingredients:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Policy performance measurement&lt;/li&gt;
+  &lt;li&gt;Policy improvement algorithm&lt;/li&gt;
+  &lt;li&gt;Improved policy performance estimation&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The overall idea is that if we can give the &lt;em&gt;lower bound&lt;/em&gt; to the improved policy performance and we can show that it is &amp;gt; 0, we thus guarantee policy improvement.&lt;/p&gt;
+
+&lt;p&gt;So the path forward is to show you approaches to estimate the improved policy performance.&lt;/p&gt;
+
+&lt;h3 id=&quot;basics&quot;&gt;Basics&lt;/h3&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;V_\pi(s)&lt;/script&gt; is a state-value function.&lt;/p&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;Q_\pi(s, a)&lt;/script&gt; is a action-value function.&lt;/p&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;A_\pi(s, a) = Q_\pi(s, a) - V_\pi(s)&lt;/script&gt; is an advantage function.&lt;/p&gt;
+
+&lt;h2 id=&quot;policy-performance&quot;&gt;Policy performance&lt;/h2&gt;
+
+&lt;p&gt;We first define the policy performance as the average performance over state states.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\eta_D(\pi) = \mathrm{E}_{s \sim D} \left[ V_\pi(s) \right]&lt;/script&gt;
+
+&lt;p&gt;where the start state distribution is &lt;script type=&quot;math/tex&quot;&gt;D&lt;/script&gt;. In the paper, this &lt;script type=&quot;math/tex&quot;&gt;D&lt;/script&gt; could be substituted with other distribution at will under the notion of &lt;strong&gt;restart distribution&lt;/strong&gt; but we don’t care about it that much here. Let’s say that it is under &lt;em&gt;some&lt;/em&gt; start state distribution.&lt;/p&gt;
+
+&lt;h2 id=&quot;conservative-greedy-policy-improvement&quot;&gt;Conservative greedy policy improvement&lt;/h2&gt;
+
+&lt;p&gt;The usual policy improvement is to alter the current policy to be &lt;script type=&quot;math/tex&quot;&gt;\mathrm{argmax}_a A(s, a)&lt;/script&gt; for all &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt;. Here we look for a more general case allowing us to transform the policy in a more granular way using &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; as a parameter.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\pi_{new} = (1-\alpha)\pi + \alpha\pi'&lt;/script&gt;
+
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;\pi'&lt;/script&gt; is a greedy improvement of &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;So our goal is to guarantee the improvement of policy under the conservative greedy improvement that is:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\eta(\pi_{new}) - \eta(\pi) &gt; 0
+\label{eq:eta}&lt;/script&gt;
+
+&lt;p&gt;That is at any moment we need to find &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; that satisfies the above inequation. In other words, how small should &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; be that it still improves the policy.&lt;/p&gt;
+
+&lt;h2 id=&quot;improved-policy-performance-estimation&quot;&gt;Improved policy performance estimation&lt;/h2&gt;
+
+&lt;p&gt;As you see from &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta}&lt;/script&gt;, we need to get the improved policy performance &lt;script type=&quot;math/tex&quot;&gt;\eta(\pi_{new})&lt;/script&gt;, but we want to get it fast because we might need to fine tune it for the right &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;. This not viable if we just rerun the policy evaluation, it is just too slow. We need to estimate its lower bound.&lt;/p&gt;
+
+&lt;p&gt;In the paper, the author shows two ways for estimation:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Using Taylor’s series to the first order. Unfortunately this approach does get us any closer to the lower bound of the estimation. But it is a useful starting point anyway.&lt;/li&gt;
+  &lt;li&gt;Using the author’s proposed approach. This gives a lower bound.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;using-taylors-series-to-approximate&quot;&gt;Using Taylor’s series to approximate&lt;/h3&gt;
+
+&lt;p&gt;If we write &lt;script type=&quot;math/tex&quot;&gt;\eta(\pi)&lt;/script&gt; using Taylor’s expansion to the first degree we will get:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\eta(\pi+x) = \eta(\pi) + x \nabla_\pi \eta(\pi) + \mathrm{O}(x^2)
+\label{eq:eta_x}&lt;/script&gt;
+
+&lt;p&gt;Here we have an approximation error in the order of &lt;script type=&quot;math/tex&quot;&gt;\mathrm{O}(x^2)&lt;/script&gt; albeit not knowing its constant factor.&lt;/p&gt;
+
+&lt;p&gt;Since our policy improvement is not exactly in the form of aforementioned &lt;script type=&quot;math/tex&quot;&gt;x​&lt;/script&gt;, we rather want it to be in the form of &lt;script type=&quot;math/tex&quot;&gt;\alpha​&lt;/script&gt; (recall the conservative policy improvement).&lt;/p&gt;
+
+&lt;p&gt;So we want to get the estimate of something like:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\eta_\pi(\alpha) = \eta((1-\alpha)\pi + \alpha \pi') = \eta(\pi) + \alpha \nabla_\alpha \eta(\pi) + \mathrm{O}(\alpha^2)
+\label{eq:eta_alpha}&lt;/script&gt;
+
+&lt;p&gt;From &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_x}&lt;/script&gt;, the only problematic part is the second term (first derivative), we want &lt;script type=&quot;math/tex&quot;&gt;\nabla_\alpha&lt;/script&gt; not &lt;script type=&quot;math/tex&quot;&gt;\nabla_\pi&lt;/script&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;we-would-begin-to-derive-the-nabla_alpha-etapi&quot;&gt;We would begin to derive the $\nabla_\alpha \eta(\pi)$&lt;/h4&gt;
+
+&lt;p&gt;The gradient of policy performance was first derived in Sutton’s 1999, policy gradient theorem. We would put it here without further ado:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\nabla_\pi \eta(\pi) &amp;= \sum_{s, a} d_\pi(s) Q_\pi(s, a) \nabla \pi(a|s) \\
+&amp;= \sum_{s, a} d_\pi(s) A_\pi(s, a) \nabla \pi(a|s) 
+\end{aligned}
+\label{eq:policy_gradient}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;d_\pi(s)&lt;/script&gt; is a discounted state visitation probability. For completeness:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;d_\pi(s) = \sum_{t=0}^\infty \gamma^t \mathrm{P}(s_t=s, \pi)&lt;/script&gt;
+
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;\mathrm{P}(s_t=s, \pi)&lt;/script&gt; is the probability of visiting state &lt;script type=&quot;math/tex&quot;&gt;s&lt;/script&gt; after taking &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; steps under a policy &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt;. Please note that &lt;script type=&quot;math/tex&quot;&gt;d_\pi&lt;/script&gt; is not a probability distribution (it does not sum to &lt;script type=&quot;math/tex&quot;&gt;1&lt;/script&gt;), but we can make it so by multiplying &lt;script type=&quot;math/tex&quot;&gt;1-\gamma&lt;/script&gt; to it (since &lt;script type=&quot;math/tex&quot;&gt;\sum_{i=0}^\infty \gamma^i = \frac{1}{1-\gamma}&lt;/script&gt;).&lt;/p&gt;
+
+&lt;p&gt;From &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:policy_gradient}&lt;/script&gt;, we substitute &lt;script type=&quot;math/tex&quot;&gt;\nabla_\pi&lt;/script&gt; with &lt;script type=&quot;math/tex&quot;&gt;\nabla_\alpha&lt;/script&gt;, we also write &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; as a function of &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\nabla_\alpha \eta(\pi) &amp;= \sum_{s, a} d_\pi(s) A_\pi(s, a) \nabla_\alpha \left[ (1-\alpha) \pi + \alpha \pi' \right]
+\label{eq:eta_alpha1}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Consider &lt;script type=&quot;math/tex&quot;&gt;\nabla_\alpha \left[ (1-\alpha) \pi + \alpha \pi' \right]&lt;/script&gt;:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\nabla_\alpha \left[ (1-\alpha) \pi + \alpha \pi' \right] = -\pi + \pi'
+\label{eq:pi_grad}&lt;/script&gt;
+
+&lt;p&gt;We substitute &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:pi_grad}&lt;/script&gt; into &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_alpha1}&lt;/script&gt; followed by some algebra:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\nabla_\alpha \eta(\pi) 
+&amp;= \sum_{s, a} d_\pi(s) A_\pi(s, a) (-\pi + \pi') \\
+&amp;= - \sum_{s, a} d_\pi(s) A_\pi(s, a) \pi(a|s) + \sum_{s,a} d_\pi(s) A_\pi(s, a) \pi'(a|s) \\
+&amp;= - \sum_{s} d_\pi(s) \cancel{\sum_a A_\pi(s, a) \pi(a|s)} + \sum_{s,a} d_\pi(s) A_\pi(s, a) \pi'(a|s) \\
+&amp;= \sum_{s,a} d_\pi(s) A_\pi(s, a) \pi'(a|s)
+\end{aligned}
+\label{eq:eta_grad}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;This gradient can be computed without the need to further interact with the environment. We just need to change &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; to &lt;script type=&quot;math/tex&quot;&gt;\pi'&lt;/script&gt; and then rerun on the previous experience.&lt;/p&gt;
+
+&lt;h4 id=&quot;policy-advantage&quot;&gt;Policy advantage&lt;/h4&gt;
+
+&lt;p&gt;The quantity in &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_grad}&lt;/script&gt; is closely related to &lt;strong&gt;policy advantage&lt;/strong&gt; which defines:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbb{A}_\pi(\tilde{\pi}) = \mathrm{E}_{s \sim d_\tilde{\pi}} \mathrm{E}_{a \sim \pi'} A_\pi(s, a)&lt;/script&gt;
+
+&lt;p&gt;Since it obeys the expectation, it uses a normalized distribution. Hence:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbb{A}_\pi(\tilde{\pi}) = (1-\gamma) \nabla_\alpha \eta(\pi)&lt;/script&gt;
+
+&lt;p&gt;Intuitively, the policy advantage tells us how much &lt;script type=&quot;math/tex&quot;&gt;\tilde{\pi}&lt;/script&gt; tries to take large advantages (be greedy). If &lt;script type=&quot;math/tex&quot;&gt;\tilde{\pi} = \pi&lt;/script&gt;, this quantity is &lt;script type=&quot;math/tex&quot;&gt;0&lt;/script&gt;. It is maximized when &lt;script type=&quot;math/tex&quot;&gt;\pi'&lt;/script&gt; is a greedy policy wrt. &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;taylors-expansion-of-policy-performance&quot;&gt;Taylor’s expansion of policy performance&lt;/h4&gt;
+
+&lt;p&gt;We now get:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) 
+&amp;= \eta(\pi) + \alpha \nabla_\alpha \eta(\pi) + \mathrm{O}(\alpha^2) \\
+&amp;= \eta(\pi) + \frac{\alpha}{1-\gamma} \mathbb{A}_\pi(\pi') + \mathrm{O}(\alpha^2)
+\end{aligned}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Now, we can draw some conclusion from the above equation:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;With policy improvement the second term (first derivative) is positive (if the policy is not optimal).&lt;/li&gt;
+  &lt;li&gt;If &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; is small enough, the second term will dominate the third term (second derivative) resulting in policy improvement.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The only problem is that we don’t know what &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; is to guarantee the policy improvement.  We now turn to a different approach.&lt;/p&gt;
+
+&lt;h3 id=&quot;using-the-authors-approach&quot;&gt;Using the author’s approach&lt;/h3&gt;
+
+&lt;p&gt;In order to guarantee policy improvement, we need to show that &lt;script type=&quot;math/tex&quot;&gt;\eta_\pi(\pi_{new}) - \eta_\pi(\pi) &gt; 0&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;We first rewrite it in a different form.&lt;/p&gt;
+
+&lt;h5 id=&quot;lemma-61&quot;&gt;Lemma 6.1&lt;/h5&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\eta_\pi(\tilde{\pi}) - \eta_\pi(\pi) = \frac{1}{1-\gamma} \mathrm{E}_{a,s \sim \tilde{\pi}, d_{\tilde{\pi}}} \left[ A_\pi(s, a) \right]&lt;/script&gt;
+
+&lt;p&gt;&lt;strong&gt;Proof:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation*}
+\begin{aligned}
+&amp; \frac{1}{1-\gamma} \mathrm{E}_{a,s \sim \tilde{\pi}, d_{\tilde{\pi}}} \left[ A_\pi(s, a) \right] \\
+&amp;= \mathrm{E}_{s_0, a_0, s_1, a_1, \dots \sim \tilde{\pi}} \left[ A_\pi(s_0, a_0) + \gamma A_\pi(s_1, a_1) + \dots  \right] \\
+&amp;= \mathrm{E}_{s_0, a_0, s_1, a_1, \dots \sim \tilde{\pi}} \left[ r_1 + \cancel{\gamma V_1} - V_0 + \gamma r_2 + \cancel{\gamma^2 V_2} - \cancel{\gamma V_1} + \dots \right] \\
+&amp;= \mathrm{E}_{s_0, a_0, s_1, a_1, \dots \sim \tilde{\pi}} \left[ \sum_{t=0}^\infty \gamma^t r_{t+1} - V_\pi(s_0)  \right] \\
+&amp;= \mathrm{E}_{s_0 \sim \tilde{\pi}} \left[ V_{\tilde{\pi}} - V_\pi(s_0)  \right] \\
+&amp;= \eta_\pi(\tilde{\pi}) - \eta_\pi(\pi)
+\end{aligned}
+\end{equation*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;With Lemma 6.1 we now have:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta_\pi(\pi_{new}) - \eta_\pi(\pi) 
+&amp;= \frac{1}{1-\gamma} \mathrm{E}_{a,s \sim \pi_{new}, d_{\pi_{new}}} \left[ A_\pi(s, a) \right] \\
+&amp;= \sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t, \pi_{new})} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] 
+\end{aligned}
+\label{eq:eta_delta}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt; is the probability of visiting state &lt;script type=&quot;math/tex&quot;&gt;s_t&lt;/script&gt; at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; under policy &lt;script type=&quot;math/tex&quot;&gt;\pi_{new}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;Evidently, we do have &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi)&lt;/script&gt; but we do not have &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt;. A way forward is to estimate the equation &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_delta}&lt;/script&gt; with all we have. Since the deviation from our estimate comes from the mismatch between &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi)&lt;/script&gt;, intuitively, a small &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; should result in a small mismatch and vice versa. This implies that &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt; must share some roots with &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi)&lt;/script&gt; which part we can work with. This allows us to get an informed estimate, and put the upper bound to the part we cannot work with.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-two-parts&quot;&gt;The two parts&lt;/h4&gt;
+
+&lt;p&gt;Consider the policy &lt;script type=&quot;math/tex&quot;&gt;\pi_{new}​&lt;/script&gt;, we know from its definition that it is a compound policy. Another way to look at it is we have two policies: &lt;script type=&quot;math/tex&quot;&gt;\pi​&lt;/script&gt; an &lt;script type=&quot;math/tex&quot;&gt;\pi'​&lt;/script&gt;. With probability of &lt;script type=&quot;math/tex&quot;&gt;\alpha​&lt;/script&gt; we will select an action according to &lt;script type=&quot;math/tex&quot;&gt;\pi'​&lt;/script&gt;, and probability of &lt;script type=&quot;math/tex&quot;&gt;1-\alpha​&lt;/script&gt; we will select an action from &lt;script type=&quot;math/tex&quot;&gt;\pi​&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;At time &lt;script type=&quot;math/tex&quot;&gt;t​&lt;/script&gt;,&lt;/strong&gt; we define our two parts as:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Part one: we follow &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt; from &lt;script type=&quot;math/tex&quot;&gt;t=0&lt;/script&gt; until now.&lt;/li&gt;
+  &lt;li&gt;Part two: at some point we selected an action from &lt;script type=&quot;math/tex&quot;&gt;\pi'&lt;/script&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;If we has been following &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The probability is &lt;script type=&quot;math/tex&quot;&gt;P(\text{follow } \pi) = (1-\alpha)^t = 1 - \rho_t​&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;The expected advantage function for this part is:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation*}
+(1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+\end{equation*}&lt;/script&gt;
+
+&lt;p&gt;If we has followed &lt;script type=&quot;math/tex&quot;&gt;\pi'&lt;/script&gt; at any point prior &lt;script type=&quot;math/tex&quot;&gt;t​&lt;/script&gt;.**&lt;/p&gt;
+
+&lt;p&gt;The probability is &lt;script type=&quot;math/tex&quot;&gt;P(\text{not follow } \pi) = \rho_t = 1-(1-\alpha)^t​&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;The expected advantage function for this part is:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{equation*}
+\rho_t \mathrm{E}_{s \sim P(s_t|\text{not follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+\end{equation*}&lt;/script&gt;
+
+&lt;p&gt;We can define the &lt;em&gt;upper&lt;/em&gt; bound of this value to be:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\mathrm{E}_{s \sim P(s_t|\text{not follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] 
+&amp;\leq \max_s \left\vert \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] \right\vert \\
+&amp;\leq \max_s \left\vert \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \right\vert \\
+&amp;= \epsilon
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;This is obvious we just use the &lt;script type=&quot;math/tex&quot;&gt;\max&lt;/script&gt; here which literally cannot be exceeded.&lt;/p&gt;
+
+&lt;p&gt;The total expected advantage function at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; is then the sum of both:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\mathrm{E}_{s \sim P(s_t, \pi_{new})} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+&amp;= (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] \\ 
+&amp; \quad + \rho_t \mathrm{E}_{s \sim P(s_t|\text{not follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] \\
+&amp; \geq \alpha (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] \\ 
+&amp; \quad - \alpha \rho_t \epsilon
+\end{aligned}
+\label{eq:two_paths}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Furthermore, we can show that &lt;script type=&quot;math/tex&quot;&gt;\mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right] = \alpha \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right]&lt;/script&gt;:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation} 
+\begin{aligned}
+\mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+&amp;= \sum_a ((1-\alpha) \pi(a|s) + \alpha \pi(a|s)) A_\pi(s, a) \\
+&amp;= (1-\alpha) \cancel{\sum_a \pi(a|s) A_\pi(s, a)} + \alpha \sum_a \pi'(a|s) A_\pi(s, a) \\
+&amp;= \alpha \sum_a \pi'(a|s) A_\pi(s, a)
+\end{aligned}
+\label{eq:pi'_a}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Substitute &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:pi'_a}&lt;/script&gt; into &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:two_paths}&lt;/script&gt;:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\mathrm{E}_{s \sim P(s_t, \pi_{new})} \mathrm{E}_{a \sim \pi_{new}} \left[ A_\pi(s, a) \right]
+&amp;\geq \alpha (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+&amp; \quad - \alpha \rho_t \epsilon
+\end{aligned}\label{eq:two_paths2}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;This is just for a time frame &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;. After all, we still need to incorporate it into the whole trajectories which extends from &lt;script type=&quot;math/tex&quot;&gt;t=0&lt;/script&gt; to &lt;script type=&quot;math/tex&quot;&gt;t=\infty&lt;/script&gt;.&lt;/p&gt;
+
+&lt;h5 id=&quot;apply-to-all-time-steps&quot;&gt;Apply to all time steps&lt;/h5&gt;
+
+&lt;p&gt;Substitute &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:two_paths2}&lt;/script&gt; into &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_delta}&lt;/script&gt;:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) - \eta(\pi)
+&amp;\geq \alpha \sum_{t=0}^\infty \gamma^t (1-\rho_t) \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+&amp; \quad - \alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t 
+\end{aligned}
+\label{eq:two_parts3}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Looking more carefully at the first term, &lt;script type=&quot;math/tex&quot;&gt;\rho_t&lt;/script&gt; depends on &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; which is something we want to find (remember we want to find the policy improving &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;). With this form, solving to find &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; will be very hard because it is not in a closed form. We want the $\sum$ term to be a constant independent of &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;. In this way, solving to find &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; becomes trivial.&lt;/p&gt;
+
+&lt;p&gt;To realize this, we further substitute &lt;script type=&quot;math/tex&quot;&gt;\epsilon&lt;/script&gt; into &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:two_parts3}&lt;/script&gt;:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) - \eta(\pi)
+&amp;\geq \alpha \sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+&amp; \quad - \alpha \sum_{t=0}^\infty \gamma^t \rho_t \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\
+&amp; \quad - \alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t \\
+&amp;\geq \alpha \sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+&amp; \quad - \alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t \\
+&amp; \quad - \alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t \\
+&amp;= \alpha \sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t|\text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right] \\ 
+&amp; \quad - 2\alpha \epsilon \sum_{t=0}^\infty \gamma^t \rho_t \\
+\end{aligned}
+\label{eq:two_parts4}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Consider &lt;script type=&quot;math/tex&quot;&gt;\sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t \vert \text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right]&lt;/script&gt;, this is in fact the unnormalized policy advantage. It equals to &lt;script type=&quot;math/tex&quot;&gt;\frac{1}{1-\gamma} \mathbb{A}_\pi(\pi')&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now consider the &lt;script type=&quot;math/tex&quot;&gt;\sum_{t=0}^\infty \gamma^t \rho_t&lt;/script&gt;, we can substitute its real values and get:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\sum_{t=0}^\infty \gamma^t \rho_t 
+&amp;= \sum_{t=0}^\infty \gamma^t (1-(1-\alpha)^t) \\
+&amp;= \sum_{t=0}^\infty \gamma^t - \sum_{t=0}^\infty \gamma^t (1-\alpha)^t \\
+&amp;= \frac{1}{1-\gamma} - \frac{1}{1-\gamma(1-\alpha)} \\
+&amp;= \frac{\gamma\alpha}{(1-\gamma)(1-\gamma(1-\alpha))}
+\end{aligned}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Substitute them into &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:two_parts4}&lt;/script&gt;:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) - \eta(\pi)
+&amp;\geq \frac{\alpha}{1-\gamma} \mathbb{A}_\pi(\pi') \\ 
+&amp; \quad - 2\alpha \epsilon \left[ \frac{\gamma\alpha}{(1-\gamma)(1-\gamma(1-\alpha))} \right] \\
+&amp;= \frac{\alpha}{1-\gamma} \left[ \mathbb{A}_\pi(\pi') 
+- \frac{2\epsilon\gamma\alpha}{1-\gamma(1-\alpha)} \right]
+\end{aligned}
+\label{eq:two_parts5}
+\end{equation} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;We call equation &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:two_parts5}&lt;/script&gt; &lt;strong&gt;theorem 4.1&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Finally, we want to guarantee the policy improvement by selecting a proper &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;. We then need to solve for &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{equation}
+\begin{aligned}
+\eta(\pi_{new}) - \eta(\pi)
+&amp;\geq \frac{\alpha}{1-\gamma} \left[ \mathbb{A}_\pi(\pi') 
+- \frac{2\epsilon\gamma\alpha}{1-\gamma(1-\alpha)} \right] 
+\geq 0
+\end{aligned}
+\label{eq:two_parts6}
+\end{equation} %]]&gt;&lt;/script&gt;</content><author><name>Konpat Preechakul</name></author><category term="rl" /><summary type="html">In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:</summary></entry><entry><title type="html">NFS file attribution caching causes reading inconsistency in multi-producer scenario</title><link href="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html" rel="alternate" type="text/html" title="NFS file attribution caching causes reading inconsistency in multi-producer scenario" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies</id><content type="html" xml:base="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html">&lt;p&gt;With two producers e.g. local and remote producers, the changes made locally might need time to be acknowledged by the remote.&lt;/p&gt;
 
 &lt;p&gt;Even without file caching this could still be a problem, I experience this first-hand while using Python. I think Python might use some kind of file attribute to determine file updates. NFS has this which is called “attribute caching”.&lt;/p&gt;
 
@@ -788,45 +1147,4 @@ lxc.mount.entry: /dev/bus/usb/001/020 dev/bus/usb/001/020 none bind,optional,cre
 &lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
             &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;optimizer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
             &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Konpat Preechakul</name></author><category term="tensorflow" /><summary type="html">Following the announcement in Tensorflow Dev Summit 2018 in Eager Execution part: https://www.youtube.com/watch?v=T8AW0fKP0Hs&amp;amp;vl=en</summary></entry><entry><title type="html">KVM GPU Passthrough Finding The Right Bios for Your Nvidia Pascal GPU</title><link href="https://blog.konpat.me/dev/2018/07/06/kvm-gpu-passthrough-finding-the-right-bios-for-your-nvidia-pascal-gpu.html" rel="alternate" type="text/html" title="KVM GPU Passthrough Finding The Right Bios for Your Nvidia Pascal GPU" /><published>2018-07-06T00:00:00+07:00</published><updated>2018-07-06T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2018/07/06/kvm-gpu-passthrough-finding-the-right-bios-for-your-nvidia-pascal-gpu</id><content type="html" xml:base="https://blog.konpat.me/dev/2018/07/06/kvm-gpu-passthrough-finding-the-right-bios-for-your-nvidia-pascal-gpu.html">&lt;p&gt;&lt;em&gt;Disclaimer: I’m new to the KVM myself. Spending hours, I realized that I should write something down. May in the future I stumbled upon the same problem I would have hope to solve it.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;Before the start, here is the brief:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;You want to create a KVM virtual machine for Windows&lt;/li&gt;
-  &lt;li&gt;You want to bypass (pass-through) the PCI-express port of your GPU to it&lt;/li&gt;
-  &lt;li&gt;Your GPU is Nvidia Pascal (GTX 10xx)&lt;/li&gt;
-  &lt;li&gt;You use UEFI mode with your virtual machine&lt;/li&gt;
-  &lt;li&gt;You have problem with the GPU Bios&lt;/li&gt;
-  &lt;li&gt;Most likely you get error code 43, or the Windows turned black, but the virtual machine still can boot&lt;/li&gt;
-  &lt;li&gt;You seem to see that your &lt;a href=&quot;https://pve.proxmox.com/wiki/Pci_passthrough#How_to_known_if_card_is_UEFI_.28ovmf.29_compatible&quot;&gt;GPU is not UEFI compatible &lt;/a&gt;?&lt;/li&gt;
-  &lt;li&gt;But, from the &lt;a href=&quot;https://www.techpowerup.com/vgabios/&quot;&gt;techpowerup&lt;/a&gt; Bios collection page (or from &lt;a href=&quot;https://forum.hiveos.farm/discussion/772/guide-nvidia-gpu-vbios-flashing-with-hiveos&quot;&gt;nvflash&lt;/a&gt; software) states that your GPU should support UEFI.&lt;/li&gt;
-  &lt;li&gt;You use Proxmox, this is not the deal breaker though most of the article doesn’t need it&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;your-gpu-is-still-uefi-compatible&quot;&gt;Your GPU is still UEFI compatible!&lt;/h4&gt;
-
-&lt;p&gt;Don’t believe the &lt;a href=&quot;https://pve.proxmox.com/wiki/Pci_passthrough#How_to_known_if_card_is_UEFI_.28ovmf.29_compatible&quot;&gt;check&lt;/a&gt; just yet, check what your GPU model (and brand) in the &lt;a href=&quot;https://www.techpowerup.com/vgabios/&quot;&gt;techpowerup&lt;/a&gt; tells. If it says compatible, it means compatible.&lt;/p&gt;
-
-&lt;p&gt;There are ways for the manual check to go wrong. One of them, as I know, is that your GPU Bios is changed during the boot process, this only happens, seemingly, to the first GPU slot.&lt;/p&gt;
-
-&lt;p&gt;Because your GPU’s Bios is not right, it’s been changed (why? I don’t fully understand it myself), passing this Bios to the virtual machine won’t work. You need a working Bios with UEFI compatible anyway.&lt;/p&gt;
-
-&lt;p&gt;Most of the internet will say, “I will put my card in the second slot then!”. The idea is to avoid the motherboard (or whatever) to mingle with the GPU Bios. So that, we can at least “dump” the correct looking of the Bios, saved as a file. As when we swapped the card back to its first slot, even though the Bios will still be invalidated, but we can supply the virtual machine with the correct one that we have saved.&lt;/p&gt;
-
-&lt;p&gt;Well that sounds right but impractical.&lt;/p&gt;
-
-&lt;h4 id=&quot;techpowerup-or-nvflash-bios-is-different-from-the-one-you-would-need-to-supply-to-the-virtual-machine&quot;&gt;Techpowerup (or Nvflash) Bios is different from the one you would need to supply to the virtual machine&lt;/h4&gt;
-
-&lt;p&gt;You cannot just use the download version and supply it to the virtual machine, that wouldn’t work.&lt;/p&gt;
-
-&lt;p&gt;Fortunately, there is a certain someone figured this out for us. He figured out that though there are differences, but they are not much apart. It is possible to modify the downloaded Bios to get what we want! He’s made a python script that can convert the Bios from techpowerup for us.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/Matoking/NVIDIA-vBIOS-VFIO-Patcher&quot;&gt;Here is it: https://github.com/Matoking/NVIDIA-vBIOS-VFIO-Patcher&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;It is a python script and can be used this way:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python nvidia_vbios_vfio_patcher.py -i &amp;lt;ORIGINAL_ROM&amp;gt; -o &amp;lt;PATCHED_ROM&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The patched bios can be supplied readily to the virtual machine, using the guide from Proxmox wiki&lt;a href=&quot;https://pve.proxmox.com/wiki/Pci_passthrough#romfile&quot;&gt;, How to supply the Bios to a virtual machine in Proxmox?&lt;/a&gt;&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="vfio" /><summary type="html">Disclaimer: I’m new to the KVM myself. Spending hours, I realized that I should write something down. May in the future I stumbled upon the same problem I would have hope to solve it.</summary></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Konpat Preechakul</name></author><category term="tensorflow" /><summary type="html">Following the announcement in Tensorflow Dev Summit 2018 in Eager Execution part: https://www.youtube.com/watch?v=T8AW0fKP0Hs&amp;amp;vl=en</summary></entry></feed>

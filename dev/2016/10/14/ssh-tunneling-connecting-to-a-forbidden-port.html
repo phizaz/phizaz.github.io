@@ -16,18 +16,9 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2016-10-14T11:57:04+07:00" />
 <script type="application/ld+json">
-{"description":"Refer to: http://blog.trackets.com/2014/05/17/ssh-tunnel-local-and-remote-port-forwarding-explained-with-examples.html You are blocked from making connection to a port, say, 6666. Luckily, you still can connect to a remote server via port 22 (ssh). We can do SSH tunneling to get through the firewall via port 22 (which is not blocked here) and use a pivotal server to connect to the port 6666 relaying all the data back to us behind the firewall. ssh -L &lt;local_port&gt;:&lt;target_host&gt;:&lt;target_port&gt; &lt;pivotal_host&gt; In this case, it might be: ssh -L 22:targethost.com:6666 me@pivotalhost.com Then, you can ssh, via the pivotalhost.com, to the targethost.com using ssh me@localhost [-p 22] Note : use localhost here because ssh has bound the port 22 on this machine. Wow!","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2016/10/14/ssh-tunneling-connecting-to-a-forbidden-port.html","headline":"SSH Tunneling - Connecting to a forbidden port","dateModified":"2016-10-14T11:57:04+07:00","datePublished":"2016-10-14T11:57:04+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2016/10/14/ssh-tunneling-connecting-to-a-forbidden-port.html"},"@context":"http://schema.org"}</script>
+{"datePublished":"2016-10-14T11:57:04+07:00","description":"Refer to: http://blog.trackets.com/2014/05/17/ssh-tunnel-local-and-remote-port-forwarding-explained-with-examples.html You are blocked from making connection to a port, say, 6666. Luckily, you still can connect to a remote server via port 22 (ssh). We can do SSH tunneling to get through the firewall via port 22 (which is not blocked here) and use a pivotal server to connect to the port 6666 relaying all the data back to us behind the firewall. ssh -L &lt;local_port&gt;:&lt;target_host&gt;:&lt;target_port&gt; &lt;pivotal_host&gt; In this case, it might be: ssh -L 22:targethost.com:6666 me@pivotalhost.com Then, you can ssh, via the pivotalhost.com, to the targethost.com using ssh me@localhost [-p 22] Note : use localhost here because ssh has bound the port 22 on this machine. Wow!","author":{"@type":"Person","name":"Konpat Preechakul"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2016/10/14/ssh-tunneling-connecting-to-a-forbidden-port.html"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2016/10/14/ssh-tunneling-connecting-to-a-forbidden-port.html","headline":"SSH Tunneling - Connecting to a forbidden port","dateModified":"2016-10-14T11:57:04+07:00","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
-<script>
-  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-91416417-1');
-</script>
-<script type="text/x-mathjax-config">
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         TeX: {
           equationNumbers: {

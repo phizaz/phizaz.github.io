@@ -16,18 +16,9 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2017-02-04T09:39:12+07:00" />
 <script type="application/ld+json">
-{"description":"Let’s say you want to ssh using docker, and also you want to be able to access all the settings you have with our old ssh, here is how you do it ! Dockerfile: FROM debian:jessie RUN apt-get update RUN apt-get install -y --no-install-recommends openssh-client VOLUME [&quot;/ssh&quot;] COPY entrypoint.sh /usr/local/bin/ ENTRYPOINT [&quot;entrypoint.sh&quot;] entrypoint.sh: #!/usr/bin/env bash # install ssh keys (/ssh -&gt; ~/.ssh) cp -R /ssh /root/.ssh chmod -R 500 /root/.ssh # entrypoint # redirects all arguments to the ssh command # &#39;exec&#39; will replace the process (might be useful for redirecting SIGTERM) exec ssh $@ If we mount our .ssh directory to the /ssh of the container, it will automatically copy (with the right permission) its contents to its /root/.ssh. Thus, we will be able to use all ssh as if it were the one on our host machine. Build the Dockerfile: docker build -t ssh . Set alias for your cmd.exe: alias ssh-docker=docker run --rm -it -v %HOME%\\.ssh:/ssh:ro ssh $* Note: $* at the end of alias is to accept arguments. Enjoy: ssh-docker test@host","author":{"@type":"Person","name":"Konpat Preechakul"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2017/02/04/ssh-using-docker.html","headline":"SSH using docker","dateModified":"2017-02-04T09:39:12+07:00","datePublished":"2017-02-04T09:39:12+07:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2017/02/04/ssh-using-docker.html"},"@context":"http://schema.org"}</script>
+{"datePublished":"2017-02-04T09:39:12+07:00","description":"Let’s say you want to ssh using docker, and also you want to be able to access all the settings you have with our old ssh, here is how you do it ! Dockerfile: FROM debian:jessie RUN apt-get update RUN apt-get install -y --no-install-recommends openssh-client VOLUME [&quot;/ssh&quot;] COPY entrypoint.sh /usr/local/bin/ ENTRYPOINT [&quot;entrypoint.sh&quot;] entrypoint.sh: #!/usr/bin/env bash # install ssh keys (/ssh -&gt; ~/.ssh) cp -R /ssh /root/.ssh chmod -R 500 /root/.ssh # entrypoint # redirects all arguments to the ssh command # &#39;exec&#39; will replace the process (might be useful for redirecting SIGTERM) exec ssh $@ If we mount our .ssh directory to the /ssh of the container, it will automatically copy (with the right permission) its contents to its /root/.ssh. Thus, we will be able to use all ssh as if it were the one on our host machine. Build the Dockerfile: docker build -t ssh . Set alias for your cmd.exe: alias ssh-docker=docker run --rm -it -v %HOME%\\.ssh:/ssh:ro ssh $* Note: $* at the end of alias is to accept arguments. Enjoy: ssh-docker test@host","author":{"@type":"Person","name":"Konpat Preechakul"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.konpat.me/dev/2017/02/04/ssh-using-docker.html"},"@type":"BlogPosting","url":"https://blog.konpat.me/dev/2017/02/04/ssh-using-docker.html","headline":"SSH using docker","dateModified":"2017-02-04T09:39:12+07:00","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script async src="https://www.googletagmanager.com/gtag/js?id=UA-91416417-1"></script>
-<script>
-  window['ga-disable-UA-91416417-1'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-91416417-1');
-</script>
-<script type="text/x-mathjax-config">
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://blog.konpat.me/feed.xml" title="Konpat's Record of Struggles" /><script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         TeX: {
           equationNumbers: {
