@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-03-10T00:11:15+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Approximately Optimal Approximate Reinforcement Learning (Kakade &amp;amp; Langford, 2002)</title><link href="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html" rel="alternate" type="text/html" title="Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)" /><published>2019-03-09T00:00:00+07:00</published><updated>2019-03-09T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/03/09/kakade-2002</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html">&lt;p&gt;In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-03-10T09:56:04+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Approximately Optimal Approximate Reinforcement Learning (Kakade &amp;amp; Langford, 2002)</title><link href="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html" rel="alternate" type="text/html" title="Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)" /><published>2019-03-09T00:00:00+07:00</published><updated>2019-03-09T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/03/09/kakade-2002</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html">&lt;p&gt;In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Is there a way to guarantee policy improvement?&lt;/strong&gt;&lt;/p&gt;
 
@@ -26,7 +26,7 @@
 
 &lt;h2 id=&quot;policy-performance&quot;&gt;Policy performance&lt;/h2&gt;
 
-&lt;p&gt;We first define the policy performance as the average performance over state states.&lt;/p&gt;
+&lt;p&gt;We first define the policy performance as an average performance over state states.&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\eta_D(\pi) = \mathrm{E}_{s \sim D} \left[ V_\pi(s) \right]&lt;/script&gt;
 
@@ -49,7 +49,7 @@
 
 &lt;h2 id=&quot;improved-policy-performance-estimation&quot;&gt;Improved policy performance estimation&lt;/h2&gt;
 
-&lt;p&gt;As you see from &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta}&lt;/script&gt;, we need to get the improved policy performance &lt;script type=&quot;math/tex&quot;&gt;\eta(\pi_{new})&lt;/script&gt;, but we want to get it fast because we might need to fine tune it for the right &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;. This not viable if we just rerun the policy evaluation, it is just too slow. We need to estimate its lower bound.&lt;/p&gt;
+&lt;p&gt;As you see from &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta}&lt;/script&gt;, we need to get the improved policy performance &lt;script type=&quot;math/tex&quot;&gt;\eta(\pi_{new})&lt;/script&gt;, but we want to get it cheaply because we might need to fine tune it for the right &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt;. This not viable to just rerun the policy evaluation (on a new set of experience from &lt;script type=&quot;math/tex&quot;&gt;\pi_{new}​&lt;/script&gt;), it is just too slow. We need to estimate its lower bound.&lt;/p&gt;
 
 &lt;p&gt;In the paper, the author shows two ways for estimation:&lt;/p&gt;
 
@@ -128,13 +128,15 @@
 
 &lt;p&gt;The quantity in &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_grad}&lt;/script&gt; is closely related to &lt;strong&gt;policy advantage&lt;/strong&gt; which defines:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbb{A}_\pi(\tilde{\pi}) = \mathrm{E}_{s \sim d_\tilde{\pi}} \mathrm{E}_{a \sim \pi'} A_\pi(s, a)&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbb{A}_\pi(\tilde{\pi}) = \mathrm{E}_{s \sim d_\pi} \mathrm{E}_{a \sim \tilde{\pi}} A_\pi(s, a)
+\label{eq:policy_adv}&lt;/script&gt;
 
-&lt;p&gt;Since it obeys the expectation, it uses a normalized distribution. Hence:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbb{A}_\pi(\tilde{\pi}) = (1-\gamma) \nabla_\alpha \eta(\pi)&lt;/script&gt;
+&lt;p&gt;Since it obeys the expectation, it uses a normalized distribution. Hence:
+&lt;script type=&quot;math/tex&quot;&gt;\mathbb{A}_\pi(\tilde{\pi}) = (1-\gamma) \nabla_\alpha \eta(\pi)&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Intuitively, the policy advantage tells us how much &lt;script type=&quot;math/tex&quot;&gt;\tilde{\pi}&lt;/script&gt; tries to take large advantages (be greedy). If &lt;script type=&quot;math/tex&quot;&gt;\tilde{\pi} = \pi&lt;/script&gt;, this quantity is &lt;script type=&quot;math/tex&quot;&gt;0&lt;/script&gt;. It is maximized when &lt;script type=&quot;math/tex&quot;&gt;\pi'&lt;/script&gt; is a greedy policy wrt. &lt;script type=&quot;math/tex&quot;&gt;\pi&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;Don’t be confused! &lt;script type=&quot;math/tex&quot;&gt;\mathbb{A}_\pi&lt;/script&gt; is a policy advantage which looks at all states, but &lt;script type=&quot;math/tex&quot;&gt;A_\pi&lt;/script&gt; is an advantage function looks at a particular state and action.&lt;/p&gt;
 
 &lt;h4 id=&quot;taylors-expansion-of-policy-performance&quot;&gt;Taylor’s expansion of policy performance&lt;/h4&gt;
 
@@ -196,7 +198,7 @@
 
 &lt;p&gt;where &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt; is the probability of visiting state &lt;script type=&quot;math/tex&quot;&gt;s_t&lt;/script&gt; at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; under policy &lt;script type=&quot;math/tex&quot;&gt;\pi_{new}&lt;/script&gt;.&lt;/p&gt;
 
-&lt;p&gt;Evidently, we do have &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi)&lt;/script&gt; but we do not have &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt;. A way forward is to estimate the equation &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_delta}&lt;/script&gt; with all we have. Since the deviation from our estimate comes from the mismatch between &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi)&lt;/script&gt;, intuitively, a small &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; should result in a small mismatch and vice versa. This implies that &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt; must share some roots with &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi)&lt;/script&gt; which part we can work with. This allows us to get an informed estimate, and put the upper bound to the part we cannot work with.&lt;/p&gt;
+&lt;p&gt;Evidently, we do have &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi)&lt;/script&gt; but we do not have &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt;. A way forward is to estimate the equation &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:eta_delta}&lt;/script&gt; with all we have. Since the deviation from our estimate comes from the mismatch between &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi)&lt;/script&gt;, intuitively, a small &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; should result in a small mismatch and vice versa. This implies that &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi_{new})&lt;/script&gt; must share some roots with &lt;script type=&quot;math/tex&quot;&gt;P(s_t, \pi)&lt;/script&gt; which part we can work with. This allows us to get an informed estimate and put an upper bound to the part we cannot work with.&lt;/p&gt;
 
 &lt;h4 id=&quot;the-two-parts&quot;&gt;The two parts&lt;/h4&gt;
 
@@ -315,7 +317,7 @@
 \label{eq:two_parts4}
 \end{equation} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;Consider &lt;script type=&quot;math/tex&quot;&gt;\sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t \vert \text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right]&lt;/script&gt;, this is in fact the unnormalized policy advantage. It equals to &lt;script type=&quot;math/tex&quot;&gt;\frac{1}{1-\gamma} \mathbb{A}_\pi(\pi')&lt;/script&gt;.&lt;/p&gt;
+&lt;p&gt;Consider &lt;script type=&quot;math/tex&quot;&gt;\sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t \vert \text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right]​&lt;/script&gt;, this is in fact the unnormalized policy advantage (see &lt;script type=&quot;math/tex&quot;&gt;\eqref{eq:policy_adv}​&lt;/script&gt;). It equals to &lt;script type=&quot;math/tex&quot;&gt;\frac{1}{1-\gamma} \mathbb{A}_\pi(\pi')​&lt;/script&gt;.&lt;/p&gt;
 
 &lt;p&gt;Now consider the &lt;script type=&quot;math/tex&quot;&gt;\sum_{t=0}^\infty \gamma^t \rho_t&lt;/script&gt;, we can substitute its real values and get:&lt;/p&gt;
 

@@ -171,7 +171,7 @@
 
 <h2 id="policy-performance">Policy performance</h2>
 
-<p>We first define the policy performance as the average performance over state states.</p>
+<p>We first define the policy performance as an average performance over state states.</p>
 
 <script type="math/tex; mode=display">\eta_D(\pi) = \mathrm{E}_{s \sim D} \left[ V_\pi(s) \right]</script>
 
@@ -194,7 +194,7 @@
 
 <h2 id="improved-policy-performance-estimation">Improved policy performance estimation</h2>
 
-<p>As you see from <script type="math/tex">\eqref{eq:eta}</script>, we need to get the improved policy performance <script type="math/tex">\eta(\pi_{new})</script>, but we want to get it fast because we might need to fine tune it for the right <script type="math/tex">\alpha</script>. This not viable if we just rerun the policy evaluation, it is just too slow. We need to estimate its lower bound.</p>
+<p>As you see from <script type="math/tex">\eqref{eq:eta}</script>, we need to get the improved policy performance <script type="math/tex">\eta(\pi_{new})</script>, but we want to get it cheaply because we might need to fine tune it for the right <script type="math/tex">\alpha</script>. This not viable to just rerun the policy evaluation (on a new set of experience from <script type="math/tex">\pi_{new}​</script>), it is just too slow. We need to estimate its lower bound.</p>
 
 <p>In the paper, the author shows two ways for estimation:</p>
 
@@ -273,13 +273,15 @@
 
 <p>The quantity in <script type="math/tex">\eqref{eq:eta_grad}</script> is closely related to <strong>policy advantage</strong> which defines:</p>
 
-<script type="math/tex; mode=display">\mathbb{A}_\pi(\tilde{\pi}) = \mathrm{E}_{s \sim d_\tilde{\pi}} \mathrm{E}_{a \sim \pi'} A_\pi(s, a)</script>
+<script type="math/tex; mode=display">\mathbb{A}_\pi(\tilde{\pi}) = \mathrm{E}_{s \sim d_\pi} \mathrm{E}_{a \sim \tilde{\pi}} A_\pi(s, a)
+\label{eq:policy_adv}</script>
 
-<p>Since it obeys the expectation, it uses a normalized distribution. Hence:</p>
-
-<script type="math/tex; mode=display">\mathbb{A}_\pi(\tilde{\pi}) = (1-\gamma) \nabla_\alpha \eta(\pi)</script>
+<p>Since it obeys the expectation, it uses a normalized distribution. Hence:
+<script type="math/tex">\mathbb{A}_\pi(\tilde{\pi}) = (1-\gamma) \nabla_\alpha \eta(\pi)</script></p>
 
 <p>Intuitively, the policy advantage tells us how much <script type="math/tex">\tilde{\pi}</script> tries to take large advantages (be greedy). If <script type="math/tex">\tilde{\pi} = \pi</script>, this quantity is <script type="math/tex">0</script>. It is maximized when <script type="math/tex">\pi'</script> is a greedy policy wrt. <script type="math/tex">\pi</script>.</p>
+
+<p>Don’t be confused! <script type="math/tex">\mathbb{A}_\pi</script> is a policy advantage which looks at all states, but <script type="math/tex">A_\pi</script> is an advantage function looks at a particular state and action.</p>
 
 <h4 id="taylors-expansion-of-policy-performance">Taylor’s expansion of policy performance</h4>
 
@@ -341,7 +343,7 @@
 
 <p>where <script type="math/tex">P(s_t, \pi_{new})</script> is the probability of visiting state <script type="math/tex">s_t</script> at time <script type="math/tex">t</script> under policy <script type="math/tex">\pi_{new}</script>.</p>
 
-<p>Evidently, we do have <script type="math/tex">P(s_t, \pi)</script> but we do not have <script type="math/tex">P(s_t, \pi_{new})</script>. A way forward is to estimate the equation <script type="math/tex">\eqref{eq:eta_delta}</script> with all we have. Since the deviation from our estimate comes from the mismatch between <script type="math/tex">P(s_t, \pi_{new})</script> and <script type="math/tex">P(s_t, \pi)</script>, intuitively, a small <script type="math/tex">\alpha</script> should result in a small mismatch and vice versa. This implies that <script type="math/tex">P(s_t, \pi_{new})</script> must share some roots with <script type="math/tex">P(s_t, \pi)</script> which part we can work with. This allows us to get an informed estimate, and put the upper bound to the part we cannot work with.</p>
+<p>Evidently, we do have <script type="math/tex">P(s_t, \pi)</script> but we do not have <script type="math/tex">P(s_t, \pi_{new})</script>. A way forward is to estimate the equation <script type="math/tex">\eqref{eq:eta_delta}</script> with all we have. Since the deviation from our estimate comes from the mismatch between <script type="math/tex">P(s_t, \pi_{new})</script> and <script type="math/tex">P(s_t, \pi)</script>, intuitively, a small <script type="math/tex">\alpha</script> should result in a small mismatch and vice versa. This implies that <script type="math/tex">P(s_t, \pi_{new})</script> must share some roots with <script type="math/tex">P(s_t, \pi)</script> which part we can work with. This allows us to get an informed estimate and put an upper bound to the part we cannot work with.</p>
 
 <h4 id="the-two-parts">The two parts</h4>
 
@@ -460,7 +462,7 @@
 \label{eq:two_parts4}
 \end{equation} %]]></script>
 
-<p>Consider <script type="math/tex">\sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t \vert \text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right]</script>, this is in fact the unnormalized policy advantage. It equals to <script type="math/tex">\frac{1}{1-\gamma} \mathbb{A}_\pi(\pi')</script>.</p>
+<p>Consider <script type="math/tex">\sum_{t=0}^\infty \gamma^t \mathrm{E}_{s \sim P(s_t \vert \text{follow }\pi)} \mathrm{E}_{a \sim \pi'} \left[ A_\pi(s, a) \right]​</script>, this is in fact the unnormalized policy advantage (see <script type="math/tex">\eqref{eq:policy_adv}​</script>). It equals to <script type="math/tex">\frac{1}{1-\gamma} \mathbb{A}_\pi(\pi')​</script>.</p>
 
 <p>Now consider the <script type="math/tex">\sum_{t=0}^\infty \gamma^t \rho_t</script>, we can substitute its real values and get:</p>
 
