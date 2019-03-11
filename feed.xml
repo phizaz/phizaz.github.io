@@ -1,4 +1,353 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="https://blog.konpat.me/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.konpat.me/" rel="alternate" type="text/html" /><updated>2019-03-10T09:56:04+07:00</updated><id>https://blog.konpat.me/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Approximately Optimal Approximate Reinforcement Learning (Kakade &amp;amp; Langford, 2002)</title><link href="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html" rel="alternate" type="text/html" title="Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)" /><published>2019-03-09T00:00:00+07:00</published><updated>2019-03-09T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/03/09/kakade-2002</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/03/09/kakade-2002.html">&lt;p&gt;In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-03-11T11:53:39+07:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Konpat’s Record of Struggles</title><subtitle>O thou, I long to rival thy greatest invention, the mind.</subtitle><author><name>Konpat Preechakul</name></author><entry><title type="html">Pickling Pytorch views is pickling the whole underlying memory</title><link href="http://localhost:4000/dev/2019/03/11/pickling-pytorch-view-pickle-its-underlying-memory.html" rel="alternate" type="text/html" title="Pickling Pytorch views is pickling the whole underlying memory" /><published>2019-03-11T00:00:00+07:00</published><updated>2019-03-11T00:00:00+07:00</updated><id>http://localhost:4000/dev/2019/03/11/pickling-pytorch-view-pickle-its-underlying-memory</id><content type="html" xml:base="http://localhost:4000/dev/2019/03/11/pickling-pytorch-view-pickle-its-underlying-memory.html">&lt;p&gt;It is important at the time of pickling to know what we are really saving to disks. Saving Pytorch tensors is most likely saving its underlying storage. This could be confused with &lt;em&gt;views&lt;/em&gt; because many views could share the same underlying storage. The view could be very narrow, but its underlying storage could still be very large. Saving this view to disks would result in a large file as well.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;torch&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;torch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;torch&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'saved.pt'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;saved.pt&lt;/code&gt; would have the size of 100 floats instead of one. To really save just the view portion of the storage, we need to create a distinct storage containing only the viewed portion of the old one. This could be done using &lt;code class=&quot;highlighter-rouge&quot;&gt;x[0].clone()&lt;/code&gt;.&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="pytorch" /><summary type="html">It is important at the time of pickling to know what we are really saving to disks. Saving Pytorch tensors is most likely saving its underlying storage. This could be confused with views because many views could share the same underlying storage. The view could be very narrow, but its underlying storage could still be very large. Saving this view to disks would result in a large file as well.</summary></entry><entry><title type="html">Setting up LXC with Intel GPU (Proxmox), keyboard, mouse and audio</title><link href="http://localhost:4000/dev/2019/03/11/setting-up-lxc-for-intel-gpu-proxmox.html" rel="alternate" type="text/html" title="Setting up LXC with Intel GPU (Proxmox), keyboard, mouse and audio" /><published>2019-03-11T00:00:00+07:00</published><updated>2019-03-11T00:00:00+07:00</updated><id>http://localhost:4000/dev/2019/03/11/setting-up-lxc-for-intel-gpu-proxmox</id><content type="html" xml:base="http://localhost:4000/dev/2019/03/11/setting-up-lxc-for-intel-gpu-proxmox.html">&lt;p&gt;The goal is to create a linux container with Proxmox that utilizes integrated Intel GPU. Additional requirements are mouse and keyboard must work also with audio.&lt;/p&gt;
+
+&lt;p&gt;There are some specificities in this guide. I use &lt;strong&gt;Xubuntu&lt;/strong&gt; (Xfce) as the desktop environment it might be somewhat different from others, but I hope in overall it should be transferable.&lt;/p&gt;
+
+&lt;p&gt;Let’s start by assuming that we have created and installed our desktop environment on a new container already after which we can now begin.&lt;/p&gt;
+
+&lt;h1 id=&quot;container-with-gpu&quot;&gt;Container with GPU&lt;/h1&gt;
+
+&lt;p&gt;You should be well familiar with &lt;code class=&quot;highlighter-rouge&quot;&gt;lxc.cgroup.devices.allow&lt;/code&gt; we need to declare it for all devices we want the container to have access to be it GPU, keyboard, mouse or audio.&lt;/p&gt;
+
+&lt;p&gt;For example, if you want to grant some access for container number &lt;code class=&quot;highlighter-rouge&quot;&gt;123&lt;/code&gt;, you go to &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/pve/lxc/123.conf&lt;/code&gt; and adjust the configurations.&lt;/p&gt;
+
+&lt;p&gt;The overall limitation of using GPU inside the container boils down to this: we install the GPU driver on the host, allowing the container to access to the device, and reinstall the GPU driver on the container as well. This is because the container has no access to change the kernel modules, our driver module must already be loaded by the host.&lt;/p&gt;
+
+&lt;p&gt;In my case, the Intel GPU driver is already loaded in the Proxmox host under the name of &lt;code class=&quot;highlighter-rouge&quot;&gt;i915&lt;/code&gt; kernel module. You can see for yourself using &lt;code class=&quot;highlighter-rouge&quot;&gt;lspci -v&lt;/code&gt;. Find the Intel GPU and see its loaded kernel module. Please note that &lt;code class=&quot;highlighter-rouge&quot;&gt;i915&lt;/code&gt; seems to be the module name for all GPUs.&lt;/p&gt;
+
+&lt;h2 id=&quot;granting-the-container-access&quot;&gt;Granting the container access&lt;/h2&gt;
+
+&lt;p&gt;What then needs to be granted access to the container? My experience results in this:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/dri/card0&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/dri/renderD128&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/fb0&lt;/code&gt;. This the frame buffer for &lt;code class=&quot;highlighter-rouge&quot;&gt;card0&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/tty7&lt;/code&gt;. Actually, you can use any (that is not currently used). To my understanding this is like allowing the container to access our &lt;em&gt;monitor&lt;/em&gt;, I guess.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;To grant the container access, we need to have their &lt;em&gt;major&lt;/em&gt; and &lt;em&gt;minor&lt;/em&gt; numbers. Which could be obtained thus:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@desktop:/dev# ls -l /dev/dri/card0
+crw-rw---- 1 root video 226, 0 Mar 11 00:53 /dev/dri/card0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Device&lt;/th&gt;
+      &lt;th&gt;Major&lt;/th&gt;
+      &lt;th&gt;Minor&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/dri/card0&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;226&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/dri/renderD128&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;226&lt;/td&gt;
+      &lt;td&gt;128&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/fb0&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;29&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/tty7&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;7&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;So we have the first change we need to make to the &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/pve/lxc/&amp;lt;id&amp;gt;.conf&lt;/code&gt; should be:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;lxc.cgroup.devices.allow: c 226:0 rwm
+lxc.cgroup.devices.allow: c 226:128 rwm
+lxc.cgroup.devices.allow: c 4:7 rwm
+lxc.cgroup.devices.allow: c 29:0 rwm
+lxc.mount.entry: /dev/dri/card0 dev/dri/card0 none bind,optional,create=file
+lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file
+lxc.mount.entry: /dev/tty7 dev/tty7 none bind,optional,create=file
+lxc.mount.entry: /dev/fb0 dev/fb0 none bind,optional,create=file
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;explanations&quot;&gt;Explanations&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lxc.cgroup.devices.allow: c 226:0 rwm&lt;/code&gt; means allowing the container to &lt;code class=&quot;highlighter-rouge&quot;&gt;rwm&lt;/code&gt; (read/write/mount) the device which has the major number of 226 and minor number of 0. You can use a wildcard here e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;c 226:* rwm&lt;/code&gt; .&lt;/p&gt;
+
+&lt;p&gt;Granting the permission alone is not enough if the device is not &lt;em&gt;present&lt;/em&gt; in the container’s &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev&lt;/code&gt; directory. The second part is just creating corresponding files in the container’s &lt;code class=&quot;highlighter-rouge&quot;&gt;dev&lt;/code&gt;. If you want to create a whole directory (and everything within it) you could use &lt;code class=&quot;highlighter-rouge&quot;&gt;create=dir&lt;/code&gt; option instead i.e. &lt;code class=&quot;highlighter-rouge&quot;&gt;lxc.mount.entry: /dev/dri dev/dri none bind,optional,create=dir&lt;/code&gt;. This could be problematic if you have more than one GPU. Allowing the container to see a GPU meant not to be used by it is a bad idea because it leads to many problems down the line. For example, in my case, I also have an Nvidia card. The container’s Xorg tries to utilize both GPUs via Nvidia’s Optimus technology which might not be the thing you want.&lt;/p&gt;
+
+&lt;p&gt;Please note that &lt;code class=&quot;highlighter-rouge&quot;&gt;dev/tty7&lt;/code&gt; is the correct container’s path with leading &lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt; it won’t work.&lt;/p&gt;
+
+&lt;p&gt;The host’s TTY number could be any as said, but the container’s TTY needs to be &lt;code class=&quot;highlighter-rouge&quot;&gt;tty7&lt;/code&gt; unless configured otherwise. It seems that Xorg looks at this particular TTY, if it is not present you will see an error in container’s &lt;code class=&quot;highlighter-rouge&quot;&gt;/var/log/Xorg.0.log&lt;/code&gt;. So it is possible to configure it this way: &lt;code class=&quot;highlighter-rouge&quot;&gt;lxc.mount.entry: /dev/ttyN dev/tty7&lt;/code&gt; where &lt;code class=&quot;highlighter-rouge&quot;&gt;N&lt;/code&gt; is the number you like.&lt;/p&gt;
+
+&lt;p&gt;You can now stop and start your container:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pct stop &amp;lt;id&amp;gt;
+pct start &amp;lt;id&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You should see the monitor displaying your desktop environment albeit keyboards and mouses might not work yet.&lt;/p&gt;
+
+&lt;p&gt;Many would suggest installing the Intel driver for accelerated video decoding on the container as well:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt install i965-va-driver
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;switching-between-ttys&quot;&gt;Switching between TTY’s&lt;/h2&gt;
+
+&lt;p&gt;You can use &lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+alt+f&amp;lt;number&amp;gt;&lt;/code&gt; to switch to &lt;code class=&quot;highlighter-rouge&quot;&gt;TTY&amp;lt;number&amp;gt;&lt;/code&gt;. This might not work 100% if the desktop manager on the current TTY ignore these keys.&lt;/p&gt;
+
+&lt;h2 id=&quot;preventing-the-screen-tearing&quot;&gt;Preventing the screen tearing&lt;/h2&gt;
+
+&lt;p&gt;Using Intel GPU could see &lt;em&gt;tearing&lt;/em&gt; artifacts while scrolling. The feeling is like playing games without vertical sync. If you don’t encounter this problem, feel free to skip.&lt;/p&gt;
+
+&lt;p&gt;File: &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/X11/xorg.conf.d/20-intel.conf&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Section &quot;Device&quot;
+    Identifier &quot;Intel Graphics&quot;
+    Driver &quot;intel&quot;
+    Option &quot;TearFree&quot; &quot;true&quot;
+EndSection
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Thanks to &lt;a href=&quot;https://wiki.archlinux.org/index.php/intel_graphics&quot;&gt;https://wiki.archlinux.org/index.php/intel_graphics&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;keyboard-and-mouse-in-lxc&quot;&gt;Keyboard and mouse in LXC&lt;/h1&gt;
+
+&lt;p&gt;Keyboard and mouse are &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/input&lt;/code&gt; devices even though they are connected via USB ports. It is easy misled by &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/usb&lt;/code&gt; but it has nothing to do with it. You don’t need to grant access to &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/usb&lt;/code&gt; to make keyboard and mouse work.&lt;/p&gt;
+
+&lt;p&gt;We do the same thing as before using:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ls -l /dev/input
+total 0
+drwxr-xr-x 2 root root     180 Mar 10 17:05 by-id
+drwxr-xr-x 2 root root     200 Mar 10 17:05 by-path
+crw-rw---- 1 root input 13, 64 Mar 10 17:05 event0
+crw-rw---- 1 root input 13, 65 Mar 10 17:05 event1
+crw-rw---- 1 root input 13, 74 Mar 10 17:05 event10
+crw-rw---- 1 root input 13, 75 Mar 10 17:05 event11
+... a lot more ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I personally grant and map them all to the container using, update the &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/pve/lxc/&amp;lt;id&amp;gt;.conf&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;lxc.cgroup.devices.allow = c 13:* rwm 
+lxc.mount.entry: /dev/input dev/input none bind,optional,create=dir
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next we need to tell the Xorg to use these input devices also telling which driver we want to use for each. I have found &lt;code class=&quot;highlighter-rouge&quot;&gt;evdev&lt;/code&gt; driver to work well in my case both mouse and keyboard.&lt;/p&gt;
+
+&lt;p&gt;To install the driver in the container:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt install xserver-xorg-input-evdev
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To tell the Xorg which devices to load we need to know which &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/input/eventN&lt;/code&gt; ‘s are related to our mouse and keyboard. This could be done using &lt;code class=&quot;highlighter-rouge&quot;&gt;evtest&lt;/code&gt;. You can install the program on the host or on the container:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt install evtest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Using it would result:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@desktop:/dev# evtest
+No device specified, trying to scan all of /dev/input/event*
+Available devices:
+/dev/input/event0:	Sleep Button
+/dev/input/event1:	Power Button
+/dev/input/event2:	Power Button
+/dev/input/event3:	Logitech USB Receiver
+/dev/input/event4:	Logitech USB Receiver
+/dev/input/event5:	Microsoft Microsoft® Nano Transceiver v2.0
+/dev/input/event6:	Microsoft Microsoft® Nano Transceiver v2.0
+/dev/input/event7:	Microsoft Microsoft® Nano Transceiver v2.0
+/dev/input/event8:	Video Bus
+/dev/input/event9:	PC Speaker
+/dev/input/event10:	HDA NVidia HDMI/DP,pcm=3
+/dev/input/event11:	HDA NVidia HDMI/DP,pcm=7
+/dev/input/event12:	HDA NVidia HDMI/DP,pcm=8
+/dev/input/event13:	HDA NVidia HDMI/DP,pcm=9
+/dev/input/event14:	HDA Intel PCH Front Mic
+/dev/input/event15:	HDA Intel PCH Rear Mic
+/dev/input/event16:	HDA Intel PCH Line
+/dev/input/event17:	HDA Intel PCH Line Out
+/dev/input/event18:	HDA Intel PCH Front Headphone
+/dev/input/event19:	HDA Intel PCH HDMI/DP,pcm=3
+/dev/input/event20:	HDA Intel PCH HDMI/DP,pcm=7
+/dev/input/event21:	HDA Intel PCH HDMI/DP,pcm=8
+/dev/input/event22:	HDA Intel PCH HDMI/DP,pcm=9
+/dev/input/event23:	HDA Intel PCH HDMI/DP,pcm=10
+Select the device event number [0-23]: 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The mouse is Logitech in this case, and the keyboard is Microsoft. I could tell Xorg to load them all. However, if you are in doubt you can always test it by inputing the number and try typing or moving it to see if it triggers any event.&lt;/p&gt;
+
+&lt;p&gt;In container, edit the file &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/share/X11/xorg.conf.d/10-lxc-input.conf&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Section &quot;InputDevice&quot;
+    Identifier &quot;event3&quot;
+    Option &quot;Device&quot; &quot;/dev/input/event3&quot;
+    Option &quot;AutoServerLayout&quot; &quot;true&quot;
+    Driver &quot;evdev&quot;
+EndSection
+
+Section &quot;InputDevice&quot;
+    Identifier &quot;event4&quot;
+    Option &quot;Device&quot; &quot;/dev/input/event5&quot;
+    Option &quot;AutoServerLayout&quot; &quot;true&quot;
+    Driver &quot;evdev&quot;
+EndSection
+
+... for all event you want ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Restart the container again. Mouse and keyboard should now work.&lt;/p&gt;
+
+&lt;h1 id=&quot;audio-in-lxc&quot;&gt;Audio in LXC&lt;/h1&gt;
+
+&lt;p&gt;Most of the configurations in this guide need some understanding of the linux hardware and software stack which I am lacking. But none is worse in the case of audio. This is convoluted. I just managed to make it work, but don’t expect my explanation to be correct.&lt;/p&gt;
+
+&lt;p&gt;I think a good starting point if you are interested in keywords in linux audio stack is: &lt;a href=&quot;https://www.cnblogs.com/little-ant/p/4016180.html&quot;&gt;https://www.cnblogs.com/little-ant/p/4016180.html&lt;/a&gt;. This is not the original post, but it is a working link.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Disclaimer: I have seen many approaches to audio in container. In this guide, it will be just one of them.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;make-audio-work-on-the-host&quot;&gt;Make audio work on the host&lt;/h2&gt;
+
+&lt;p&gt;To be foolproof, I think it is a good start if we can make sound from the host first, and then we will make it work from the container. We will need many tools in &lt;code class=&quot;highlighter-rouge&quot;&gt;alsa-utils&lt;/code&gt; so we first install it on the host.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt install alsa-utils
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, we are going to list the audio devices:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@desktop:/dev# aplay -L
+null
+    Discard all samples (playback) or generate zero samples (capture)
+default:CARD=PCH
+    HDA Intel PCH, ALC887-VD Analog
+    Default Audio Device
+sysdefault:CARD=PCH
+    HDA Intel PCH, ALC887-VD Analog
+    Default Audio Device
+front:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    Front speakers
+surround21:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    2.1 Surround output to Front and Subwoofer speakers
+surround40:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+hdmi:CARD=PCH,DEV=0
+    HDA Intel PCH, HDMI 0
+    HDMI Audio Output
+... many more ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It is unclear to know which is responsible for the output we are listening to. In my settings, I’m connecting a monitor via an HDMI cable, so I’m looking for HDMI in particular.&lt;/p&gt;
+
+&lt;p&gt;To know which one, we need test each output by producing some noise. This could be done using &lt;code class=&quot;highlighter-rouge&quot;&gt;speaker-test&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;You might need to test all of them, but the command is something like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;speaker-test -D &amp;lt;name&amp;gt; -c 2
+# for example
+speaker-test -D hdmi:CARD=PCH,DEV=0 -c 2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;One of them would produce noise, and you now know which one it is, and also know that the audio works.&lt;/p&gt;
+
+&lt;h2 id=&quot;make-audio-work-on-the-container&quot;&gt;Make audio work on the container&lt;/h2&gt;
+
+&lt;p&gt;At the container’s side, we are looking for &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/snd&lt;/code&gt; which has the major number of 116. We would map them all to the container.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@desktop:/dev# ls -l /dev/snd
+total 0
+drwxr-xr-x 2 root root       80 Mar 10 17:05 by-path
+crw-rw---- 1 root audio 116,  8 Mar 10 17:05 controlC0
+crw-rw---- 1 root audio 116,  2 Mar 10 17:05 controlC1
+crw-rw---- 1 root audio 116, 17 Mar 10 17:05 hwC0D0
+crw-rw---- 1 root audio 116, 18 Mar 10 17:05 hwC0D2
+crw-rw---- 1 root audio 116,  7 Mar 10 17:05 hwC1D0
+crw-rw---- 1 root audio 116, 10 Mar 10 17:05 pcmC0D0c
+crw-rw---- 1 root audio 116,  9 Mar 10 17:05 pcmC0D0p
+crw-rw---- 1 root audio 116, 16 Mar 10 17:05 pcmC0D10p
+... many more ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Please note that if the audio producer in the container is not root, let’s say &lt;code class=&quot;highlighter-rouge&quot;&gt;joe&lt;/code&gt;, you need to add &lt;code class=&quot;highlighter-rouge&quot;&gt;joe&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;audio&lt;/code&gt; group using, at the container:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;usermod &lt;span class=&quot;nt&quot;&gt;-aG&lt;/span&gt; audio joe
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;At the host, we need to update the container configuration again:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;lxc.cgroup.devices.allow = c 116:* rwm 
+lxc.mount.entry: /dev/snd dev/snd none bind,optional,create=dir
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After restarting the container, test if the audio devices are available:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aplay -L
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You should see the very same output as the root’s one.&lt;/p&gt;
+
+&lt;p&gt;Finally, we tell the Pulse audio in the container to manually look for &lt;em&gt;alsa-sink&lt;/em&gt; on a specific device we have tested. Modify the file &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/pulse/default.pa&lt;/code&gt; by looking for &lt;code class=&quot;highlighter-rouge&quot;&gt;load-module module-also-sink&lt;/code&gt;. You might see it commented, uncomment it, and update it so:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;load-module module-alsa-sink device=&amp;lt;name&amp;gt;
+# for example
+load-module module-alsa-sink device=hdmi:CARD=PCH,DEV=0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After that you might need to reload the pulse audio, in the container:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pulseaudio -k
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Or restart the container should yield the same result. Your audio should now work. You can go to &lt;strong&gt;PulseAudio&lt;/strong&gt; app and see if it the audio device is recognized.&lt;/p&gt;
+
+&lt;p&gt;However, it is possible that the device is muted (by some external means). To guarantee it is not, we run, in the container:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;alsamixer
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You should see the following screen:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/articles/setting-up-lxc-for-intel-gpu-proxmox/1552279415943.png&quot; alt=&quot;1552279415943&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you see any of them to be &lt;strong&gt;MM&lt;/strong&gt; which is muted. You need to make it not by selecting it and press &lt;strong&gt;M&lt;/strong&gt;. You’ll see the following screen:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/articles/setting-up-lxc-for-intel-gpu-proxmox/1552279220123.png&quot; alt=&quot;1552279220123&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Nothing is muted now.&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="proxmox" /><category term="linux" /><summary type="html">The goal is to create a linux container with Proxmox that utilizes integrated Intel GPU. Additional requirements are mouse and keyboard must work also with audio.</summary></entry><entry><title type="html">Approximately Optimal Approximate Reinforcement Learning (Kakade &amp;amp; Langford, 2002)</title><link href="http://localhost:4000/academic/2019/03/09/kakade-2002.html" rel="alternate" type="text/html" title="Approximately Optimal Approximate Reinforcement Learning (Kakade &amp; Langford, 2002)" /><published>2019-03-09T00:00:00+07:00</published><updated>2019-03-09T00:00:00+07:00</updated><id>http://localhost:4000/academic/2019/03/09/kakade-2002</id><content type="html" xml:base="http://localhost:4000/academic/2019/03/09/kakade-2002.html">&lt;p&gt;In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Is there a way to guarantee policy improvement?&lt;/strong&gt;&lt;/p&gt;
 
@@ -363,7 +712,7 @@
 \label{eq:two_parts6}
 \end{equation} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;This &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; would be guaranteed to improve the policy because we calculate it from the pessimistic estimate (its lower bound).&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="rl" /><summary type="html">In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:</summary></entry><entry><title type="html">NFS file attribution caching causes reading inconsistency in multi-producer scenario</title><link href="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html" rel="alternate" type="text/html" title="NFS file attribution caching causes reading inconsistency in multi-producer scenario" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies</id><content type="html" xml:base="https://blog.konpat.me/dev/2019/02/17/nfs-read-inconsistencies.html">&lt;p&gt;With two producers e.g. local and remote producers, the changes made locally might need time to be acknowledged by the remote.&lt;/p&gt;
+&lt;p&gt;This &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; would be guaranteed to improve the policy because we calculate it from the pessimistic estimate (its lower bound).&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="rl" /><summary type="html">In this article, we will try to retell the paper in a simpler way by which it is easier to follow. At the moment, we will only focus on the first part of the paper which tries to give an answer to the following question:</summary></entry><entry><title type="html">NFS file attribution caching causes reading inconsistency in multi-producer scenario</title><link href="http://localhost:4000/dev/2019/02/17/nfs-read-inconsistencies.html" rel="alternate" type="text/html" title="NFS file attribution caching causes reading inconsistency in multi-producer scenario" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>http://localhost:4000/dev/2019/02/17/nfs-read-inconsistencies</id><content type="html" xml:base="http://localhost:4000/dev/2019/02/17/nfs-read-inconsistencies.html">&lt;p&gt;With two producers e.g. local and remote producers, the changes made locally might need time to be acknowledged by the remote.&lt;/p&gt;
 
 &lt;p&gt;Even without file caching this could still be a problem, I experience this first-hand while using Python. I think Python might use some kind of file attribute to determine file updates. NFS has this which is called “attribute caching”.&lt;/p&gt;
 
@@ -378,7 +727,7 @@
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;203.0.113.0:/home       /nfs/home      nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://linux.die.net/man/5/nfs&quot;&gt;&lt;strong&gt;NFS client documentation&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="nfs" /><summary type="html">With two producers e.g. local and remote producers, the changes made locally might need time to be acknowledged by the remote.</summary></entry><entry><title type="html">Vim conflicting with VSCode</title><link href="https://blog.konpat.me/dev/2019/02/17/vim-conflicting-ctrl-d-with-vscode.html" rel="alternate" type="text/html" title="Vim conflicting &lt;Ctrl-d&gt; with VSCode" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2019/02/17/vim-conflicting-ctrl-d-with-vscode</id><content type="html" xml:base="https://blog.konpat.me/dev/2019/02/17/vim-conflicting-ctrl-d-with-vscode.html">&lt;p&gt;VSCode &lt;strong&gt;Vim&lt;/strong&gt; extension binds &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;Ctrl-d&amp;gt;&lt;/code&gt; for its own use. This keymap is used by VSCode for “selecting next word occurrence” in a multi-cursor fashion. If you like VSCode to handle this keymap (and others of your choice) you could do so via &lt;code class=&quot;highlighter-rouge&quot;&gt;vim.handleKeys&lt;/code&gt; option.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://linux.die.net/man/5/nfs&quot;&gt;&lt;strong&gt;NFS client documentation&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="nfs" /><summary type="html">With two producers e.g. local and remote producers, the changes made locally might need time to be acknowledged by the remote.</summary></entry><entry><title type="html">Vim conflicting with VSCode</title><link href="http://localhost:4000/dev/2019/02/17/vim-conflicting-ctrl-d-with-vscode.html" rel="alternate" type="text/html" title="Vim conflicting &lt;Ctrl-d&gt; with VSCode" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>http://localhost:4000/dev/2019/02/17/vim-conflicting-ctrl-d-with-vscode</id><content type="html" xml:base="http://localhost:4000/dev/2019/02/17/vim-conflicting-ctrl-d-with-vscode.html">&lt;p&gt;VSCode &lt;strong&gt;Vim&lt;/strong&gt; extension binds &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;Ctrl-d&amp;gt;&lt;/code&gt; for its own use. This keymap is used by VSCode for “selecting next word occurrence” in a multi-cursor fashion. If you like VSCode to handle this keymap (and others of your choice) you could do so via &lt;code class=&quot;highlighter-rouge&quot;&gt;vim.handleKeys&lt;/code&gt; option.&lt;/p&gt;
 
 &lt;p&gt;The following table is copied and pasted from the &lt;a href=&quot;https://github.com/VSCodeVim/Vim#vscodevim-settings&quot;&gt;project&lt;/a&gt;:&lt;/p&gt;
 
@@ -406,7 +755,7 @@
 &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s2&quot;&gt;&quot;vim.handleKeys&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;C-d&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Konpat Preechakul</name></author><category term="vscode" /><summary type="html">VSCode Vim extension binds &amp;lt;Ctrl-d&amp;gt; for its own use. This keymap is used by VSCode for “selecting next word occurrence” in a multi-cursor fashion. If you like VSCode to handle this keymap (and others of your choice) you could do so via vim.handleKeys option.</summary></entry><entry><title type="html">Vim navigation between wrapped Lines in VSCode</title><link href="https://blog.konpat.me/dev/2019/02/17/vim-navigation-within-wrapped-lines-in-vscode.html" rel="alternate" type="text/html" title="Vim navigation between wrapped Lines in VSCode" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2019/02/17/vim-navigation-within-wrapped-lines-in-vscode</id><content type="html" xml:base="https://blog.konpat.me/dev/2019/02/17/vim-navigation-within-wrapped-lines-in-vscode.html">&lt;p&gt;Noticing that long lines might be soft-wrapped automatically, and navigating with &lt;code class=&quot;highlighter-rouge&quot;&gt;j&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt; would result in jumping across many soft-wrapped lines (but it is in fact a single line). VIM uses &lt;code class=&quot;highlighter-rouge&quot;&gt;g j&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;g k&lt;/code&gt; to navigate within the lines instead.&lt;/p&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Konpat Preechakul</name></author><category term="vscode" /><summary type="html">VSCode Vim extension binds &amp;lt;Ctrl-d&amp;gt; for its own use. This keymap is used by VSCode for “selecting next word occurrence” in a multi-cursor fashion. If you like VSCode to handle this keymap (and others of your choice) you could do so via vim.handleKeys option.</summary></entry><entry><title type="html">Vim navigation between wrapped Lines in VSCode</title><link href="http://localhost:4000/dev/2019/02/17/vim-navigation-within-wrapped-lines-in-vscode.html" rel="alternate" type="text/html" title="Vim navigation between wrapped Lines in VSCode" /><published>2019-02-17T00:00:00+07:00</published><updated>2019-02-17T00:00:00+07:00</updated><id>http://localhost:4000/dev/2019/02/17/vim-navigation-within-wrapped-lines-in-vscode</id><content type="html" xml:base="http://localhost:4000/dev/2019/02/17/vim-navigation-within-wrapped-lines-in-vscode.html">&lt;p&gt;Noticing that long lines might be soft-wrapped automatically, and navigating with &lt;code class=&quot;highlighter-rouge&quot;&gt;j&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt; would result in jumping across many soft-wrapped lines (but it is in fact a single line). VIM uses &lt;code class=&quot;highlighter-rouge&quot;&gt;g j&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;g k&lt;/code&gt; to navigate within the lines instead.&lt;/p&gt;
 
 &lt;p&gt;If you want &lt;code class=&quot;highlighter-rouge&quot;&gt;j&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;k&lt;/code&gt; to be your default navigating keys through the block, one possible way is to remap it to &lt;code class=&quot;highlighter-rouge&quot;&gt;g j&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;g k&lt;/code&gt; instead. As mentioned in this &lt;a href=&quot;https://stackoverflow.com/questions/46433500/vs-code-navigate-within-a-wrapped-line-vs-jumping-to-next-line&quot;&gt;Stackoverflow thread&lt;/a&gt;.&lt;/p&gt;
 
@@ -434,7 +783,7 @@
 ],
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Put it in your &lt;code class=&quot;highlighter-rouge&quot;&gt;settings.json&lt;/code&gt; .&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="vscode" /><summary type="html">Noticing that long lines might be soft-wrapped automatically, and navigating with j k would result in jumping across many soft-wrapped lines (but it is in fact a single line). VIM uses g j and g k to navigate within the lines instead.</summary></entry><entry><title type="html">Off-policy Importance Sampling</title><link href="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html" rel="alternate" type="text/html" title="Off-policy Importance Sampling" /><published>2019-02-02T00:00:00+07:00</published><updated>2019-02-02T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/02/02/off-policy-importance-sampling.html">&lt;p&gt;ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า &lt;strong&gt;prediction&lt;/strong&gt; ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; และหรือ &lt;script type=&quot;math/tex&quot;&gt;q_\pi​&lt;/script&gt;&lt;/p&gt;
+&lt;p&gt;Put it in your &lt;code class=&quot;highlighter-rouge&quot;&gt;settings.json&lt;/code&gt; .&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="vscode" /><summary type="html">Noticing that long lines might be soft-wrapped automatically, and navigating with j k would result in jumping across many soft-wrapped lines (but it is in fact a single line). VIM uses g j and g k to navigate within the lines instead.</summary></entry><entry><title type="html">Off-policy Importance Sampling</title><link href="http://localhost:4000/academic/2019/02/02/off-policy-importance-sampling.html" rel="alternate" type="text/html" title="Off-policy Importance Sampling" /><published>2019-02-02T00:00:00+07:00</published><updated>2019-02-02T00:00:00+07:00</updated><id>http://localhost:4000/academic/2019/02/02/off-policy-importance-sampling</id><content type="html" xml:base="http://localhost:4000/academic/2019/02/02/off-policy-importance-sampling.html">&lt;p&gt;ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า &lt;strong&gt;prediction&lt;/strong&gt; ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ &lt;script type=&quot;math/tex&quot;&gt;v_\pi&lt;/script&gt; และหรือ &lt;script type=&quot;math/tex&quot;&gt;q_\pi​&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;อีกส่วนหนึ่งก็คือส่วนที่เรียกว่า &lt;strong&gt;control&lt;/strong&gt; ถ้าเรามีข้อมูลเหล่านี้ (&lt;script type=&quot;math/tex&quot;&gt;v_\pi, q_\pi&lt;/script&gt;) หรือไม่มี จะสามารถหา policy ที่ดีได้อย่างไร ในกรณีของ &lt;a href=&quot;http://www.incompleteideas.net/book/ebook/node46.html&quot;&gt;GPI (Generalized Policy Iteration)&lt;/a&gt; นั้น control (การหา policy ที่ดี) นั้นอาศัยการ prediction ที่ดีมาก่อนด้วย นั่นทำให้ในหลาย ๆ ครั้งเราถือว่า prediction กับ control เหมือนกับสองส่วนที่ขาดจากกันไม่ได้&lt;/p&gt;
 
@@ -774,7 +1123,7 @@ v(s) &amp;= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \r
 
 &lt;p&gt;Hernandez-Garcia, J. F., &amp;amp; Sutton, R. S. (2019). Understanding Multi-Step Deep Reinforcement Learning: A Systematic Study of the DQN Target. Retrieved from http://arxiv.org/abs/1901.07510&lt;/p&gt;
 
-&lt;p&gt;Amherst, S., Precup, D., Sutton, R. S., &amp;amp; Singh, S. (2000). Eligibility Traces for Off-Policy Policy Evaluation (Vol. 80).&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="rl" /><category term="thai" /><summary type="html">ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า prediction ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ และหรือ</summary></entry><entry><title type="html">Academic Machine Learning Development Process</title><link href="https://blog.konpat.me/academic/2019/01/23/academic-machine-learning-development-process.html" rel="alternate" type="text/html" title="Academic Machine Learning Development Process" /><published>2019-01-23T00:00:00+07:00</published><updated>2019-01-23T00:00:00+07:00</updated><id>https://blog.konpat.me/academic/2019/01/23/academic-machine-learning-development-process</id><content type="html" xml:base="https://blog.konpat.me/academic/2019/01/23/academic-machine-learning-development-process.html">&lt;p&gt;Machine learning projects nowadays cannot easily fit into a laptop. While we optimize laptop for maximum portability, it does not usually come with a powerful GPU. The conventional wisdom is that we buy our own machine learning rig with powerful enough GPU(s). This now splits our development machine, where we actually writing codes, and the running machine, where we have all the libraries and resources. Of course, In this scenario, we don’t include the GPU farm, if you have any, in that case other layer of considerations must be in place.&lt;/p&gt;
+&lt;p&gt;Amherst, S., Precup, D., Sutton, R. S., &amp;amp; Singh, S. (2000). Eligibility Traces for Off-Policy Policy Evaluation (Vol. 80).&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="rl" /><category term="thai" /><summary type="html">ขั้นตอนในการเรียนรู้ policy ที่ดีใน reinforcement learning นั้น มักจะประกอบไปด้วยสองส่วน หนึ่ง คือส่วนที่เรียกว่า prediction ก็คือส่วนที่ตอบว่า “ถ้าเราเดินไปตามเส้นทางนี้ แล้วจะดีขนาดไหน” นั่นก็คือ “คาดการณ์” (prediction) ค่าของ และหรือ</summary></entry><entry><title type="html">Academic Machine Learning Development Process</title><link href="http://localhost:4000/academic/2019/01/23/academic-machine-learning-development-process.html" rel="alternate" type="text/html" title="Academic Machine Learning Development Process" /><published>2019-01-23T00:00:00+07:00</published><updated>2019-01-23T00:00:00+07:00</updated><id>http://localhost:4000/academic/2019/01/23/academic-machine-learning-development-process</id><content type="html" xml:base="http://localhost:4000/academic/2019/01/23/academic-machine-learning-development-process.html">&lt;p&gt;Machine learning projects nowadays cannot easily fit into a laptop. While we optimize laptop for maximum portability, it does not usually come with a powerful GPU. The conventional wisdom is that we buy our own machine learning rig with powerful enough GPU(s). This now splits our development machine, where we actually writing codes, and the running machine, where we have all the libraries and resources. Of course, In this scenario, we don’t include the GPU farm, if you have any, in that case other layer of considerations must be in place.&lt;/p&gt;
 
 &lt;p&gt;Splitting developing machine and running machine give rise to a lot of headaches because the latency of the task is generally very low, iterations are fast. How could we manage to do this? Worse yet, usually during coding we want to have access to all development tools including but not limited to code suggestion and auto-completion. If all the libraries reside in the running machine, how could we have a precise code suggestion then?&lt;/p&gt;
 
@@ -788,11 +1137,11 @@ v(s) &amp;= \frac{\sum_{t \in \tau(s)} \rho_{t:T-1} G_t}{\sum_{t \in \tau(s)} \r
 
 &lt;p&gt;To run live share we need to run Code, and to run Code we need a desktop environment. The fact that Code does not support headless mode is still a caveat to use this solution, but for me this is rather slim since I could just install a &lt;strong&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Virtual_Network_Computing&quot;&gt;VNC&lt;/a&gt;&lt;/strong&gt; server of some kind (I personally use &lt;strong&gt;&lt;a href=&quot;https://code.visualstudio.com/blogs/2017/11/15/live-share&quot;&gt;TurboVNC&lt;/a&gt;&lt;/strong&gt;) and run the Code from there.&lt;/p&gt;
 
-&lt;p&gt;Visual Studio Code now seems to focus on machine learning community as well, you can see with its powerful &lt;strong&gt;&lt;a href=&quot;https://marketplace.visualstudio.com/items?itemName=ms-python.python&quot;&gt;Python&lt;/a&gt;&lt;/strong&gt; extension, and also its &lt;strong&gt;&lt;a href=&quot;https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode&quot;&gt;Intellicode&lt;/a&gt;&lt;/strong&gt; extension which supports many deep learning frameworks.&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="academic" /><category term="ml" /><category term="vscode" /><summary type="html">Machine learning projects nowadays cannot easily fit into a laptop. While we optimize laptop for maximum portability, it does not usually come with a powerful GPU. The conventional wisdom is that we buy our own machine learning rig with powerful enough GPU(s). This now splits our development machine, where we actually writing codes, and the running machine, where we have all the libraries and resources. Of course, In this scenario, we don’t include the GPU farm, if you have any, in that case other layer of considerations must be in place.</summary></entry><entry><title type="html">Moving to Jekyll</title><link href="https://blog.konpat.me/me/2019/01/23/moving-to-jekyll.html" rel="alternate" type="text/html" title="Moving to Jekyll" /><published>2019-01-23T00:00:00+07:00</published><updated>2019-01-23T00:00:00+07:00</updated><id>https://blog.konpat.me/me/2019/01/23/moving-to-jekyll</id><content type="html" xml:base="https://blog.konpat.me/me/2019/01/23/moving-to-jekyll.html">&lt;p&gt;It has been more than a year without an update to the blog. It is because I quitted being a developer, and becoming a machine learning researcher. The blog, which has initially been conceived for jotting down my development struggles, seems unfit for my new direction.&lt;/p&gt;
+&lt;p&gt;Visual Studio Code now seems to focus on machine learning community as well, you can see with its powerful &lt;strong&gt;&lt;a href=&quot;https://marketplace.visualstudio.com/items?itemName=ms-python.python&quot;&gt;Python&lt;/a&gt;&lt;/strong&gt; extension, and also its &lt;strong&gt;&lt;a href=&quot;https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode&quot;&gt;Intellicode&lt;/a&gt;&lt;/strong&gt; extension which supports many deep learning frameworks.&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="academic" /><category term="ml" /><category term="vscode" /><summary type="html">Machine learning projects nowadays cannot easily fit into a laptop. While we optimize laptop for maximum portability, it does not usually come with a powerful GPU. The conventional wisdom is that we buy our own machine learning rig with powerful enough GPU(s). This now splits our development machine, where we actually writing codes, and the running machine, where we have all the libraries and resources. Of course, In this scenario, we don’t include the GPU farm, if you have any, in that case other layer of considerations must be in place.</summary></entry><entry><title type="html">Moving to Jekyll</title><link href="http://localhost:4000/me/2019/01/23/moving-to-jekyll.html" rel="alternate" type="text/html" title="Moving to Jekyll" /><published>2019-01-23T00:00:00+07:00</published><updated>2019-01-23T00:00:00+07:00</updated><id>http://localhost:4000/me/2019/01/23/moving-to-jekyll</id><content type="html" xml:base="http://localhost:4000/me/2019/01/23/moving-to-jekyll.html">&lt;p&gt;It has been more than a year without an update to the blog. It is because I quitted being a developer, and becoming a machine learning researcher. The blog, which has initially been conceived for jotting down my development struggles, seems unfit for my new direction.&lt;/p&gt;
 
 &lt;p&gt;Now I aim to revive the blog somehow with a new goal under new requirements. The contents before were about coding snippets, but now I have to look from an academic perspective. My blog may need to support more for equations. I take this opportunity as a fresh start to try out &lt;strong&gt;Jekyll&lt;/strong&gt;, a static-file blog platform.&lt;/p&gt;
 
-&lt;p&gt;Currently, I have migrated contents from the old blog to here.&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><summary type="html">It has been more than a year without an update to the blog. It is because I quitted being a developer, and becoming a machine learning researcher. The blog, which has initially been conceived for jotting down my development struggles, seems unfit for my new direction.</summary></entry><entry><title type="html">Install Canon MP280 Driver on Ubuntu 18.04</title><link href="https://blog.konpat.me/dev/2018/07/10/install-canon-mp280-driver-on-ubuntu-18-04.html" rel="alternate" type="text/html" title="Install Canon MP280 Driver on Ubuntu 18.04" /><published>2018-07-10T00:00:00+07:00</published><updated>2018-07-10T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2018/07/10/install-canon-mp280-driver-on-ubuntu-18-04</id><content type="html" xml:base="https://blog.konpat.me/dev/2018/07/10/install-canon-mp280-driver-on-ubuntu-18-04.html">&lt;p&gt;You need &lt;strong&gt;libtiff4&lt;/strong&gt; which cannot be installed via apt from &lt;a href=&quot;https://mun-steiner.de/wordpress/index.php/linux/scannen-und-drucken/canon-software-pixma-mg5250/libtiff4-erforderlich/&quot;&gt;here &lt;/a&gt;(direct link: &lt;a href=&quot;http://old-releases.ubuntu.com/ubuntu/pool/universe/t/tiff3/libtiff4_3.9.7-2ubuntu1_amd64.deb&quot;&gt;http://old-releases.ubuntu.com/ubuntu/pool/universe/t/tiff3/libtiff4_3.9.7-2ubuntu1_amd64.deb&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;Currently, I have migrated contents from the old blog to here.&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><summary type="html">It has been more than a year without an update to the blog. It is because I quitted being a developer, and becoming a machine learning researcher. The blog, which has initially been conceived for jotting down my development struggles, seems unfit for my new direction.</summary></entry><entry><title type="html">Install Canon MP280 Driver on Ubuntu 18.04</title><link href="http://localhost:4000/dev/2018/07/10/install-canon-mp280-driver-on-ubuntu-18-04.html" rel="alternate" type="text/html" title="Install Canon MP280 Driver on Ubuntu 18.04" /><published>2018-07-10T00:00:00+07:00</published><updated>2018-07-10T00:00:00+07:00</updated><id>http://localhost:4000/dev/2018/07/10/install-canon-mp280-driver-on-ubuntu-18-04</id><content type="html" xml:base="http://localhost:4000/dev/2018/07/10/install-canon-mp280-driver-on-ubuntu-18-04.html">&lt;p&gt;You need &lt;strong&gt;libtiff4&lt;/strong&gt; which cannot be installed via apt from &lt;a href=&quot;https://mun-steiner.de/wordpress/index.php/linux/scannen-und-drucken/canon-software-pixma-mg5250/libtiff4-erforderlich/&quot;&gt;here &lt;/a&gt;(direct link: &lt;a href=&quot;http://old-releases.ubuntu.com/ubuntu/pool/universe/t/tiff3/libtiff4_3.9.7-2ubuntu1_amd64.deb&quot;&gt;http://old-releases.ubuntu.com/ubuntu/pool/universe/t/tiff3/libtiff4_3.9.7-2ubuntu1_amd64.deb&lt;/a&gt;)&lt;/p&gt;
 
 &lt;p&gt;Install the libtiff4 package:&lt;/p&gt;
 
@@ -834,323 +1183,4 @@ cnijfilter-mp280series_3.40-1_i386.deb
 dpkg -i cnijfilter-mp280series_3.40-1_amd64.deb
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;That should be all!&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="ubuntu" /><summary type="html">You need libtiff4 which cannot be installed via apt from here (direct link: http://old-releases.ubuntu.com/ubuntu/pool/universe/t/tiff3/libtiff4_3.9.7-2ubuntu1_amd64.deb)</summary></entry><entry><title type="html">USB Passthrough to an LXC (Proxmox)</title><link href="https://blog.konpat.me/dev/2018/07/10/usb-passthrough-to-an-lxc-proxmox.html" rel="alternate" type="text/html" title="USB Passthrough to an LXC (Proxmox)" /><published>2018-07-10T00:00:00+07:00</published><updated>2018-07-10T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2018/07/10/usb-passthrough-to-an-lxc-proxmox</id><content type="html" xml:base="https://blog.konpat.me/dev/2018/07/10/usb-passthrough-to-an-lxc-proxmox.html">&lt;p&gt;The idea of USB pass through to an LXC container can be done by “mounting” the device inside the container space. However, it doesn’t mean the container can mingle with the device just yet. We also need to “allow” the container to do so as well.&lt;/p&gt;
-
-&lt;p&gt;So first we need to locate the device we want to pass through. &lt;strong&gt;lsusb&lt;/strong&gt; could be used to find the connecting USB devices.&lt;/p&gt;
-
-&lt;p&gt;Note: &lt;strong&gt;lsusb&lt;/strong&gt; will not work inside the container because there are no devices there yet&lt;/p&gt;
-
-&lt;p&gt;Here is the output of my case:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-Bus 001 Device 013: ID 045e:0800 Microsoft Corp.
-Bus 001 Device 020: ID 04a9:1746 Canon, Inc.
-Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;In my case, I want to pass through my Canon MP printer to the container. So, I look specifically at the “Canon, Inc.”&lt;/p&gt;
-
-&lt;p&gt;The &lt;strong&gt;bus&lt;/strong&gt; and &lt;strong&gt;device&lt;/strong&gt; numbers are what we are looking for now, they can guide us to the correct device path beneath &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev&lt;/code&gt; . In this case, they are &lt;strong&gt;001&lt;/strong&gt; and &lt;strong&gt;020&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;So the device path, that we need to mount to the container, should be &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/bus/usb/001/020&lt;/code&gt; . How to mount the container with this path? we can do it via the &lt;code class=&quot;highlighter-rouge&quot;&gt;lxc.mount.entry&lt;/code&gt; option.&lt;/p&gt;
-
-&lt;p&gt;But, as I said before, it is not enough to just mount the device path, the container must be allowed to use it as well. We can do it via cgroup, more specifically option &lt;code class=&quot;highlighter-rouge&quot;&gt;lxc.cgroup.device.allow&lt;/code&gt; . To use this option we need to know the device’s &lt;strong&gt;major&lt;/strong&gt; and &lt;strong&gt;minor&lt;/strong&gt; numbers which can be retrieved as follows:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ls -al /dev/bus/usb/001/020
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;I got:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;crw-rw-r — 1 root lp 189, 19 Jul 10 17:32 001/020
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The major and minor numbers are &lt;strong&gt;189&lt;/strong&gt; and &lt;strong&gt;19&lt;/strong&gt; respectively.&lt;/p&gt;
-
-&lt;h3 id=&quot;start-the-configuration&quot;&gt;Start the configuration&lt;/h3&gt;
-
-&lt;p&gt;In my case, I use Proxmox to manage my containers. I need to go to &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/pve/lxc/&amp;lt;container_id&amp;gt;.conf&lt;/code&gt; .&lt;/p&gt;
-
-&lt;p&gt;I will have to put two lines more into the configuration file:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;lxc.cgroup.devices.allow: c 189:* rwm
-lxc.mount.entry: /dev/bus/usb/001/020 dev/bus/usb/001/020 none bind,optional,create=file
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The former is for allowing the container privilege to access the device specified by its major and minor numbers.&lt;/p&gt;
-
-&lt;p&gt;Note: &lt;strong&gt;189:*&lt;/strong&gt; means we care only the major number, all the minors apply. &lt;strong&gt;rwm&lt;/strong&gt;means read-write-mount.&lt;/p&gt;
-
-&lt;p&gt;The latter is for mounting the device file representation into the container space. In this case, I mount the exact device, however, it might be a good idea to map the whole directory (with all its siblings) to the container because it is more than likely that the filename will change.&lt;/p&gt;
-
-&lt;p&gt;Given that it can be done thus:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;lxc.mount.entry: /dev/bus/usb/001 dev/bus/usb/001 none bind,optional,create=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Note: the target mount path &lt;strong&gt;doesn’t&lt;/strong&gt; begin with a slash! it is &lt;code class=&quot;highlighter-rouge&quot;&gt;dev&lt;/code&gt; not &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Now, stop and start the container. You should now be able to run the command &lt;strong&gt;lsusb&lt;/strong&gt; inside the container and see the same results as if in the host.&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="vfio" /><category term="proxmox" /><summary type="html">The idea of USB pass through to an LXC container can be done by “mounting” the device inside the container space. However, it doesn’t mean the container can mingle with the device just yet. We also need to “allow” the container to do so as well.</summary></entry><entry><title type="html">Tensorflow Summary API V2</title><link href="https://blog.konpat.me/dev/2018/07/08/tensorflow-summary-api-v2.html" rel="alternate" type="text/html" title="Tensorflow Summary API V2" /><published>2018-07-08T00:00:00+07:00</published><updated>2018-07-08T00:00:00+07:00</updated><id>https://blog.konpat.me/dev/2018/07/08/tensorflow-summary-api-v2</id><content type="html" xml:base="https://blog.konpat.me/dev/2018/07/08/tensorflow-summary-api-v2.html">&lt;p&gt;Following the announcement in Tensorflow Dev Summit 2018 in Eager Execution part: &lt;a href=&quot;https://www.youtube.com/watch?v=T8AW0fKP0Hs&amp;amp;vl=en&quot;&gt;https://www.youtube.com/watch?v=T8AW0fKP0Hs&amp;amp;vl=en&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;It suggests that we should use &lt;code class=&quot;highlighter-rouge&quot;&gt;tf.contrib.summary&lt;/code&gt; . Here is the link to the documentation &lt;a href=&quot;https://www.tensorflow.org/api_docs/python/tf/contrib/summary&quot;&gt;https://www.tensorflow.org/api_docs/python/tf/contrib/summary&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;To me, it is not a very good documentation and hard to follow. I have here some example codes to guide you to the new summary API.&lt;/p&gt;
-
-&lt;p&gt;I will try to cover both modes, eager and graph. I shall stick with the graph mode and then add some notes for the eager mode.&lt;/p&gt;
-
-&lt;p&gt;Overall code template will be put at the end of this article.&lt;/p&gt;
-
-&lt;h3 id=&quot;creating-the-summary-writer&quot;&gt;Creating the summary writer&lt;/h3&gt;
-
-&lt;p&gt;This is the same with both graph mode and eager mode.&lt;/p&gt;
-
-&lt;p&gt;Since the new summary API is very context based, I think it is a good practice to separate graph for each summary writer.&lt;/p&gt;
-
-&lt;p&gt;Initializing the summary:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;tensorflow&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;save_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'logs'&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;global_step&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_global_step&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_file_writer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;always_record_summaries&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Now, we have &lt;code class=&quot;highlighter-rouge&quot;&gt;graph&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;writer&lt;/code&gt; .&lt;/p&gt;
-
-&lt;p&gt;Note: I usually also create a &lt;code class=&quot;highlighter-rouge&quot;&gt;global_step&lt;/code&gt; with the creation of graph. Which is very convenient because the summary writer will automatically utilize it. You don’t really need to keep the &lt;code class=&quot;highlighter-rouge&quot;&gt;global_step&lt;/code&gt; though, you can always get it from &lt;code class=&quot;highlighter-rouge&quot;&gt;tf.train.get_global_step()&lt;/code&gt; given that you properly set the default graph.&lt;/p&gt;
-
-&lt;h3 id=&quot;preparing-the-dataset-and-creating-the-model&quot;&gt;Preparing the dataset and creating the model&lt;/h3&gt;
-
-&lt;p&gt;This is not the main topic of this article though, but for the sake of expressiveness I found it useful for explanation.&lt;/p&gt;
-
-&lt;p&gt;First we prepare the dataset, I will demonstrate with &lt;code class=&quot;highlighter-rouge&quot;&gt;tf.data.Dataset&lt;/code&gt; here.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# dataset
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;some&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dataset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;data_itr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make_initializable_iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_itr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# x is feature, y is label
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Note that in eager mode you don’t need the &lt;code class=&quot;highlighter-rouge&quot;&gt;make_initializable_iterator()&lt;/code&gt;because the dataset is itself iterable. That means in eager you don’t need &lt;code class=&quot;highlighter-rouge&quot;&gt;get_next()&lt;/code&gt; as well.&lt;/p&gt;
-
-&lt;h4 id=&quot;at-the-time-we-define-model-we-add-something-to-summary&quot;&gt;At the time we define model, we add something to summary&lt;/h4&gt;
-
-&lt;p&gt;The following code is in graph mode:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;# let's say we have &quot;net&quot; as our model
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;prediction_op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;loss_op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;losses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sparse_softmax_cross_entropy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prediction_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;opt_op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AdamOptimizer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.001&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;minimize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;loss_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
-            &lt;span class=&quot;n&quot;&gt;global_step&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_global_step&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-        
-&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;record_summaries_every_n_global_steps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scalar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'loss'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            
-        &lt;span class=&quot;n&quot;&gt;summary_op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;all_summary_ops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;You see that we use &lt;code class=&quot;highlighter-rouge&quot;&gt;tf.contrib.summary.record_summaries_every_n_global_steps&lt;/code&gt; (&lt;a href=&quot;https://www.tensorflow.org/api_docs/python/tf/contrib/summary/record_summaries_every_n_global_steps&quot;&gt;https://www.tensorflow.org/api_docs/python/tf/contrib/summary/record_summaries_every_n_global_steps&lt;/a&gt;) to log anything inside the context manager every “n” steps.&lt;/p&gt;
-
-&lt;p&gt;In eager you might consider creating a function for running in each iteration like so:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;optimizer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GradientTape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;prediction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;losses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sparse_softmax_cross_entropy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prediction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    
-    &lt;span class=&quot;n&quot;&gt;grads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gradient&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;variables&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;grads_vars&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;variables&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;optimizer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;apply_gradients&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;grads_vars&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;global_step&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_global_step&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    
-    &lt;span class=&quot;c1&quot;&gt;# here is how you log every step (n=1)
-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;record_summaries_every_n_global_steps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scalar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'loss'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;at-the-time-of-running&quot;&gt;At the time of running&lt;/h3&gt;
-
-&lt;p&gt;Here is the code for graph mode:&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;# initialize the summary
-&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_default_graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;# init vars
-&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;sess&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;global_variables_initializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;# init iterator
-&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;sess&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data_itr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;initializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;# run 
-&lt;/span&gt;            &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sess&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
-                        &lt;span class=&quot;n&quot;&gt;summary_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;opt_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss_op&lt;/span&gt;
-                    &lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-                    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;OutOfRangeError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Two things to keep in mind:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tf.contrib.summary.initialize(graph=...)&lt;/code&gt; — You can supply “None” to the graph (leave it blank), it won’t save the graph to the Tensorboard. However, this option won’t have any effect in the eager mode anyway (since it doesn’t really construct a graph)&lt;/li&gt;
-  &lt;li&gt;You need to run &lt;code class=&quot;highlighter-rouge&quot;&gt;tf.contrib.summary.all_summary_ops()&lt;/code&gt; which will actually write the summary. However, you don’t need this for eager mode since it’s executed in real time anyway&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;to-summarize&quot;&gt;To summarize&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Create a summary writer under a graph, and use that graph throughout&lt;/li&gt;
-  &lt;li&gt;Define what you want to include in the summary and how frequent&lt;/li&gt;
-  &lt;li&gt;Initialize the summary (you might supply the graph here if you want to get the “Graph” page in Tensorboard, won’t work in eager)&lt;/li&gt;
-  &lt;li&gt;In graph mode, also run &lt;code class=&quot;highlighter-rouge&quot;&gt;tf.contrib.summary.all_summary_ops()&lt;/code&gt; to actually write the summary&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;an-example-of-graph-mode&quot;&gt;An example of graph mode&lt;/h4&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;tensorflow&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;save_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'summary_path'&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;global_step&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_global_step&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_file_writer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;always_record_summaries&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        
-&lt;span class=&quot;c1&quot;&gt;# simulate dataset
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fake_dataset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;astype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;float32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;fake_label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;low&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;high&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# preparing a fake dataset
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;from_tensor_slices&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fake_dataset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;from_tensor_slices&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fake_label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shuffle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;batch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;    
-    &lt;span class=&quot;n&quot;&gt;data_itr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make_initializable_iterator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_itr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# define the computing graph
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;# construct a simple classifier
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keras&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sequential&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keras&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;layers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dense&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;activation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keras&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;layers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dense&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-        
-        &lt;span class=&quot;n&quot;&gt;prediction_op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;loss_op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;losses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sparse_softmax_cross_entropy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prediction_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;opt_op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AdamOptimizer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.001&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;minimize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;loss_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
-            &lt;span class=&quot;n&quot;&gt;global_step&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_global_step&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-        
-        &lt;span class=&quot;c1&quot;&gt;# here is how you log every step (n=1)
-&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;record_summaries_every_n_global_steps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scalar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'loss'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            
-        &lt;span class=&quot;n&quot;&gt;summary_op&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;all_summary_ops&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        
-&lt;span class=&quot;c1&quot;&gt;# compute the graph
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Session&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sess&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;# initialize the summary writer
-&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_default_graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;# init vars
-&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;sess&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;global_variables_initializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;# init iterator
-&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;sess&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data_itr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;initializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;# run until the dataset is exhausted
-&lt;/span&gt;            &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sess&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
-                        &lt;span class=&quot;n&quot;&gt;summary_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;opt_op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss_op&lt;/span&gt;
-                    &lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;OutOfRangeError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;an-example-of-eager-mode&quot;&gt;An example of eager mode&lt;/h4&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;tensorflow&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enable_eager_execution&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;save_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'logs/test10'&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;global_step&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_global_step&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_file_writer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;always_record_summaries&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        
-&lt;span class=&quot;c1&quot;&gt;# simulate dataset
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fake_dataset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;astype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;float32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;fake_label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;low&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;high&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# preparing a fake dataset
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;from_tensor_slices&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fake_dataset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;from_tensor_slices&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fake_label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shuffle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;batch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;    
-
-&lt;span class=&quot;c1&quot;&gt;# define the model
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;# construct a simple classifier
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keras&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sequential&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keras&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;layers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dense&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;activation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keras&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;layers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Dense&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-        
-        &lt;span class=&quot;n&quot;&gt;optimizer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AdamOptimizer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.001&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;optimizer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;eager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GradientTape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;prediction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;losses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sparse_softmax_cross_entropy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prediction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    
-    &lt;span class=&quot;n&quot;&gt;grads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tape&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gradient&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;variables&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;grads_vars&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;variables&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;optimizer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;apply_gradients&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;grads_vars&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;global_step&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_global_step&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    
-    &lt;span class=&quot;c1&quot;&gt;# here is how you log every step (n=1)
-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;record_summaries_every_n_global_steps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scalar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'loss'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt;
-        
-&lt;span class=&quot;c1&quot;&gt;# start the training process
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;writer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as_default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;# initialize the summary writer
-&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;tf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contrib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;# run until the dataset is exhausted
-&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;net&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;optimizer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loss&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Konpat Preechakul</name></author><category term="tensorflow" /><summary type="html">Following the announcement in Tensorflow Dev Summit 2018 in Eager Execution part: https://www.youtube.com/watch?v=T8AW0fKP0Hs&amp;amp;vl=en</summary></entry></feed>
+&lt;p&gt;That should be all!&lt;/p&gt;</content><author><name>Konpat Preechakul</name></author><category term="ubuntu" /><summary type="html">You need libtiff4 which cannot be installed via apt from here (direct link: http://old-releases.ubuntu.com/ubuntu/pool/universe/t/tiff3/libtiff4_3.9.7-2ubuntu1_amd64.deb)</summary></entry></feed>

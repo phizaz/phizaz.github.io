@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Setting up LXC with Intel GPU (Proxmox), keyboard, mouse and audio | Konpat’s Record of Struggles</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Setting up LXC with Intel GPU (Proxmox), keyboard, mouse and audio" />
+<meta name="author" content="Konpat Preechakul" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The goal is to create a linux container with Proxmox that utilizes integrated Intel GPU. Additional requirements are mouse and keyboard must work also with audio." />
+<meta property="og:description" content="The goal is to create a linux container with Proxmox that utilizes integrated Intel GPU. Additional requirements are mouse and keyboard must work also with audio." />
+<link rel="canonical" href="http://localhost:4000/dev/2019/03/11/setting-up-lxc-for-intel-gpu-proxmox.html" />
+<meta property="og:url" content="http://localhost:4000/dev/2019/03/11/setting-up-lxc-for-intel-gpu-proxmox.html" />
+<meta property="og:site_name" content="Konpat’s Record of Struggles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-11T00:00:00+07:00" />
+<script type="application/ld+json">
+{"description":"The goal is to create a linux container with Proxmox that utilizes integrated Intel GPU. Additional requirements are mouse and keyboard must work also with audio.","@type":"BlogPosting","headline":"Setting up LXC with Intel GPU (Proxmox), keyboard, mouse and audio","dateModified":"2019-03-11T00:00:00+07:00","datePublished":"2019-03-11T00:00:00+07:00","url":"http://localhost:4000/dev/2019/03/11/setting-up-lxc-for-intel-gpu-proxmox.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/dev/2019/03/11/setting-up-lxc-for-intel-gpu-proxmox.html"},"author":{"@type":"Person","name":"Konpat Preechakul"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Konpat's Record of Struggles" /><script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: {
+          equationNumbers: {
+            autoNumber: "all"
+          },
+          extensions: ["cancel.js"]
+        },
+      })
+  </script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Konpat&#39;s Record of Struggles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+        
+        <div class="trigger">
+          <!--
+            my_page.autogen is populated by the pagination logic for all pages
+                            that are automatically created by the gem. Check for non-existence to exclude pagination pages from site.pages iterators
+          -->
+          
+            
+          
+            
+            <a class="page-link" href="/about/">About</a>
+            
+          
+            
+          
+            
+            <a class="page-link" href="/tags/">Tags</a>
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/academic/index.html">Academic</a>
+            
+          
+            
+            <a class="page-link" href="/dev/index.html">Dev</a>
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+            <a class="page-link" href="/me/index.html">Personal</a>
+            
+          
+        </div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Setting up LXC with Intel GPU (Proxmox), keyboard, mouse and audio</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-03-11T00:00:00+07:00" itemprop="datePublished">Mar 11, 2019
+      </time>
+      <span>
+        
+        <a href="/tags/#proxmox"><span class="badge badge-secondary">proxmox</span></a>
+        
+        <a href="/tags/#linux"><span class="badge badge-secondary">linux</span></a>
+        
+      </span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>The goal is to create a linux container with Proxmox that utilizes integrated Intel GPU. Additional requirements are mouse and keyboard must work also with audio.</p>
+
+<p>There are some specificities in this guide. I use <strong>Xubuntu</strong> (Xfce) as the desktop environment it might be somewhat different from others, but I hope in overall it should be transferable.</p>
+
+<p>Let’s start by assuming that we have created and installed our desktop environment on a new container already after which we can now begin.</p>
+
+<h1 id="container-with-gpu">Container with GPU</h1>
+
+<p>You should be well familiar with <code class="highlighter-rouge">lxc.cgroup.devices.allow</code> we need to declare it for all devices we want the container to have access to be it GPU, keyboard, mouse or audio.</p>
+
+<p>For example, if you want to grant some access for container number <code class="highlighter-rouge">123</code>, you go to <code class="highlighter-rouge">/etc/pve/lxc/123.conf</code> and adjust the configurations.</p>
+
+<p>The overall limitation of using GPU inside the container boils down to this: we install the GPU driver on the host, allowing the container to access to the device, and reinstall the GPU driver on the container as well. This is because the container has no access to change the kernel modules, our driver module must already be loaded by the host.</p>
+
+<p>In my case, the Intel GPU driver is already loaded in the Proxmox host under the name of <code class="highlighter-rouge">i915</code> kernel module. You can see for yourself using <code class="highlighter-rouge">lspci -v</code>. Find the Intel GPU and see its loaded kernel module. Please note that <code class="highlighter-rouge">i915</code> seems to be the module name for all GPUs.</p>
+
+<h2 id="granting-the-container-access">Granting the container access</h2>
+
+<p>What then needs to be granted access to the container? My experience results in this:</p>
+
+<ol>
+  <li><code class="highlighter-rouge">/dev/dri/card0</code></li>
+  <li><code class="highlighter-rouge">/dev/dri/renderD128</code></li>
+  <li><code class="highlighter-rouge">/dev/fb0</code>. This the frame buffer for <code class="highlighter-rouge">card0</code>.</li>
+  <li><code class="highlighter-rouge">/dev/tty7</code>. Actually, you can use any (that is not currently used). To my understanding this is like allowing the container to access our <em>monitor</em>, I guess.</li>
+</ol>
+
+<p>To grant the container access, we need to have their <em>major</em> and <em>minor</em> numbers. Which could be obtained thus:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@desktop:/dev# ls -l /dev/dri/card0
+crw-rw---- 1 root video 226, 0 Mar 11 00:53 /dev/dri/card0
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Device</th>
+      <th>Major</th>
+      <th>Minor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">/dev/dri/card0</code></td>
+      <td>226</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/dev/dri/renderD128</code></td>
+      <td>226</td>
+      <td>128</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/dev/fb0</code></td>
+      <td>29</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/dev/tty7</code></td>
+      <td>4</td>
+      <td>7</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>So we have the first change we need to make to the <code class="highlighter-rouge">/etc/pve/lxc/&lt;id&gt;.conf</code> should be:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lxc.cgroup.devices.allow: c 226:0 rwm
+lxc.cgroup.devices.allow: c 226:128 rwm
+lxc.cgroup.devices.allow: c 4:7 rwm
+lxc.cgroup.devices.allow: c 29:0 rwm
+lxc.mount.entry: /dev/dri/card0 dev/dri/card0 none bind,optional,create=file
+lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file
+lxc.mount.entry: /dev/tty7 dev/tty7 none bind,optional,create=file
+lxc.mount.entry: /dev/fb0 dev/fb0 none bind,optional,create=file
+
+</code></pre></div></div>
+
+<h3 id="explanations">Explanations</h3>
+
+<p><code class="highlighter-rouge">lxc.cgroup.devices.allow: c 226:0 rwm</code> means allowing the container to <code class="highlighter-rouge">rwm</code> (read/write/mount) the device which has the major number of 226 and minor number of 0. You can use a wildcard here e.g. <code class="highlighter-rouge">c 226:* rwm</code> .</p>
+
+<p>Granting the permission alone is not enough if the device is not <em>present</em> in the container’s <code class="highlighter-rouge">/dev</code> directory. The second part is just creating corresponding files in the container’s <code class="highlighter-rouge">dev</code>. If you want to create a whole directory (and everything within it) you could use <code class="highlighter-rouge">create=dir</code> option instead i.e. <code class="highlighter-rouge">lxc.mount.entry: /dev/dri dev/dri none bind,optional,create=dir</code>. This could be problematic if you have more than one GPU. Allowing the container to see a GPU meant not to be used by it is a bad idea because it leads to many problems down the line. For example, in my case, I also have an Nvidia card. The container’s Xorg tries to utilize both GPUs via Nvidia’s Optimus technology which might not be the thing you want.</p>
+
+<p>Please note that <code class="highlighter-rouge">dev/tty7</code> is the correct container’s path with leading <code class="highlighter-rouge">/</code> it won’t work.</p>
+
+<p>The host’s TTY number could be any as said, but the container’s TTY needs to be <code class="highlighter-rouge">tty7</code> unless configured otherwise. It seems that Xorg looks at this particular TTY, if it is not present you will see an error in container’s <code class="highlighter-rouge">/var/log/Xorg.0.log</code>. So it is possible to configure it this way: <code class="highlighter-rouge">lxc.mount.entry: /dev/ttyN dev/tty7</code> where <code class="highlighter-rouge">N</code> is the number you like.</p>
+
+<p>You can now stop and start your container:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pct stop &lt;id&gt;
+pct start &lt;id&gt;
+</code></pre></div></div>
+
+<p>You should see the monitor displaying your desktop environment albeit keyboards and mouses might not work yet.</p>
+
+<p>Many would suggest installing the Intel driver for accelerated video decoding on the container as well:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install i965-va-driver
+</code></pre></div></div>
+
+<h2 id="switching-between-ttys">Switching between TTY’s</h2>
+
+<p>You can use <code class="highlighter-rouge">ctrl+alt+f&lt;number&gt;</code> to switch to <code class="highlighter-rouge">TTY&lt;number&gt;</code>. This might not work 100% if the desktop manager on the current TTY ignore these keys.</p>
+
+<h2 id="preventing-the-screen-tearing">Preventing the screen tearing</h2>
+
+<p>Using Intel GPU could see <em>tearing</em> artifacts while scrolling. The feeling is like playing games without vertical sync. If you don’t encounter this problem, feel free to skip.</p>
+
+<p>File: <code class="highlighter-rouge">/etc/X11/xorg.conf.d/20-intel.conf</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Section "Device"
+    Identifier "Intel Graphics"
+    Driver "intel"
+    Option "TearFree" "true"
+EndSection
+</code></pre></div></div>
+
+<p>Thanks to <a href="https://wiki.archlinux.org/index.php/intel_graphics">https://wiki.archlinux.org/index.php/intel_graphics</a></p>
+
+<h1 id="keyboard-and-mouse-in-lxc">Keyboard and mouse in LXC</h1>
+
+<p>Keyboard and mouse are <code class="highlighter-rouge">/dev/input</code> devices even though they are connected via USB ports. It is easy misled by <code class="highlighter-rouge">/dev/usb</code> but it has nothing to do with it. You don’t need to grant access to <code class="highlighter-rouge">/dev/usb</code> to make keyboard and mouse work.</p>
+
+<p>We do the same thing as before using:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ls -l /dev/input
+total 0
+drwxr-xr-x 2 root root     180 Mar 10 17:05 by-id
+drwxr-xr-x 2 root root     200 Mar 10 17:05 by-path
+crw-rw---- 1 root input 13, 64 Mar 10 17:05 event0
+crw-rw---- 1 root input 13, 65 Mar 10 17:05 event1
+crw-rw---- 1 root input 13, 74 Mar 10 17:05 event10
+crw-rw---- 1 root input 13, 75 Mar 10 17:05 event11
+... a lot more ...
+</code></pre></div></div>
+
+<p>I personally grant and map them all to the container using, update the <code class="highlighter-rouge">/etc/pve/lxc/&lt;id&gt;.conf</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lxc.cgroup.devices.allow = c 13:* rwm 
+lxc.mount.entry: /dev/input dev/input none bind,optional,create=dir
+</code></pre></div></div>
+
+<p>Next we need to tell the Xorg to use these input devices also telling which driver we want to use for each. I have found <code class="highlighter-rouge">evdev</code> driver to work well in my case both mouse and keyboard.</p>
+
+<p>To install the driver in the container:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install xserver-xorg-input-evdev
+</code></pre></div></div>
+
+<p>To tell the Xorg which devices to load we need to know which <code class="highlighter-rouge">/dev/input/eventN</code> ‘s are related to our mouse and keyboard. This could be done using <code class="highlighter-rouge">evtest</code>. You can install the program on the host or on the container:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install evtest
+</code></pre></div></div>
+
+<p>Using it would result:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@desktop:/dev# evtest
+No device specified, trying to scan all of /dev/input/event*
+Available devices:
+/dev/input/event0:	Sleep Button
+/dev/input/event1:	Power Button
+/dev/input/event2:	Power Button
+/dev/input/event3:	Logitech USB Receiver
+/dev/input/event4:	Logitech USB Receiver
+/dev/input/event5:	Microsoft Microsoft® Nano Transceiver v2.0
+/dev/input/event6:	Microsoft Microsoft® Nano Transceiver v2.0
+/dev/input/event7:	Microsoft Microsoft® Nano Transceiver v2.0
+/dev/input/event8:	Video Bus
+/dev/input/event9:	PC Speaker
+/dev/input/event10:	HDA NVidia HDMI/DP,pcm=3
+/dev/input/event11:	HDA NVidia HDMI/DP,pcm=7
+/dev/input/event12:	HDA NVidia HDMI/DP,pcm=8
+/dev/input/event13:	HDA NVidia HDMI/DP,pcm=9
+/dev/input/event14:	HDA Intel PCH Front Mic
+/dev/input/event15:	HDA Intel PCH Rear Mic
+/dev/input/event16:	HDA Intel PCH Line
+/dev/input/event17:	HDA Intel PCH Line Out
+/dev/input/event18:	HDA Intel PCH Front Headphone
+/dev/input/event19:	HDA Intel PCH HDMI/DP,pcm=3
+/dev/input/event20:	HDA Intel PCH HDMI/DP,pcm=7
+/dev/input/event21:	HDA Intel PCH HDMI/DP,pcm=8
+/dev/input/event22:	HDA Intel PCH HDMI/DP,pcm=9
+/dev/input/event23:	HDA Intel PCH HDMI/DP,pcm=10
+Select the device event number [0-23]: 
+</code></pre></div></div>
+
+<p>The mouse is Logitech in this case, and the keyboard is Microsoft. I could tell Xorg to load them all. However, if you are in doubt you can always test it by inputing the number and try typing or moving it to see if it triggers any event.</p>
+
+<p>In container, edit the file <code class="highlighter-rouge">/usr/share/X11/xorg.conf.d/10-lxc-input.conf</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Section "InputDevice"
+    Identifier "event3"
+    Option "Device" "/dev/input/event3"
+    Option "AutoServerLayout" "true"
+    Driver "evdev"
+EndSection
+
+Section "InputDevice"
+    Identifier "event4"
+    Option "Device" "/dev/input/event5"
+    Option "AutoServerLayout" "true"
+    Driver "evdev"
+EndSection
+
+... for all event you want ...
+</code></pre></div></div>
+
+<p>Restart the container again. Mouse and keyboard should now work.</p>
+
+<h1 id="audio-in-lxc">Audio in LXC</h1>
+
+<p>Most of the configurations in this guide need some understanding of the linux hardware and software stack which I am lacking. But none is worse in the case of audio. This is convoluted. I just managed to make it work, but don’t expect my explanation to be correct.</p>
+
+<p>I think a good starting point if you are interested in keywords in linux audio stack is: <a href="https://www.cnblogs.com/little-ant/p/4016180.html">https://www.cnblogs.com/little-ant/p/4016180.html</a>. This is not the original post, but it is a working link.</p>
+
+<p><em>Disclaimer: I have seen many approaches to audio in container. In this guide, it will be just one of them.</em></p>
+
+<h2 id="make-audio-work-on-the-host">Make audio work on the host</h2>
+
+<p>To be foolproof, I think it is a good start if we can make sound from the host first, and then we will make it work from the container. We will need many tools in <code class="highlighter-rouge">alsa-utils</code> so we first install it on the host.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install alsa-utils
+</code></pre></div></div>
+
+<p>Now, we are going to list the audio devices:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@desktop:/dev# aplay -L
+null
+    Discard all samples (playback) or generate zero samples (capture)
+default:CARD=PCH
+    HDA Intel PCH, ALC887-VD Analog
+    Default Audio Device
+sysdefault:CARD=PCH
+    HDA Intel PCH, ALC887-VD Analog
+    Default Audio Device
+front:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    Front speakers
+surround21:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    2.1 Surround output to Front and Subwoofer speakers
+surround40:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    4.0 Surround output to Front and Rear speakers
+surround41:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    4.1 Surround output to Front, Rear and Subwoofer speakers
+surround50:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    5.0 Surround output to Front, Center and Rear speakers
+surround51:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
+surround71:CARD=PCH,DEV=0
+    HDA Intel PCH, ALC887-VD Analog
+    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
+hdmi:CARD=PCH,DEV=0
+    HDA Intel PCH, HDMI 0
+    HDMI Audio Output
+... many more ...
+</code></pre></div></div>
+
+<p>It is unclear to know which is responsible for the output we are listening to. In my settings, I’m connecting a monitor via an HDMI cable, so I’m looking for HDMI in particular.</p>
+
+<p>To know which one, we need test each output by producing some noise. This could be done using <code class="highlighter-rouge">speaker-test</code>:</p>
+
+<p>You might need to test all of them, but the command is something like:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speaker-test -D &lt;name&gt; -c 2
+# for example
+speaker-test -D hdmi:CARD=PCH,DEV=0 -c 2
+</code></pre></div></div>
+
+<p>One of them would produce noise, and you now know which one it is, and also know that the audio works.</p>
+
+<h2 id="make-audio-work-on-the-container">Make audio work on the container</h2>
+
+<p>At the container’s side, we are looking for <code class="highlighter-rouge">/dev/snd</code> which has the major number of 116. We would map them all to the container.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@desktop:/dev# ls -l /dev/snd
+total 0
+drwxr-xr-x 2 root root       80 Mar 10 17:05 by-path
+crw-rw---- 1 root audio 116,  8 Mar 10 17:05 controlC0
+crw-rw---- 1 root audio 116,  2 Mar 10 17:05 controlC1
+crw-rw---- 1 root audio 116, 17 Mar 10 17:05 hwC0D0
+crw-rw---- 1 root audio 116, 18 Mar 10 17:05 hwC0D2
+crw-rw---- 1 root audio 116,  7 Mar 10 17:05 hwC1D0
+crw-rw---- 1 root audio 116, 10 Mar 10 17:05 pcmC0D0c
+crw-rw---- 1 root audio 116,  9 Mar 10 17:05 pcmC0D0p
+crw-rw---- 1 root audio 116, 16 Mar 10 17:05 pcmC0D10p
+... many more ...
+</code></pre></div></div>
+
+<p>Please note that if the audio producer in the container is not root, let’s say <code class="highlighter-rouge">joe</code>, you need to add <code class="highlighter-rouge">joe</code> to <code class="highlighter-rouge">audio</code> group using, at the container:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>usermod <span class="nt">-aG</span> audio joe
+</code></pre></div></div>
+
+<p>At the host, we need to update the container configuration again:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lxc.cgroup.devices.allow = c 116:* rwm 
+lxc.mount.entry: /dev/snd dev/snd none bind,optional,create=dir
+</code></pre></div></div>
+
+<p>After restarting the container, test if the audio devices are available:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>aplay -L
+</code></pre></div></div>
+
+<p>You should see the very same output as the root’s one.</p>
+
+<p>Finally, we tell the Pulse audio in the container to manually look for <em>alsa-sink</em> on a specific device we have tested. Modify the file <code class="highlighter-rouge">/etc/pulse/default.pa</code> by looking for <code class="highlighter-rouge">load-module module-also-sink</code>. You might see it commented, uncomment it, and update it so:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>load-module module-alsa-sink device=&lt;name&gt;
+# for example
+load-module module-alsa-sink device=hdmi:CARD=PCH,DEV=0
+</code></pre></div></div>
+
+<p>After that you might need to reload the pulse audio, in the container:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pulseaudio -k
+</code></pre></div></div>
+
+<p>Or restart the container should yield the same result. Your audio should now work. You can go to <strong>PulseAudio</strong> app and see if it the audio device is recognized.</p>
+
+<p>However, it is possible that the device is muted (by some external means). To guarantee it is not, we run, in the container:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alsamixer
+</code></pre></div></div>
+
+<p>You should see the following screen:</p>
+
+<p><img src="/assets/articles/setting-up-lxc-for-intel-gpu-proxmox/1552279415943.png" alt="1552279415943" /></p>
+
+<p>If you see any of them to be <strong>MM</strong> which is muted. You need to make it not by selecting it and press <strong>M</strong>. You’ll see the following screen:</p>
+
+<p><img src="/assets/articles/setting-up-lxc-for-intel-gpu-proxmox/1552279220123.png" alt="1552279220123" /></p>
+
+<p>Nothing is muted now.</p>
+
+  </div><a class="u-url" href="/dev/2019/03/11/setting-up-lxc-for-intel-gpu-proxmox.html" hidden></a>
+</article>
+
+
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col one-half">
+        <h2 class="footer-heading">Konpat&#39;s Record of Struggles</h2>
+        <ul class="contact-list">
+          <li class="p-name">Konpat Preechakul</li><li><a class="u-email" href="mailto:the.akita.ta@gmail.com">the.akita.ta@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col one-half">
+        <p>O thou, I long to rival thy greatest invention, the mind.</p>
+      </div>
+
+      <div class="social-links"><ul class="social-media-list"><li><a href="https://www.facebook.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#facebook"></use></svg></a></li><li><a href="https://github.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a href="https://www.instagram.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a href="https://twitter.com/phizaz" title="phizaz"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li><li><a href="/feed.xml" title="rss"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg></a></li></ul>
+</div>
+    </div>
+
+  </div>
+
+</footer></body>
+
+</html>
